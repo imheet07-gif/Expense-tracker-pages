@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Expense Tracker</title>
+<style>
+  :root { --bg:#F3F5F2; --card:#fff; --fg:#16201B; --muted:#5B675F; --line:#DCE2DD; --accent:#1F7A4D; --on:#fff }
+  @media (prefers-color-scheme: dark) { :root { --bg:#101512; --card:#18201B; --fg:#E8EEE9; --muted:#9AA79F; --line:#2A352E; --accent:#4FBF86; --on:#0B120E } }
+  * { box-sizing: border-box }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 -apple-system, system-ui, "Segoe UI", sans-serif }
+  main { max-width:520px; margin:0 auto; padding:48px 16px }
+  h1 { font-size:28px; margin:0 0 6px }
+  p { color:var(--muted); margin:0 0 24px }
+  a.card { display:block; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px 18px 16px; margin-bottom:14px; color:inherit; text-decoration:none }
+  a.card:focus-visible { outline:3px solid var(--accent); outline-offset:2px }
+  a.card b { display:block; font-size:18px; margin-bottom:2px }
+  a.card span { color:var(--muted); font-size:15px }
+  a.card em { display:inline-block; margin-top:12px; padding:10px 16px; background:var(--accent); color:var(--on); border-radius:10px; font-style:normal; font-weight:600 }
+</style>
+</head>
+<body>
+<main>
+  <h1>Expense Tracker</h1>
+  <p>Pick where you want to start.</p>
+  <a class="card" href="setup/">
+    <b>Setup page</b>
+    <span>New here? Step-by-step setup for the dashboard on your iPhone.</span><br>
+    <em>Open setup</em>
+  </a>
+  <a class="card" href="copy/">
+    <b>Copy page</b>
+    <span>Copy the dashboard and the Google scripts to paste into Scriptable and Apps Script.</span><br>
+    <em>Open copy page</em>
+  </a>
+</main>
+</body>
+</html>
