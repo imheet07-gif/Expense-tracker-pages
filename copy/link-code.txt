@@ -21,7 +21,7 @@ const CODE_EDITION = "link"
 
 // Your iCloud link to the Log Expense shortcut (Shortcuts › ••• on the shortcut › Share › Copy iCloud Link).
 // Fill it in once; it's remembered when you paste newer versions of this code with it left empty.
-const SHORTCUT_LINK = ""
+// SHORTCUT_LINK is the one in the loader (the file you pasted)
 
 // The dashboard code lives in this project as an HTML file named "dashboard" (File › + › HTML).
 const DASHBOARD_FILE = "dashboard"

@@ -1,41 +1,179 @@
-<title>Expense Tracker Copy Page</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Money · Copy page</title>
 <style>
-/* Layout: one column; the card-alerts setup steps first, then two cards each with a big copy button */
-:root { --bg:#F4F6F3; --card:#FFFFFF; --fg:#17201B; --muted:#5E6A64; --line:#DDE3DD; --accent:#2F55C9; --on-accent:#FFFFFF; --ok:#2C8455;
+:root { --bg:#F4F6F3; --card:#FFFFFF; --fg:#17201B; --muted:#5E6A64; --line:#DDE3DD; --accent:#2F55C9; --on-accent:#FFFFFF; --soft:#E6ECFB; --ok:#2C8455;
   --body: -apple-system, system-ui, sans-serif; --mono: ui-monospace, "SF Mono", Menlo, monospace }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0F1412; --card:#171E1B; --fg:#E7EDEA; --muted:#97A49D; --line:#28322E; --accent:#8EA6FF; --on-accent:#0F1412; --ok:#62C98F; color-scheme:dark } }
-:root[data-theme="dark"] { --bg:#0F1412; --card:#171E1B; --fg:#E7EDEA; --muted:#97A49D; --line:#28322E; --accent:#8EA6FF; --on-accent:#0F1412; --ok:#62C98F; color-scheme:dark }
-body { background:var(--bg); color:var(--fg); font:16px/1.5 var(--body) }
-main { max-width:560px; margin:0 auto; padding-inline:16px; padding-block:20px 48px; display:grid; gap:16px }
-h1 { font-size:24px; margin:0; text-wrap:balance }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0F1412; --card:#171E1B; --fg:#E7EDEA; --muted:#97A49D; --line:#28322E; --accent:#8EA6FF; --on-accent:#0F1412; --soft:#1E2744; --ok:#62C98F; color-scheme:dark } }
+:root[data-theme="dark"] { --bg:#0F1412; --card:#171E1B; --fg:#E7EDEA; --muted:#97A49D; --line:#28322E; --accent:#8EA6FF; --on-accent:#0F1412; --soft:#1E2744; --ok:#62C98F; color-scheme:dark }
+* { box-sizing: border-box }
+html { scroll-behavior: smooth; scroll-padding-top: 12px }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 var(--body) }
+main { max-width:560px; margin:0 auto; padding-inline:16px; padding-block:20px 48px; display:grid; gap:14px }
+h1 { font-size:26px; margin:0; letter-spacing:-.01em; text-wrap:balance }
+h2 { font-size:18px; margin:0 }
 p { margin:0 }
+a { color:var(--accent) }
 .lead { color:var(--muted) }
-section { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; display:grid; gap:12px; min-width:0 }
-h2 { font-size:17px; margin:0 }
+.chip { justify-self:start; font-size:13px; font-weight:600; color:var(--accent); background:var(--soft); border-radius:999px; padding:5px 12px }
+.nav { display:grid; grid-template-columns:1fr 1fr; gap:10px }
+.nav a { display:flex; flex-direction:column; gap:2px; text-decoration:none; color:var(--fg); background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; min-height:64px; justify-content:center }
+.nav a b { font-size:15px } .nav a span { font-size:13px; color:var(--muted) }
+.nav a:focus-visible, .nav a:hover { border-color:var(--accent) }
+section, article.entry { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; display:grid; gap:12px; min-width:0 }
+.head { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap }
+.tag { font-size:12px; font-weight:600; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:2px 10px; white-space:nowrap }
+.tag.me { color:var(--accent); border-color:var(--accent) }
+.small { font-size:14px; color:var(--muted) }
 ol { margin:0; padding-left:1.3em; display:grid; gap:10px }
+ul.small { margin:0; padding-left:1.2em; display:grid; gap:6px }
 li { padding-left:2px }
 b { font-weight:600 }
 code { font:14px var(--mono); background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:0 4px }
-button.copy { font:600 17px var(--body); padding:14px 18px; border-radius:12px; border:0; background:var(--accent); color:var(--on-accent); cursor:pointer; width:100% }
-button.copy:focus-visible { outline:3px solid var(--fg); outline-offset:2px }
+button.copy { font:600 17px var(--body); padding:14px 18px; min-height:48px; border-radius:12px; border:0; background:var(--accent); color:var(--on-accent); cursor:pointer; width:100% }
+button.copy:focus-visible, summary:focus-visible { outline:3px solid var(--fg); outline-offset:2px }
 .status { font-size:14px; color:var(--ok); min-height:1.5em }
+details { border-top:1px solid var(--line); padding-top:10px }
+summary { cursor:pointer; font-weight:600; font-size:15px; min-height:40px; display:flex; align-items:center; list-style:none }
+summary::-webkit-details-marker { display:none }
+summary::before { content:""; width:8px; height:8px; margin-right:10px; border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(-45deg); transition:transform .15s }
+details[open] > summary::before { transform:rotate(45deg) }
+details > *:not(summary) { margin-top:10px }
+details { display:block } details > ol, details > p, details > pre { display:grid }
 pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px; white-space:pre-wrap; word-break:break-all; color:var(--muted) }
-.small { font-size:14px; color:var(--muted) }
+.more { display:flex; align-items:center; justify-content:center; text-align:center; min-height:48px; border:1px solid var(--line); border-radius:12px; background:var(--card); text-decoration:none; font-weight:600 }
+.back { display:inline-flex; align-items:center; min-height:44px }
+.note { background:var(--soft); border-radius:12px; padding:12px 14px; font-size:14px }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto } summary::before { transition:none } }
 </style>
+</head>
+<body>
 <main>
-  <h1>Expense Tracker Copy Page</h1>
-  <p class="lead">Code for your spending screen and for the card-alerts sync. Use the buttons to copy; you don't need to read the code.</p>
+  <h1>Money · Copy page</h1>
+  <p class="lead">Copy the code for your dashboard and your card alerts. Use the buttons; you don't need to read the code.</p>
+  <span class="chip">Latest version 6.15 · 10 Oct</span>
 
-  <section>
+  <nav class="nav" aria-label="What do you want to do?">
+    <a href="#dashboard"><b>Dashboard</b><span>Set up or update on iPhone</span></a>
+    <a href="#alerts"><b>Card alerts</b><span>Automatic, from Gmail</span></a>
+    <a href="#friends"><b>Share with a friend</b><span>Shared sheet or setup link</span></a>
+    <a href="#private"><b>Private edition</b><span>Data stays on the phone</span></a>
+  </nav>
+
+  <section id="dashboard">
+    <div class="head"><h2>The dashboard</h2><span class="tag me">For me</span></div>
+    <p class="small">The screen you open on your iPhone (in Scriptable). <b>After the first time, update it from Settings › Updates inside the dashboard.</b> You only need to copy it again for a first install.</p>
+    <button class="copy" id="copy2">Copy the dashboard</button>
+    <div class="status" id="status2" aria-live="polite"></div>
+    <details>
+      <summary>Steps and code preview</summary>
+      <ol>
+        <li>Install <b>Scriptable</b> from the App Store.</li>
+        <li>Tap <b>+</b>, rename the script <b>Expenses Dashboard</b>, paste the code, and tap ▶.</li>
+        <li>Already set up? Don't paste again. Open <b>Settings › Updates</b> in the dashboard and tap <b>Check for updates</b>.</li>
+      </ol>
+      <pre id="code2">Loading…</pre>
+    </details>
+  </section>
+
+  <section id="alerts">
+    <div class="head"><h2>Card alerts sync (Google)</h2><span class="tag me">For me</span></div>
+    <p class="small">Every 10 minutes it adds new bank and card alerts to Notion, matches them to what you logged and tags the card. <b>Paste this small loader once; after that it keeps itself up to date.</b></p>
+    <button class="copy" id="copy3">Copy the sync loader</button>
+    <div class="status" id="status3" aria-live="polite"></div>
+    <details>
+      <summary>Steps and code preview</summary>
+      <ol>
+        <li>In Notion, open <b>CC Transactions (Beta)</b> › <b>•••</b> › <b>Connections</b> and add the same integration your Expenses table uses.</li>
+        <li>Open <b>script.google.com</b> (easiest on a computer; on a phone use Safari's "Request Desktop Website"), signed in to the Google account whose email you want read. Tap <b>New project</b>, delete what's there, and paste the loader.</li>
+        <li>Paste your Notion key (starts with <code>ntn_</code>) between the quotes on the <code>NOTION_TOKEN</code> line near the top. Save.</li>
+        <li>Choose the function <code>install</code> in the toolbar and tap <b>Run</b>. Allow Gmail access when Google asks. It then runs every 10 minutes by itself.</li>
+        <li>Clear the key from the <code>NOTION_TOKEN</code> line (leave the quotes) and Save. It's already stored privately.</li>
+        <li><b>Already set up the old way?</b> Paste the loader over the old code in the same project and Save. Your key, cards and timer are kept; you don't need to run install again.</li>
+      </ol>
+      <p class="small">Two switches at the top of the loader: <code>AUTO_UPDATE</code> (<code>false</code> stops all update checks) and <code>COUNT_ME</code> (<code>false</code> stops the anonymous once-a-day visit count). Your SMS-to-email automation stays as it is.</p>
+      <pre id="code3">Loading…</pre>
+    </details>
+  </section>
+
+  <section id="friends">
+    <div class="head"><h2>Share with a friend</h2><span class="tag">For friends</span></div>
+    <p class="small">Two ways, both set up once by you. Friends then need no code at all. Pick the one that suits them: the <b>shared sheet</b> works best on a computer, the <b>setup link</b> works on a phone.</p>
+  </section>
+
+  <section id="friends-sheet">
+    <div class="head"><h2>Shared sheet (the template)</h2><span class="tag me">Set up once, on a computer</span></div>
+    <p class="small">Friends make a copy of a Google Sheet, tap <b>Expense Tracker › Start</b>, and their cards are found automatically. The script inside is a small loader, so every copy keeps itself up to date.</p>
+    <button class="copy" id="copy4">Copy the sheet loader</button>
+    <div class="status" id="status4" aria-live="polite"></div>
+    <details>
+      <summary>Steps and code preview</summary>
+      <p class="small"><b>Don&rsquo;t paste this into your own sync project.</b> It goes only into the Card Alerts sheet.</p>
+      <ol>
+        <li>Open <a href="https://docs.google.com/spreadsheets/d/1LFBvUm7zaW3GPfugIrKFnqpwBAiFOSvYvUxpwqjatlo/edit" target="_blank" rel="noopener">Expense Tracker – Card Alerts</a> in your Google Drive.</li>
+        <li>Make sure the Config sheet has a <code>sheet</code> row (edition, version, url, fingerprint), like the <code>alerts</code> and <code>link</code> rows. Without it the loader has nothing to download.</li>
+        <li><b>Extensions › Apps Script</b>, delete what's there, paste the sheet loader, and Save. Don't run anything, and never put your own Notion key in this template.</li>
+        <li>Make a test copy from a second Google account, tap <b>Expense Tracker › Start</b>, and check it asks for a Notion key (so yours didn't come along) and starts cleanly.</li>
+        <li>Back in the sheet: <b>Share › General access › Anyone with the link</b> (Viewer). Friends use the sheet's <b>Make a copy</b> link.</li>
+      </ol>
+      <p class="small">Google shows friends a "hasn't verified this app" screen the first time (<b>Advanced › Go to…</b>). The Google Sheets phone app doesn't show the sheet's menu; on a phone use the setup link instead.</p>
+      <pre id="code4">Loading…</pre>
+    </details>
+  </section>
+
+  <section id="friends-link">
+    <div class="head"><h2>Setup link (works on a phone)</h2><span class="tag me">Set up once, on a computer</span></div>
+    <p class="small">One link that sets up everything for a friend, on their phone: their Notion tables, card alerts, the dashboard as a file for Scriptable, and the shortcut, Back Tap and widget steps.</p>
+    <button class="copy" id="copy5">Copy the setup-link loader</button>
+    <div class="status" id="status5" aria-live="polite"></div>
+    <details>
+      <summary>Steps and code preview</summary>
+      <ol>
+        <li>Go to <b>script.google.com</b> › <b>New project</b>. Rename it <b>Expense Tracker</b> (friends see this name when they sign in).</li>
+        <li>Delete what's in Code.gs and paste the setup-link loader. Near the top, paste your Log Expense shortcut's iCloud link between the quotes on the <code>SHORTCUT_LINK</code> line, if it's there (in Shortcuts: ••• on the shortcut › Share › Copy iCloud Link). Save.</li>
+        <li><b>Files › +</b> › <b>HTML</b>, name it <b>dashboard</b>, delete what's in it, and paste the dashboard code from the Dashboard section above. Save. Don't run anything.</li>
+        <li><b>Deploy › New deployment</b> › gear › <b>Web app</b>. Execute as: <b>User accessing the web app</b>. Who has access: <b>Anyone with Google account</b>. <b>Deploy</b>, and allow access when Google asks.</li>
+        <li>Copy the <b>Web app URL</b> (it ends in /exec). That's the setup link to send friends.</li>
+      </ol>
+      <p class="small"><b>Updating later:</b> the loader updates its own code. When a new dashboard comes out, paste it into the <b>dashboard</b> file, then <b>Deploy › Manage deployments</b> › pencil › Version: <b>New version</b> › <b>Deploy</b>. The link stays the same. Friends get the new dashboard by tapping <b>Get the dashboard</b> on the link again.</p>
+      <p class="small">Google shows friends a "hasn't verified this app" screen the first time (<b>Advanced › Go to Expense Tracker</b>). Unverified scripts like this work for up to 100 people.</p>
+      <pre id="code5">Loading…</pre>
+    </details>
+  </section>
+
+  <section id="private">
+    <div class="head"><h2>Private edition</h2><span class="tag">No Notion, no Google</span></div>
+    <p class="small">A separate copy of the dashboard for someone who wants their data on their phone only. It reads <b>credit card and bank statements</b> (PDFs from net banking) and anything logged by hand. Update it from <b>Settings › Updates</b>, same as the main dashboard.</p>
+    <button class="copy" id="copy6">Copy the private edition</button>
+    <div class="status" id="status6" aria-live="polite"></div>
+    <details>
+      <summary>Steps and code preview</summary>
+      <ol>
+        <li>Install <b>Scriptable</b> from the App Store.</li>
+        <li>In Scriptable, tap <b>+</b>, rename the script <b>Expenses Dashboard</b>, paste the code, and tap ▶.</li>
+        <li>To log by hand: use your <b>Log Expense</b> shortcut with Back Tap, or the dashboard's <b>+ Add expense</b>.</li>
+        <li>Each month: download the card and bank statements, then tap <b>Import a statement</b> and pick the PDFs. If a statement is password protected, it asks for the password. Spends already logged by hand are matched, not added twice.</li>
+        <li><b>Settings › Your data</b>: choose <b>This iPhone only</b> or <b>iCloud Drive</b>, and <b>Export a backup</b> now and then. If data is kept only on the phone, deleting Scriptable deletes it.</li>
+      </ol>
+      <p class="small">Card payments, refunds and incoming money aren't counted as spending. ATM withdrawals are left out (log cash spends by hand). Scanned (image) statements can't be read. Card alerts and Gmail features aren't in this edition.</p>
+      <pre id="code6">Loading…</pre>
+    </details>
+  </section>
+
+  <h2 id="new" style="margin-top:6px">What's new</h2>
+  <article class="entry">
     <h2>New: the shared sheet updates itself too (10 Oct)</h2>
     <ul class="small">
     <li><b>Friends:</b> make a copy of the sheet, tap <b>Expense Tracker › Start</b> in its menu, paste a Notion key, and allow Gmail. No code to paste, and fixes arrive by themselves.</li>
     <li><b>You:</b> paste the new <b>sheet loader</b> (see "Shared sheet for friends" below) into the template once. Copies made from then on stay up to date; copies made earlier keep the old code until they are replaced.</li>
     <li>The same two switches apply: <code>AUTO_UPDATE</code> and <code>COUNT_ME</code>. Phone users who can't see the sheet's menu can use the setup link instead.</li>
     </ul>
-  </section>
-
-  <section>
+  </article>
+  <article class="entry">
     <h2>New: a clearer top bar, month and year pickers, and custom splits (10 Oct)</h2>
     <ul class="small">
     <li><b>The top bar now says "Money"</b> and holds only the tabs. The month no longer sits above tabs that don't use it.</li>
@@ -45,9 +183,8 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
     <li><b>Splitting an expense:</b> Edit › Split / owed now has <b>Full, 90%, 75%, 50%, 25%</b> and an <b>Other %</b> box for each person, a plain amount box for any custom figure, and <b>Split the other ₹X equally</b> for whatever is left. Your share always shows as what remains.</li>
     <li>Update from <b>Settings › Updates</b>, as before.</li>
     </ul>
-  </section>
-
-  <section>
+  </article>
+  <article class="entry">
     <h2>New: the Google scripts now update themselves (10 Oct)</h2>
     <ul class="small">
     <li><b>Paste once, never again.</b> The <b>Card alerts sync</b> and the <b>Setup link</b> code below is now a small <b>loader</b>. It downloads the real code, checks it against a fingerprint, keeps it in your Google account and runs it. New versions install themselves, and if a new version ever fails to start it goes back to the one that worked.</li>
@@ -55,465 +192,34 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
     <li><b>What it contacts:</b> about once a day it reads the public update sheet. If <code>COUNT_ME</code> is <code>true</code> it also makes one anonymous visit count with no name, email or ID, so the author can see roughly how many people use it. Nothing else leaves your account beyond what the sync already did with your own Notion and Gmail.</li>
     <li><b>Two switches</b> at the top of the loader: change <code>AUTO_UPDATE</code> to <code>false</code> to stop all update checks (you keep the code you have), or <code>COUNT_ME</code> to <code>false</code> to switch off the visit count.</li>
     </ul>
-  </section>
-
-  <section>
-    <h2>New: Check for updates, no more copy and paste (9 Oct)</h2>
-    <ul class="small">
-    <li><b>Settings › Updates:</b> tap <b>Check for updates</b>. If there's a newer version you see what's new, and <b>Update now</b> replaces the script for you. Close it and open it again to use the new version.</li>
-    <li><b>Nothing happens by itself.</b> The app never checks for updates in the background. Tapping Check contacts the update server and sends nothing about you, and it works the same in the Private edition.</li>
-    <li><b>Safe by design:</b> each update is checked against a fingerprint before it is installed, your current version is kept, and <b>Restore previous version</b> puts it back.</li>
-    <li><b>Just this once</b> you need to paste this version the usual way. After that, updates come from Settings.</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>New: import statements, merchant categories, and a year-to-date view (7 Oct)</h2>
-    <ul class="small">
-    <li><b>Import statements:</b> Expenses tab › <b>Import statements (PDF)</b>. Pick one or more bank or credit card statements (password-protected ones ask once). Each spend you didn't log is added to Notion. Spends you already logged (by hand, the shortcut or auto-log) just get their card filled in. Ones waiting in your alert inbox are linked to the alert, so it stops asking. Importing the same statement again adds nothing. Card payments, refunds, incoming money, cash withdrawals and investments (IPO, SIP, broker) aren't counted as spending.</li>
-    <li><b>Big bank transfers (₹1 lakh or more):</b> after the rest is saved, you're asked about each one: <b>It was spending</b>, <b>Spending, but a one-off</b> (saved under "Big one-offs", outside your monthly budget), or <b>Just moving money</b> (skipped, and not asked again). <b>Skip all for now</b> asks again next time you import that statement. Card spends and debit card purchases of any size are always added.</li>
-    <li><b>Taking an import back:</b> Settings › <b>Imported statements</b> lists each import with <b>Remove</b> (tap twice). It deletes only the expenses that import added (they go to Notion's Trash for 30 days). Expenses you'd logged yourself stay, with the card it filled in cleared, and alerts it used go back to your inbox. Imports from before this update aren't listed.</li>
-    <li><b>Learns from your logging:</b> each imported spend gets the category (and the name) you've used for that merchant before, or else what the merchant's name suggests.</li>
-    <li><b>Merchant categories:</b> on any expense, <b>Edit › Category</b>. With "Always put … here" ticked, that merchant always goes there, its earlier expenses move too, and imports use it. Listed in Settings › Merchant categories.</li>
-    <li><b>Auto-log preview, clearer:</b> payments less than an hour old now show as "waiting" (in "Fill in what I miss" they're added only after an hour, if you haven't logged them), instead of "Nothing would have been added". If To do has unlogged payments from before auto-log started, the preview says those won't be added for you.</li>
-    <li><b>Year to date:</b> the top of the Trends tab shows what you've spent this year: the total, the monthly average, the change against the same months last year, each category's share (tap one to see its expenses), and where most of it went. It follows the Year summary's calendar year or financial year switch. The Expenses tab also has a year filter now.</li></ul>
-    <p class="small">The PDF is read on your iPhone; only the expenses go to Notion. The first import adds an <b>Import ID</b> column to your Expenses table. For a full year, import a few months at a time: each spend takes about half a second to save. Paste the new <b>Expenses Dashboard</b> (version 6.8). If you use the setup link, also paste it into the link's <b>dashboard</b> file and deploy a new version, so friends get it. The private edition has all of this too: paste it again.</p>
-  </section>
-
-  <section>
-    <h2>New: Private edition, kept on the iPhone only (7 Oct)</h2>
-    <p class="small">For a friend who doesn't want their spending in Notion or Google. Same dashboard, but there's no Notion, no Google script and no email reading. Everything is saved in one file on their iPhone (or in their own iCloud Drive, if they choose). Copy it from the <b>Private edition</b> section at the bottom.</p>
-    <p class="small">Your own setup doesn't change; don't paste this over your dashboard.</p>
-    <p class="small"><b>Update: merchant categories.</b> Open any expense › <b>Edit › Category</b>, pick one, and leave "Always put … here" ticked: that merchant always goes to that category, its earlier expenses move too, and future statements use it. A longer rule wins ("Swiggy Instamart" → Groceries even when "Swiggy" → Food &amp; Dining). See and remove them in Settings › Your data › Merchant categories. Paste the private edition again.</p>
-    <p class="small"><b>Update:</b> now reads statements whose rows start with a serial number (Bank of India and similar), joins descriptions that wrap onto a second line, and leaves out investments (IPO bids, SIPs, broker payments), withdrawals to self, and bank transfers of ₹1 lakh or more, so they don't count as spending. Paste the private edition again.</p>
-  </section>
-
-  <section>
-    <h2>New: add your cards and bank accounts from the dashboard (7 Oct)</h2>
-    <p class="small">Settings (gear) › <b>Cards &amp; bank accounts</b> lists every card and account, with <b>Rename</b> and <b>×</b>, and <b>+ Add a card or account</b>: pick credit card, debit card or bank account, the bank, an optional card name and the last digits. It shows exactly how it will appear ("HDFC Regalia ••1234").</p>
-    <ul class="small"><li><b>Credit cards</b> you add are recognised in alerts by their last digits.</li>
-    <li><b>Debit cards</b>: a bank alert that says "debit card XX1234" is tagged to that card, and the expense is logged as Debit Card.</li>
-    <li><b>Bank accounts</b>: bank alerts show which account they came from (for example "UPI · HDFC ••8760").</li>
-    <li><b>Rename</b> keeps past expenses and the card's forex markup. <b>Remove</b> stops tagging it, and the script won't add it back when it rescans your email.</li></ul>
-    <p class="small">Paste all of these: the new <b>Expenses Dashboard</b> (version 6.7), the <b>Card Alerts Sync</b>, and, if you share them, the <b>shared-sheet edition</b> and the <b>setup-link code</b> (then Deploy › Manage deployments › New version).</p>
-  </section>
-
-  <section>
-    <h2>Cleaner empty chart, clearer sync warning (7 Oct)</h2>
-    <p class="small">With little or no spending yet, the chart's money axis showed "₹1, ₹1, ₹0, ₹0"; it now counts in whole rupees up to at least ₹1,000. "The alert sync hasn't run yet" now tells setup-link users to open the link › Card alerts › <b>Sync now</b> to see why. Paste the new <b>Expenses Dashboard</b> (version 6.6).</p>
-  </section>
-
-  <section>
-    <h2>Remove a person (7 Oct)</h2>
-    <p class="small">People tab › tap the person › <b>Edit details</b> › <b>Remove</b> (tap twice to confirm). They and their diary entries go to Notion's Trash, where you can restore them for 30 days; expenses already logged for them stay. Paste the new <b>Expenses Dashboard</b> (version 6.5).</p>
-  </section>
-
-  <section>
-    <h2>People tab: full width, diary per person (7 Oct)</h2>
-    <p class="small">The People cards no longer shrink with space on both sides: on iPhone each tab could size itself to its content, and now always fills the width. The combined diary is gone from the People list; tap a person to see their diary (days off fold into one row per month). Paste the new <b>Expenses Dashboard</b> (version 6.4).</p>
-  </section>
-
-  <section>
-    <h2>Fix: gap at the top and squeezed screens (7 Oct)</h2>
-    <p class="small">The real cause of the squeezed People tab: when the sync warning showed, the top bar ("7:43 AM · ⚠ Sync") was wider than the screen, which pushed the whole page sideways. 6.2's attempt made it worse (a gap above the top bar). Now the warning shows on its own without the time, the top bar always fits, and the gap is gone. Paste the new <b>Expenses Dashboard</b> (version 6.3).</p>
-  </section>
-
-  <section>
-    <h2>Tidier People tab, forex markup picker (7 Oct)</h2>
-    <ul class="small"><li><b>Days off fold up:</b> in the diary, each person's days off for a month are one row ("Nitu · Days off in October · 3 days") that opens like a dropdown to show the dates, each with its own ×.</li>
-    <li><b>Forex markup:</b> in Settings, pick each card's markup from a list (0% to 3.5%, or Other… for anything else) instead of typing it.</li>
-    <li><b>Layout:</b> the People tab now always fills the screen width; on some iPhones its cards were squeezed and shifted to the right.</li></ul>
-    <p class="small">Paste the new <b>Expenses Dashboard</b> (Settings should show version 6.2). If you use the setup link, paste it into the <b>dashboard</b> file there too and deploy a new version.</p>
-  </section>
-
-  <section>
-    <h2>Setup link: see whether the sync works (7 Oct)</h2>
-    <p class="small">Step 2 on the setup link now shows when the card-alert sync last ran and what it found, or the exact error if it failed, plus a <b>Sync now</b> button to run it straight away. Paste the new setup-link code into Code.gs, then Deploy › Manage deployments › pencil › New version › Deploy.</p>
-  </section>
-
-  <section>
-    <h2>New: one setup link that installs everything (7 Oct)</h2>
-    <p class="small">Friends no longer need a computer, the Notion template, or the copy-paste steps. The setup link walks them through the whole thing on their phone: Notion tables are made for them, card alerts start with one tap, the dashboard comes as a file that opens in Scriptable, and the shortcut, Back Tap and widget are checked off as they go. Set it up once from <b>For sharing only: the setup link</b> at the bottom of this page (it now also needs the dashboard pasted in as a second file).</p>
-  </section>
-
-  <section>
-    <h2>Shared-sheet edition: Run now starts setup (7 Oct)</h2>
-    <p class="small">Pressing <b>Run</b> in the script editor used to run a small helper and fail with <i>"Cannot read properties of undefined (reading 'replace')"</i>. Run now picks <b>start</b> by default, the same as <b>Expense Tracker › Start</b> in the sheet. Paste the new <b>Shared-sheet edition</b> into the template sheet; anyone with a copy can paste it too, or just use the menu.</p>
-  </section>
-
-  <section>
-    <h2>Better at reading loan and policy PDFs (7 Oct)</h2>
-    <p class="small">The PDF reader used to look only for "Label: value" on one line, so it missed figures laid out in tables. It now also reads:</p>
-    <ul class="small"><li><b>Tables:</b> a row of headings with the values on the row below (Policy No. · Start date · End date · Sum insured), and a label with its value on the next line.</li>
-    <li><b>Google's reader output:</b> a block of labels followed by a block of values, and statement rows where the date isn't first. Your Bajaj statement now gives all 12 EMIs instead of 2.</li>
-    <li><b>Small print:</b> footnote marks ("Interest Rate¹", "Regular EMI Amount⁴"), "Rs. 18,456/-", "₹1 Crore", "5 Lakh", dates like 12-Nov-26, LIC modes (YLY, HLY), receipt totals and payment dates.</li>
-    <li>It picks the regular EMI over the first one, and ignores phone and account numbers.</li>
-    <li>When nothing can be read on the iPhone, it offers to send the PDF to your Google script (which reads it a different way) instead of stopping at "nothing found".</li></ul>
-    <p class="small">Also fixes <i>"daysInMonth is not defined"</i>, which stopped the insurance email step. Paste the new <b>Expenses Dashboard</b> (Settings should show version 6.1) and the new <b>Card Alerts Sync</b> (or shared-sheet edition), then run <b>install</b> once.</p>
-  </section>
-
-  <section>
-    <h2>New: LIC and other policies found from your premiums (7 Oct)</h2>
-    <p class="small">LIC doesn't email policy numbers or schedules (only BillDesk receipts and bill reminders), so the email reader skipped it. Now:</p>
-    <ul class="small"><li><b>From your bank alerts:</b> insurance premiums you've paid in the last 15 months (LIC, Policybazaar, insurers by name) that aren't on a policy yet show under <b>Premiums seen in your bank alerts</b>, with how often they seem to recur and when the next one is likely. <b>Track it</b> opens the policy form filled in; <b>Not insurance</b> stops it being suggested. Different amounts to the same insurer are treated as different policies.</li>
-    <li><b>From your email:</b> LIC's BillDesk receipts and premium-due reminders (CRED, banks) are now read too, matched by the premium amount.</li>
-    <li>Premiums found this way also mark yearly policies paid, not just monthly ones.</li></ul>
-    <p class="small">Paste the new <b>Expenses Dashboard</b> (Settings should show version 6.0) and the new <b>Card Alerts Sync</b> (or shared-sheet edition). The script looks back a year once more to pick up past LIC emails.</p>
-  </section>
-
-  <section>
-    <h2>Insurance folds too (7 Oct)</h2>
-    <p class="small">Insurance on the Loans &amp; insurance tab now folds into one line like Loans (policies, the next premium and when, premiums a year). Tap it to open or close; it stays the way you left it. It starts open, and while you haven't folded it, it opens by itself when a premium is due soon or overdue, or a policy or document is waiting for you to check. Paste the new <b>Expenses Dashboard</b> code; Settings should show version 5.9.</p>
-  </section>
-
-  <section>
-    <h2>Fix: Insurance table not created, and loans fold away (7 Oct)</h2>
-    <p class="small"><b>Insurance:</b> if your Expenses table sits at the top of your Notion workspace (not inside a page), Notion doesn't let scripts add a table next to it, so no policies showed. The Insurance table is now added next to your Loans or People table instead (inside Friends &amp; Family, for example). Premiums bought through Policybazaar and similar brokers, which your bank shows in the broker's name, are now matched to the right policy by amount.</p>
-    <p class="small"><b>Loans</b> on the Loans &amp; insurance tab fold into one line (open loans, EMI a month, what's left, any EMI due or late). Tap it to open the full loan details; it stays the way you left it.</p>
-    <p class="small">Paste the new <b>Expenses Dashboard</b> code (Settings should show version 5.8) and the new <b>Card Alerts Sync</b> (or shared-sheet edition).</p>
-  </section>
-
-  <section>
-    <h2>New: insurance documents (7 Oct)</h2>
-    <p class="small">Open a policy and tap <b>Add a document</b>, or <b>From PDF</b> at the top of Insurance, then pick the policy schedule, a renewal notice or a receipt from Files.</p>
-    <ul class="small"><li><b>Read on your iPhone.</b> Password-protected PDFs work too: type the password once (often your date of birth) and you can have it remembered on this iPhone.</li>
-    <li><b>What's picked out:</b> cover, premium and how often, start, renewal and end dates, and who's covered (relationships only, never names or dates of birth). It also tries for benefits: no-claim bonus, room rent, co-pay, pre-existing and specific illness waiting periods (with the date cover starts), pre/post hospital days, check-ups, restore benefit and riders.</li>
-    <li><b>You confirm.</b> The policy shows what would change and which benefits would be added. <b>Use these</b> saves them; <b>Ignore</b> doesn't. A PDF for a policy you haven't added becomes a new policy.</li>
-    <li><b>Kept for later.</b> A copy goes to iCloud Drive › Scriptable › Insurance, listed under <b>Documents</b> on the policy; tap it to open (handy for a claim).</li>
-    <li><b>Scans</b> go to your Google script if you've set up the upload link (the same one loan documents use).</li>
-    <li><b>From your email:</b> policy schedules and policy copies your insurers attach to emails are read by the Google script, a few a day, and shown on the policy the same way, with a link to the email.</li></ul>
-    <p class="small">Update both scripts: the <b>Expenses Dashboard</b> (Settings should show version 5.7) and the <b>Card Alerts Sync</b> (or shared-sheet edition). If you use the upload link, also redeploy: Deploy › Manage deployments › pencil › Version: New version › Deploy.</p>
-  </section>
-
-  <section>
-    <h2>New: insurance on the Loans &amp; insurance tab (7 Oct)</h2>
-    <p class="small">Your life, health, home and motor policies now sit next to your loans. For each one you'll see the next premium and when it's due (or that it auto-debits), the last premium paid, cover, who's covered, and a list of benefits you can fill in: bonus, free check-ups, waiting periods, room rent limit and so on.</p>
-    <ul class="small"><li><b>From your email:</b> once a day the Google script reads premium receipts, "premium due" and renewal notices, and Policybazaar emails. It creates an <b>Insurance</b> table next to your Expenses table and adds each policy it finds as a suggestion. Tap <b>Track it</b>, then <b>Edit</b> to fill in anything missing. Only the last 4 digits of policy numbers are saved.</li>
-    <li><b>Paid or not:</b> a premium is marked paid from the insurer's receipt email, from a card or bank alert with the insurer's name and the premium amount, or with <b>Mark paid</b>. The next due date then moves on by itself.</li>
-    <li><b>Reminders:</b> your phone reminds you 15 days and 2 days before a premium is due, and 3 days before the grace period ends. For auto-debit policies you get one heads-up the day before. Upcoming and overdue premiums also show in To do on the Overview.</li>
-    <li><b>Add one by hand:</b> gear › <b>Insurance</b> › <b>Add a policy</b>, or Add on the Loans &amp; insurance tab.</li></ul>
-    <p class="small">Update both scripts. Paste the new <b>Expenses Dashboard</b> code (Settings should show version 5.6). Replace the code in your Google Apps Script with the new <b>Card Alerts Sync</b> (or the shared-sheet edition) and save; nothing else to set up.</p>
-  </section>
-
-  <section>
-    <h2>New: drivers, milk, newspaper and your own groups in People (7 Oct)</h2>
-    <p class="small"><b>Who</b> now has Driver, Cook, Milk and Newspaper, and <b>New group…</b> for anything else (car cleaner, tuition, gym). Each person also has <b>How you pay them</b>:</p>
-    <ul class="small"><li><b>Monthly salary</b>: works the way domestic help always has, with days off, paid leave and advances.</li>
-    <li><b>Per day</b> (milk, paper): set the daily amount, e.g. ₹68 for two packets. Tap the days with no delivery on the calendar, and the month's bill is the days delivered times that amount. Payments made by the 5th (or the day you set) count for the month before.</li>
-    <li><b>Fixed monthly bill</b>: the same amount every month.</li></ul>
-    <p class="small">People are listed under their group. The first time you save someone, two columns, <b>Pay type</b> and <b>Rate per day</b>, are added to your People table in Notion. Paste the new <b>Expenses Dashboard</b> code; Settings should show version 5.5.</p>
-  </section>
-
-  <section>
-    <h2>New: a pay link in WhatsApp reminders (7 Oct)</h2>
-    <p class="small">The next time you send a reminder for money owed, you'll be asked once for your UPI ID (like name@okhdfc). After that every reminder ends with a <b>tap-to-pay</b> link that opens your friend's UPI app with your UPI ID and the amount filled in, plus your UPI ID written out in case the link isn't tappable. Change or remove it under the gear › <b>Pay link in reminders</b>. Your UPI ID stays on this iPhone. When they pay, the money coming in shows up on their page and asks whether it was for these bills, as before. Paste the new <b>Expenses Dashboard</b> code; Settings should show version 5.4.</p>
-  </section>
-
-  <section>
-    <h2>New: call or WhatsApp people from the People tab (7 Oct)</h2>
-    <p class="small">Open someone in <b>People</b> and tap <b>Link contact</b>: pick them from your iPhone contacts (or type a number). After that their page has <b>Call</b>, <b>WhatsApp</b> and <b>Message</b> buttons, and payment reminders for money owed go straight to their WhatsApp chat. The number is kept only in this iPhone's Keychain, never in Notion. The first time, iOS asks to let Scriptable see your contacts; if you say no you can still type numbers. Paste the new <b>Expenses Dashboard</b> code; Settings should show version 5.3.</p>
-  </section>
-
-  <section>
-    <h2>New: expenses that log themselves (7 Oct)</h2>
-    <p class="small">Gear › <b>Logging</b> has three choices: <b>I'll log myself</b> (as now), <b>Fill in what I miss</b> (anything you haven't logged within an hour is added for you) and <b>Fully automatic</b>. The category comes from what you chose before for the same merchant, and every guess says why ("You chose Food &amp; Dining for this merchant: 6 of 6 times"). When it's unsure, the expense is added marked <b>check category</b> and shows on the Overview with a category picker, so your fix teaches it. New users are asked once on the Overview.</p>
-    <p class="small"><b>Where payments come from:</b> your Gmail bank alerts (this sync, or a friend's card alerts sheet), or <b>bank SMS on the iPhone</b> for anyone who hasn't set up the Google sheet: a Shortcuts automation hands each SMS to the dashboard script, and the steps are in the Logging section. It always starts with a <b>preview</b>: nothing is added, the Overview shows "would have added 3 · you logged 6 of 9 yourself", and you tap <b>Go live</b> when it looks right. Card bill payments, loan EMIs, refunded spends and transfers to people in your People list are never added. Neither are payments from before you turned it on.</p>
-    <ol>
-      <li>Paste the new <b>Card alerts sync</b> code (and the sheet code below, for friends) and Save. No new permissions.</li>
-      <li>Paste the new <b>Expenses Dashboard</b> code; Settings shows version 5.2.</li>
-      <li>Gear › Logging › pick a mode › Save. Leave "Start with a preview" ticked for the first few days.</li>
-    </ol>
-  </section>
-
-  <section>
-    <h2>Faster refresh (7 Oct)</h2>
-    <p class="small">The dashboard asks Notion only for expenses that changed since the last refresh, and fetches alerts, bills, loans and people at the same time instead of one after another. It starts loading the moment the page is on screen. Every 6 hours, when you tap Refresh, or after anything is deleted, it re-reads everything so removals show up too.</p>
-  </section>
-
-  <section>
-    <h2>New: add a loan from Settings (7 Oct)</h2>
-    <p class="small">Gear › <b>Add a loan</b>: the lender (as your bank's EMI alert names it), type, and the EMI and debit day if you know them, plus rate, amount owed and term if you want interest vs principal and months left. The Loans tab appears as soon as there's a loan. If your Notion copy has no Loans table yet, one is created next to your Expenses table. Paste the new <b>Expenses Dashboard</b> code.</p>
-  </section>
-
-  <section>
-    <h2>Smoother saving, and Settings behind a gear (7 Oct)</h2>
-    <p class="small"><b>Settings</b> now open from the gear at the top right, as a panel over the page; tap Done or outside it to close. Refresh is the circular-arrow button next to it, and the header just shows the time of the last update with a tick when the sync is healthy.</p>
-    <p class="small"><b>Saving</b> no longer jolts the page: the button you pressed shows a spinner, a thin bar runs under the header until everything (including loans and people) has reloaded, and the confirmation pops up as a short message at the bottom instead of a box that pushes the page down. Charts no longer replay their animation after each save. Paste the new <b>Expenses Dashboard</b> code; Settings should show version 5.0.</p>
-  </section>
-
-  <section>
-    <h2>Fix: People tab missing (7 Oct)</h2>
-    <p class="small">The People tab used to stay hidden if the dashboard couldn't open the new Notion tables. It now always shows, and tells you how to connect them if that's the problem. Settings now shows the dashboard version (this one is 4.9), so you can check the new code is in. Paste the new <b>Expenses Dashboard</b> code.</p>
-  </section>
-
-  <section>
-    <h2>Update: money owed lives in People, and a days-off calendar (6 Oct, night)</h2>
-    <p class="small"><b>Owed to you</b> has moved into the People tab. Each person's page lists their unpaid split bills with <b>Paid</b>, <b>All paid back</b> and the <b>WhatsApp reminder</b>; people who owe you sit at the top of the list. A name on a split bill ("Rahul") is matched to the person ("Rahul Shah"); if it could be two people, or isn't in your list yet, it shows with its own page where you can <b>Link</b> it or <b>Add to People</b>, once. When someone who owes you sends you money, their page asks whether it was for those bills. It never marks them paid by itself. On the Overview, the Friends &amp; family row now carries the total owed.</p>
-    <p class="small"><b>Days-off calendar.</b> On your domestic help's page, a month calendar shows their days off. Go back to any month, tap the days you missed (switch to <b>Half day</b> for half days), tap a marked day to clear it, then <b>Save</b>, all in one go. Tapping a month under Pay jumps the calendar there, and the pay for that month updates.</p>
-    <ol><li>Paste the new <b>Expenses Dashboard</b> code. Also paste the new <b>Card alerts sync</b> code (a small change: one-word names like "Rahul" are used for split bills only, never to file bank transfers, so another Rahul's payment isn't filed under him).</li>
-    <li>If you haven't done the steps in the section below yet, do those too.</li></ol>
-  </section>
-
-  <section>
-    <h2>New: Friends &amp; family, money coming in, and four fixes (6 Oct, evening)</h2>
-    <p class="small"><b>People tab.</b> A daily diary of money with people. Add your domestic help with their monthly pay, pay day and paid days off; the tab then shows each month's pay (less any extra days off), what you've paid, advances and what's left. Tap <b>Day off today</b> to mark leave. For friends and family it shows what you've sent and got back, plus anything they owe from split bills. Payments to domestic help also go into your expenses (as Household), so they count in your spending; money to friends and family doesn't.</p>
-    <p class="small"><b>Automatic filing.</b> Bank transfers to or from anyone in your People list are added to the diary by the sync. Transfers to people it doesn't know show under <b>Who is this?</b>: pick the person once and future ones are filed by themselves, or tap <b>Not a friend</b>.</p>
-    <p class="small"><b>Money coming in</b> is now saved too (it used to be dropped), as "Received" from people or "Refund" from lenders and shops. It never shows as an expense to log. Bajaj's ₹41,756 refund would have been caught this way.</p>
-    <p class="small"><b>Fixes:</b> a part payment on a loan statement is no longer read twice; the account number is now read from Bajaj statements; your HDFC loan no longer takes payments from before it started or from other HDFC businesses (ERGO, Securities); and rows marked Duplicate never show as payments to log.</p>
-    <ol>
-      <li>In Notion, open <b>Friends &amp; Family</b> (sidebar › Private) › <b>•••</b> › <b>Connections</b> and add the same integration your Expenses table uses. This lets both the dashboard and the sync see the new People and Money Diary tables.</li>
-      <li>Paste the new <b>Card alerts sync</b> code into your Apps Script project and Save. No new permissions are needed. If you use the upload link, also do Manage deployments › edit › New version.</li>
-      <li>Paste the new <b>Expenses Dashboard</b> code into Scriptable.</li>
-      <li>Open the <b>People</b> tab › <b>Add a person</b>. Under "Names in bank alerts", add how your bank writes their name or their UPI ID, if you know it.</li>
-    </ol>
-  </section>
-
-  <section>
-    <h2>Fix: PDF reader error, and EMIs from statements (6 Oct)</h2>
-    <p class="small">The "unsupported type" error when adding a PDF is fixed. The reader now keeps each table row together, so a <b>statement of account</b> also gives the list of EMIs and part payments in it. Any payment your bank alerts missed is added to your loan (marked Ignored, so it never shows as an expense to log). Dues, charges, bounces and the foreclosure line are left out. Your HDFC EMI of ₹43,051 on 5 Oct now counts: it came in as a plain bank debit, so the sync now files such debits under Loan EMI. And a new loan's first EMI is now split right (mostly interest), even with "As of" set to that day.</p>
-    <p class="small">Paste both: the new <b>Expenses Dashboard</b> code, and the new <b>Card alerts sync</b> code. If you use the upload link, also do Manage deployments › New version.</p>
-  </section>
-
-  <section>
-    <h2>New: loan PDFs are read on your iPhone (5 Oct)</h2>
-    <p class="small">Loans tab › <b>Add a loan document (PDF)</b> now reads the PDF right on your phone: no Google script, upload link or email needed. If it has a password, you're asked for it (and can save it on the phone), so HDFC's locked PDFs work too. It finds the loan by account number, or asks which loan it's for, then the figures wait on the card for <b>Use these</b>. Only scanned PDFs (photos of paper) can't be read here; for those it offers to send them to your Google script. Just paste the new <b>Expenses Dashboard</b> code.</p>
-  </section>
-
-  <section>
-    <h2>New: upload loan PDFs straight from the dashboard (5 Oct)</h2>
-    <p class="small">Loans tab › <b>Add a loan document (PDF)</b> › pick it in Files. It goes straight to your Google script, which reads it in a few seconds and tells you what it found ("read for Home loan · Bajaj Housing Finance: rate 8.3%, outstanding ₹68.95L"). The figures then wait on the loan's card for <b>Use these</b>. Until you set up the link below, the button offers to send it by email instead.</p>
-    <p class="small"><b>One-time setup, on a computer</b>, in your Apps Script project (after pasting the new sync code and running <code>authorizeDocs</code>):</p>
-    <ol>
-      <li><b>Deploy › New deployment</b> › gear icon › <b>Web app</b>. Execute as: <b>Me</b>. Who has access: <b>Anyone</b>. Tap <b>Deploy</b> and allow access if asked.</li>
-      <li>Choose <code>uploadLink</code> in the toolbar › <b>Run</b>. Copy the link from the execution log (it ends with <code>?k=</code> and a key).</li>
-      <li>The link is also emailed to you ("Your loan upload link"). On your iPhone, open that email, press and hold the link › <b>Copy Link</b>.</li>
-      <li>Open the dashboard › <b>Loans</b> tab › <b>Add a loan document (PDF)</b> › pick any loan PDF › when it asks "Send it how?", tap <b>Paste upload link</b> › the copied link is already in the box › <b>Save</b>. That PDF is uploaded straight away.</li>
-    </ol>
-    <p class="small"><b>Keep the link private</b>: the key in it is what stops others sending files to your script. If it leaks, run <code>resetUploadKey</code>, then <code>uploadLink</code> again, and paste the new link. <b>When you paste future code updates</b>, also do Deploy › Manage deployments › edit (pencil) › Version: <b>New version</b> › Deploy, because the upload link keeps running the version it was deployed with. The 10-minute sync always runs the latest code.</p>
-  </section>
-
-  <section>
-    <h2>New: loan PDFs (5 Oct)</h2>
-    <p class="small">The sync now reads PDFs your lenders email you (statements of account, repayment schedules, interest certificates, foreclosure statements, sanction letters). Google Drive turns each one into text, scans included, and the copy is deleted straight away. Only the figures are kept, and nothing changes until you confirm: the loan's card in the Loans tab shows "From Bajaj's statement (2 Jan 2026): rate …, outstanding …, EMIs left …" with <b>Use these</b> or <b>Ignore</b>. Interest certificates are shown next to the dashboard's estimate, since they're the figure to file with.</p>
-    <p class="small"><b>Password-protected PDFs</b> (likely HDFC's) can't be read by Drive. The card says so; open the PDF in Files, enter the password, then Share › Print › Share again › <b>Send loan doc</b>, which sends an unlocked copy.</p>
-    <ol>
-      <li>Paste the new <b>Card alerts sync</b> code and Save.</li>
-      <li><b>Important:</b> choose <code>authorizeDocs</code> in the toolbar › <b>Run</b> › allow Drive access. Until you do, Google pauses the 10-minute sync, because the code now asks for a new permission.</li>
-      <li>Paste the new <b>Expenses Dashboard</b> code.</li>
-      <li>For a PDF that isn't in your email: Loans tab › <b>Add a loan document (PDF)</b>. Pick it in Files; the first time, enter your Gmail address. Mail opens with it attached and tagged; tap Send. A password-protected PDF is caught before sending, with steps to unlock it.</li>
-      <li>Optional, to send from other apps' Share button: in Shortcuts, make a new shortcut named <b>Send loan doc</b>. In its details, turn on <b>Show in Share Sheet</b> (Files and PDFs). Add <b>Send Email</b>: to your Gmail address, subject <code>[LOAN-DOC]</code>, message = Shortcut Input. Turn off Show Compose Sheet. It needs the Mail app set up with an account.</li>
-    </ol>
-  </section>
-
-  <section>
-    <h2>Fix: the Bajaj top-up's EMIs (5 Oct)</h2>
-    <p class="small">Your bank sent no debit alert for the top-up loan's EMIs (₹474 a month, ₹106 from July), so the sync never saw them, apart from January. Bajaj did email an "EMI received" receipt every month. The sync now saves those receipts as payments, unless a bank alert for the same EMI already exists, and matches them to the right loan by account number. The first run after you paste reads a year of receipts. The top-up shows in the Loans tab as "Home loan top-up · Bajaj Housing Finance".</p>
-    <p class="small">For future top-ups (with HDFC or anyone): an email naming a new loan account adds it as "Found in your email", named "Home loan top-up" when the email says top-up. And if a second regular debit to a lender you already track shows up at a different amount, the Loans tab asks "Another loan with HDFC? (a top-up, say)" with Track it / Not a loan.</p>
-    <ol><li>Paste the new <b>Card alerts sync</b> code, and the new <b>Expenses Dashboard</b> code.</li></ol>
-  </section>
-
-  <section>
-    <h2>Fix: past-EMI look-back saved wrong rows (5 Oct, early)</h2>
-    <p class="small">The one-time look-back over six months of bank alerts saved a few old card spends and newsletters that mention "EMI", and a second copy of the 2 Sep Bajaj EMI (the bank's email arrived hours after the SMS). I've marked those rows as duplicates in Notion. The new sync code only keeps clear loan repayments from your bank account, and treats an SMS and a late bank email of the same payment on the same day as one. The Loans tab now shows the interest vs principal chart as soon as one loan has figures.</p>
-    <ol>
-      <li><b>Paste the new Card alerts sync code soon</b>, so the look-back stops adding rows.</li>
-      <li>Paste the new <b>Expenses Dashboard</b> code.</li>
-    </ol>
-  </section>
-
-  <section>
-    <h2>New: a Loans tab, interest vs principal, rate changes and term (4 Oct, late)</h2>
-    <p class="small"><b>Loans tab.</b> Loans now have their own tab next to Events. The top shows what you pay in EMIs every month, what's still to repay, this year's interest and principal, a month-by-month chart for all loans together (Bajaj until September, HDFC from October), and what was paid in the month you're viewing. Each loan has its own chart: orange is interest, blue is principal, faded bars are estimates; tap a bar for that month's split. The Overview keeps a one-line Loans summary that opens the tab.</p>
-    <p class="small"><b>Rate changes.</b> Each rate is kept with the date it applies from, so earlier months keep the old rate and this year's interest stays right for tax time. When your lender emails a new rate, the sync adds it from the date in the email and emails you once. If you change it yourself, tap <b>Rate changed, or update outstanding</b>, enter the new rate and the date it applies from.</p>
-    <p class="small"><b>When the lender changes the EMI instead</b> (as Bajaj did when rates fell): the new EMI is used from the month it's debited, and the card works out the rate it implies if the term stayed the same, e.g. "EMI went down from ₹53,783 to ₹52,900 on 2 Sep … your rate went from 8.75% to about 8.47%", with a <b>Use 8.47%</b> button that adds it to the rate history. If a prepayment came just before, it says so instead, since the EMI may have dropped because of the prepayment.</p>
-    <p class="small"><b>Term.</b> The end date and EMIs left are worked out from the outstanding, rate and EMI, which is how banks handle a rate change when the EMI stays the same. Add the original term (in months, from your sanction letter) to see how many months earlier or later than planned the loan now ends. Prepayments pull it earlier, rate rises push it later.</p>
-    <p class="small"><b>HDFC needs only the rate now.</b> Without an outstanding, it starts from the ₹68,51,091 disbursed. If this week's debit is interest only, it shows as almost all interest, which is right.</p>
-    <ol>
-      <li>Paste the new <b>Expenses Dashboard</b> code into Scriptable.</li>
-      <li>Paste the new <b>Card alerts sync</b> code into your Apps Script project and Save.</li>
-      <li>After the HDFC debit: Loans tab › <b>Add rate</b>, and the term if you know it.</li>
-    </ol>
-  </section>
-
-  <section>
-    <h2>Clearer loans in past months (4 Oct, late)</h2>
-    <p class="small">When you look at an earlier month, the Loans row names the lender ("Bajaj Housing · ₹53,783 paid 2 Aug"), and the panel starts with <b>Paid in August</b>: each payment that month with its lender, type and date, then your loans as they are now. The top-up loan's ₹474 debits now count as its EMIs instead of fees. Paste the new <b>Expenses Dashboard</b> code; the sync code also changed slightly, so paste that too.</p>
-  </section>
-
-  <section>
-    <h2>New: loans read from your email, and why EMIs were missing (4 Oct, late)</h2>
-    <p class="small"><b>Why you didn't see your Bajaj EMIs:</b> most likely your Notion integration can't open the <b>Loans</b> table yet, so the dashboard had no loans to show in any month. The EMIs themselves are all in Notion, January to September. The new dashboard says so plainly when this happens, instead of hiding the Loans row.</p>
-    <p class="small"><b>What's new:</b> once a day the sync reads your lenders' emails ("EMI due", "EMI received", sanction, disbursement, foreclosure). It fills in the account number, EMI, debit date, rate and loan amount, and closes a loan when the lender confirms it. A loan it hasn't seen before shows up as "Found in your email" for you to confirm. The first run also reads six months of bank alerts for EMI debits, so a new user's loans are recognised on day one. Regular auto-debits with no lender name (3+ months, same amount, same date) are suggested too, with a "Not a loan" button.</p>
-    <p class="small">I've already filled in what your emails say: Bajaj closed in early September (foreclosure confirmed 8–11 Sep, account …9536), and HDFC's account …0017, loan ₹68,66,000 and ₹68,51,091 disbursed. Your Bajaj top-up loan (…8406, ₹474 a month, closed 8 Sep) will be added by the first sync run.</p>
-    <ol>
-      <li>In Notion, open <b>Loans</b> (sidebar › Private) › <b>•••</b> › <b>Connections</b> and add the same integration your Expenses table uses.</li>
-      <li>Paste the new <b>Expenses Dashboard</b> code into Scriptable.</li>
-      <li>Paste the new <b>Card alerts sync</b> code into your Apps Script project and Save. No new permissions are needed.</li>
-    </ol>
-  </section>
-
-  <section>
-    <h2>Fix: duplicate alerts and missed $ spends (4 Oct, night)</h2>
-    <p class="small">Some payments you had already logged showed up again in To do, as a second copy from the forwarded SMS with the card shown as "Unknown". I've marked those copies as duplicates in Notion, so they're gone. The new sync code also catches this case from now on. It also reads alerts written with a currency symbol, like Amex&rsquo;s "$53.10 at ANTHROPIC PB", which were being skipped. After you paste it, alerts from the last 2 days are read again, so that one will appear.</p>
-    <ol>
-      <li>Tap <b>Copy the sync loader</b> (in the "Card alerts sync" section, not the sheet code at the bottom).</li>
-      <li>In your Apps Script project, select all, paste, and Save.</li>
-    </ol>
-  </section>
-
-  <section>
-    <h2>New: HDFC home loan and a simpler Overview (4 Oct)</h2>
-    <p class="small"><b>Loan switch.</b> Bajaj is marked closed on 1 Oct in Notion. It keeps this year's interest and principal for tax time, and no longer raises "late" alerts. The new <b>Home loan · HDFC</b> shows "Waiting for the first EMI debit" until the first auto-debit arrives. The sync then picks up the EMI amount and date by itself and reminders start from the next month. The ₹8,878 you paid HDFC in August is counted as fees, not as an EMI. Once both loans have figures, you'll also see this year's combined home-loan interest.</p>
-    <p class="small"><b>Overview.</b> The page is about half as long: a <b>To do</b> card at the top for anything that needs you; spending and the top 5 categories in one card; one <b>Cards, loans and money owed</b> card with a summary line for each (tap a row to open it); and the 3 latest expenses.</p>
-    <ol>
-      <li>Paste the new <b>Expenses Dashboard</b> code into Scriptable.</li>
-      <li>Paste the new <b>Card alerts sync</b> code into your Apps Script project and Save.</li>
-      <li>After the first HDFC EMI, open <b>Loans</b> › <b>Add rate and outstanding</b> and enter them from HDFC's app.</li>
-    </ol>
-  </section>
-
-  <section>
-    <h2>Home loan EMI (4 Oct)</h2>
-    <p class="small">Your Bajaj Housing Finance EMI (₹53,783 on the 2nd) is tracked as a fixed cost: it's shown under the month's total and in a new <b>Loans</b> card, and no longer appears as "payments not logged". The card shows whether this month's EMI is paid, due or late. Add your rate and outstanding there to see the balance, months left, interest vs principal and figures for the financial year. The sync emails you 2 days before each debit, and again if a debit isn't seen 2 days after the due date.</p>
-    <ol>
-      <li>In Notion, open the new <b>Loans</b> table (sidebar › Private) › <b>•••</b> › <b>Connections</b> › add your integration.</li>
-      <li>Paste the new <b>Expenses Dashboard</b> code into Scriptable.</li>
-      <li>Paste the new <b>Card alerts sync</b> code into your Apps Script project and Save. No new permissions are needed.</li>
-      <li>In the dashboard's Loans card, enter the rate and outstanding from your lender's app (the outstanding right after an EMI, with that EMI's date).</li>
-    </ol>
-  </section>
-
-  <section>
-    <h2>New: WhatsApp reminders (4 Oct)</h2>
-    <p class="small">In <b>Owed to you</b>, each person now has a <b>WhatsApp reminder</b> button. It opens WhatsApp with a friendly message listing what they owe, and you tap Send. The first time, pick their number from your contacts (Scriptable will ask for Contacts access) or type it in. It's saved only on this iPhone, never in Notion. To change a number later, tap the person and use the link under their expenses. Just paste the new <b>Expenses Dashboard</b> code below; nothing else to set up.</p>
-  </section>
-
-  <section>
-    <h2>New: card bill check and foreign spends (4 Oct)</h2>
-    <p class="small">When a card bill arrives (Scapia's statement email, or CRED's "bill generated" email for HDFC, Amex and others), the sync adds up your alerts for that billing period and compares the total with the bill. If the bill is higher, you get an email, and the <b>Credit cards</b> card on the dashboard lists each bill due that month, whether it's paid, and how much extra and the likely reason, such as a fee plus 18% GST.</p>
-    <ol>
-      <li>In Notion, open the new <b>Card Bills</b> table (in your sidebar under Private) › <b>•••</b> › <b>Connections</b> and add the same integration your Expenses table uses.</li>
-      <li>In your Apps Script project, select all, paste the new <b>Card alerts sync</b> code below over it, and Save. Your token is already stored, so leave the <code>NOTION_TOKEN</code> line empty.</li>
-      <li>Choose the function <code>syncAlerts</code> in the toolbar and tap <b>Run</b> once. Google will ask for one new permission, to send you email. Allow it, or the 10-minute timer will stop.</li>
-      <li>In Scriptable, paste the new <b>Expenses Dashboard</b> code over the old one.</li>
-    </ol>
-    <p class="small"><b>Foreign-currency spends</b> (Amex, HDFC, Axis) are now saved too. The rupee amount is estimated from that day's exchange rate plus the card's forex markup and GST on it, and shown with "≈". The markups start at 3.5% for Amex, HDFC and Axis and 0% for Scapia. If a bank changes its rate, update it in the dashboard under <b>Settings › Forex markup</b>; it's saved to Notion and the sync uses it from then on. On bills with foreign spends the check allows 1.5% of those spends for rate differences. Anything above that is flagged as extra.</p>
-    <p class="small">That first run checks your bills from the last 4 months. Bills from before your alerts started show as "Can't check". Axis isn't covered yet because no Axis bill reaches your email. If you forward Axis's bill SMS with the same <code>[CC-SMS]</code> automation, it will be picked up.</p>
-  </section>
-
-  <section>
-    <h2>Card alerts: one-time setup</h2>
-    <p class="small">You keep logging with Back Tap as usual. Every 10 minutes the sync adds new bank and card alerts to Notion, matches them to what you logged and tags the card. The dashboard lists any payment you didn't log, and warns you if the sync stops running.</p>
-    <ol>
-      <li>In Notion, open <b>CC Transactions (Beta)</b> › <b>•••</b> › <b>Connections</b> and add the same integration your Expenses table uses.</li>
-      <li>Open <b>script.google.com</b> (easiest on a computer; on the phone use Safari's "Request Desktop Website"), signed in as imheet07@gmail.com. Tap <b>New project</b>, delete what's there, and paste the <b>Card alerts sync</b> code below.</li>
-      <li>Paste your Notion token (starts with <code>ntn_</code>) between the quotes on the <code>NOTION_TOKEN</code> line. Save.</li>
-      <li>Choose the function <code>install</code> in the toolbar and tap <b>Run</b>. Allow Gmail access when Google asks. It then runs every 10 minutes by itself.</li>
-      <li>Clear the token from the <code>NOTION_TOKEN</code> line (leave the quotes) and save. It's already stored privately.</li>
-      <li>In Scriptable, open <b>Expenses Dashboard</b>, select all, and paste the new <b>Expenses Dashboard</b> code over it.</li>
-      <li><b>Already set up the sync before 3 Oct?</b> Paste the new sync code over the old one in the same project and Save. Keep your token out of the code; it's already stored. No need to run install again.</li>
-    </ol>
-    <p class="small">Your SMS-to-email automation stays as it is. Forwarded SMS and bank emails are both read, and duplicates are dropped.</p>
-  </section>
-
-  <section>
-    <h2>Card alerts sync (Google Apps Script)</h2>
-    <p class="small">Steps 2–5 above. Runs in your own Google account, not through Claude.</p>
-    <button class="copy" id="copy3">Copy the sync code</button>
-    <div class="status" id="status3" aria-live="polite"></div>
-    <pre id="code3">Loading…</pre>
-  </section>
-
-  <section>
-    <h2>The Expenses Dashboard code</h2>
-    <p class="small">Step 6 above, and Step 7 of the setup guide. It's long, so use the button rather than selecting it by hand.</p>
-    <button class="copy" id="copy2">Copy the code</button>
-    <div class="status" id="status2" aria-live="polite"></div>
-    <pre id="code2">Loading…</pre>
-  </section>
-  <section>
-    <h2>Shared sheet for friends: the template (for you, once)</h2>
-    <p class="small"><b>Don&rsquo;t paste this into your own sync project.</b> It goes only into the Card Alerts sheet. If it&rsquo;s pasted anywhere else, it now stops and says so.</p>
-    <p class="small">Your friends copy this sheet, tap <b>Start</b>, and their cards are found automatically. The script inside is now a small loader, so every copy keeps itself up to date. You only do this once, ideally on a computer.</p>
-    <ol>
-      <li>Open <a href="https://docs.google.com/spreadsheets/d/1LFBvUm7zaW3GPfugIrKFnqpwBAiFOSvYvUxpwqjatlo/edit" target="_blank" rel="noopener">Expense Tracker – Card Alerts</a> in your Google Drive.</li>
-      <li>Make sure the Config sheet has a <code>sheet</code> row (edition, version, url, fingerprint), the same as for <code>alerts</code> and <code>link</code>. Without it the loader has nothing to download.</li>
-      <li><b>Extensions › Apps Script</b>, delete what's there, paste the <b>sheet loader</b> below, and Save. Don't run anything, and never put your own Notion key in this template; this copy isn't for your own alerts.</li>
-      <li>Before you share it, make a test copy from a second Google account, tap <b>Expense Tracker › Start</b>, and check that it asks for a Notion key (so yours didn't come along) and starts cleanly.</li>
-      <li>Back in the sheet: <b>Share › General access › Anyone with the link</b> (Viewer).</li>
-    </ol>
-    <button class="copy" id="copy4">Copy the sheet loader</button>
-    <div class="status" id="status4" aria-live="polite"></div>
-    <pre id="code4">Loading…</pre>
-  </section>
-
-  <section>
-    <h2>For sharing only: the setup link (works on a phone)</h2>
-    <p class="small">One link that sets up everything for a friend, on their phone: it makes their Notion tables, turns on card alerts, gives them the dashboard as a file to open in Scriptable, and walks them through the shortcut, Back Tap and widget, ticking each step off. Each person's sync runs as them, on their own Gmail and Notion. When you update the code here, everyone gets it.</p>
-    <p class="small">Set it up once, on a computer:</p>
-    <ol>
-      <li>Go to <b>script.google.com</b> › <b>New project</b>. Rename it <b>Expense Tracker</b> (friends see this name when they sign in).</li>
-      <li>Delete what's in Code.gs and paste the <b>setup-link code</b> below. Near the top, paste your Log Expense shortcut's iCloud link between the quotes on the <code>SHORTCUT_LINK</code> line (in Shortcuts: ••• on the shortcut › Share › Copy iCloud Link). Save.</li>
-      <li><b>Files › +</b> › <b>HTML</b>, name it <b>dashboard</b>, delete what's in it, and paste the <b>Expenses Dashboard</b> code from above. Save. Don't run anything.</li>
-      <li><b>Deploy › New deployment</b> › gear › <b>Web app</b>. Execute as: <b>User accessing the web app</b>. Who has access: <b>Anyone with Google account</b>. <b>Deploy</b>, and allow access when Google asks.</li>
-      <li>Copy the <b>Web app URL</b> (it ends in /exec). That's the setup link to send friends.</li>
-    </ol>
-    <p class="small"><b>Updating later:</b> paste the new setup-link code into Code.gs (the shortcut link is remembered even if you leave that line empty) and the new dashboard code into the dashboard file, then <b>Deploy › Manage deployments</b> › pencil › Version: <b>New version</b> › <b>Deploy</b>. The link stays the same. Friends get the new dashboard by tapping <b>Get the dashboard</b> on the link again.</p>
-    <p class="small">Google shows friends a "hasn't verified this app" screen the first time (tap <b>Advanced › Go to Expense Tracker</b>); unverified scripts like this work for up to 100 people. Sending PDFs straight from the dashboard isn't available with the link; friends can email them to themselves with [LOAN-DOC] in the subject instead.</p>
-    <button class="copy" id="copy5">Copy the setup-link code</button>
-    <div class="status" id="status5" aria-live="polite"></div>
-    <pre id="code5">Loading…</pre>
-  </section>
-
-  <section>
-    <h2>Private edition (no Notion, no Google)</h2>
-    <p class="small">A separate copy of the dashboard for someone who wants their data on their phone only. It reads <b>credit card and bank statements</b> (PDFs from net banking) and anything logged by hand. It doesn't use the internet, except once to download the chart and PDF reader (nothing of theirs is sent).</p>
-    <ol>
-      <li>Install <b>Scriptable</b> from the App Store.</li>
-      <li>In Scriptable, tap <b>+</b>, rename the script <b>Expenses Dashboard</b>, paste the code below, and tap ▶.</li>
-      <li>To log by hand: use your <b>Log Expense</b> shortcut (iCloud link) with Back Tap, or the dashboard's <b>+ Add expense</b>. It works the same way.</li>
-      <li>Each month: download the card and bank statements, then tap <b>Import a statement</b> on the dashboard and pick the PDFs. If a statement is password protected, it asks for the password. Spends they already logged by hand are matched, not added twice. Importing the same statement again does nothing.</li>
-      <li><b>Settings › Your data</b>: choose <b>This iPhone only</b> or <b>iCloud Drive</b>, and <b>Export a backup</b> now and then. If data is kept only on the phone, deleting Scriptable deletes it.</li>
-    </ol>
-    <p class="small">Card payments, refunds and incoming money aren't counted as spending. ATM withdrawals are left out (log cash spends by hand). Scanned (image) statements can't be read. Card alerts and Gmail features aren't in this edition.</p>
-    <button class="copy" id="copy6">Copy the private edition</button>
-    <div class="status" id="status6" aria-live="polite"></div>
-    <pre id="code6">Loading…</pre>
-  </section>
-
+  </article>
+  <a class="more" href="history/">Older updates (42) →</a>
 </main>
 <script src="../analytics.js" defer></script>
 <script>
 (() => {
   const texts = {}
+  const NAMES = { 2: "dashboard", 3: "alerts-sync", 4: "sheet-sync", 5: "setup-link", 6: "private" }
   const load = (n, file) => fetch(file).then(r => { if (!r.ok) throw new Error(r.status); return r.text() })
     .then(t => { texts[n] = t; document.getElementById("code" + n).textContent = t.slice(0, 1500) + "\n\n… (" + Math.round(t.length / 1024) + " KB in total — the button copies all of it)" })
     .catch(() => { document.getElementById("code" + n).textContent = "Couldn't load this code. Close the page and open it again." })
-  load(2, "dashboard.txt")
-  load(3, "alerts-sync.txt")
-  load(4, "sheet-sync.txt")
-  load(5, "link-sync.txt")
-  load(6, "dashboard-private.txt")
-
+  load(2, "dashboard.txt"); load(3, "alerts-sync.txt"); load(4, "sheet-sync.txt"); load(5, "link-sync.txt"); load(6, "dashboard-private.txt")
   function selectFallback(n) {
-    const pre = document.getElementById("code" + n)
-    pre.textContent = texts[n]
-    pre.style.maxHeight = "none"
+    const pre = document.getElementById("code" + n), d = pre.closest("details"); if (d) d.open = true
+    pre.textContent = texts[n]; pre.style.maxHeight = "none"
     const range = document.createRange(); range.selectNodeContents(pre)
     const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range)
     document.getElementById("status" + n).textContent = "Your phone blocked the copy button. The code is selected: tap Copy in the menu that appears."
   }
   for (const n of [2, 3, 4, 5, 6]) {
     document.getElementById("copy" + n).addEventListener("click", () => {
-      if (window.track) track("copy/" + ({ 2: "dashboard", 3: "alerts-sync", 4: "sheet-sync", 5: "setup-link", 6: "private" })[n], "Copy " + ({ 2: "dashboard", 3: "alerts-sync", 4: "sheet-sync", 5: "setup-link", 6: "private" })[n])
+      if (window.track) track("copy/" + NAMES[n], "Copy " + NAMES[n])
       const status = document.getElementById("status" + n)
       if (!texts[n]) { status.textContent = "Still loading, try again in a second."; return }
-      try {
-        navigator.clipboard.writeText(texts[n])
-          .then(() => { status.textContent = "Copied. Now paste it where the steps say." })
-          .catch(() => selectFallback(n))
-      } catch (e) { selectFallback(n) }
+      try { navigator.clipboard.writeText(texts[n]).then(() => { status.textContent = "Copied. Now paste it where the steps say." }).catch(() => selectFallback(n)) } catch (e) { selectFallback(n) }
     })
   }
 })()
 </script>
+</body>
+</html>

@@ -12,6 +12,7 @@
 const AUTO_UPDATE = true   // false: never look for updates (the code you have now is kept)
 const COUNT_ME = true      // false: don't make the anonymous daily visit count
 const NOTION_TOKEN = ""   // not needed: the setup page asks for your Notion key
+const SHORTCUT_LINK = ""   // paste your Log Expense shortcut's iCloud link here (Shortcuts: ••• on the shortcut › Share › Copy iCloud Link), then Save. Leave empty if you have none.
 //
 // Setup is in the Copy page for this script: paste this whole file, Save, then follow the steps there.
 
