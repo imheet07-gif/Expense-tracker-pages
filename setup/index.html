@@ -1,123 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <title>हिशोब Setup</title>
-<style id="hishob-font">@font-face { font-family: "Hishob"; src: url(data:font/woff2;base64,d09GMgABAAAAAAS0AA4AAAAACSwAAARiAAFNDgAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbIByBQAZgAFQRCAqGWIU7ATYCJAMcCxQABCAFhGgHIBuKB1FUUSoovkqw4RBbiX+UOmNZVk9qFmuKmHM7fqyI+O+V9VY8D63979zZeTLvY+LZvIomCIWsEhI1WCJ0lcgO/27rPW3wekaProFVMRSr6/OqGrzoJBrefayBRhZjI1va4/tn7f5/lYhOf+/0j2m/0vRRUzQLPApsLxqb5jpfAyTBgAat6XVeFEhhF9AHC0zy3doz/CF42EXWeM1VEiJ0uHYnwTRAETEWwcQyNuDR44GRwECFfgASsI6YVv3SGzcr0sBSFI41fxYeBAwQVBPX5amhh8406zjSRtwCzQEREZ1KXkYLHvIw2mkQu/l710jy82hzhuplUdWyMkMGlJclFnCmeyHXiYMABcvct/DUeIeAo43bAroX/+OBdmVWI5DXRQhYhYCCjjnYmUfHQcA0Y0Vt2xrW7JpLC+hHeu+f2kXnnbJfBF/EwP5M0MAcwISsBnIeAHWjjnS3WdywnajBkjVrSJWAUCdpm7pJ6NE0LxJ77ZAJQg83StsIxjVJ6SOWMHoKS+gS1JpqIQG4tM1cXRlT470F0Rr2hAmM0UXYfFySBk2y8XVNB3sOlwQQYC7QHJiIyBLQdLXH2XS890jz4Z6bTQ5HXjA1v9ijgc0xuy/DZmIUNILLQMdQyxOb6VLSXRuHxPN5WJW6txmzzFXmR69v3tC775DaCdmvOX92MCG5eh8XM4ztwZqM/4KPAMm06u1768/g+uMphzLT/eW2G18towQNdPDykYs247FWc6Yrx/sWgFqApFv1Wa0NomREdUUmrdLJdJo+YO3ubjIW1O42Ji4nR452/EA4aXhkhMNfG1cro8kvczKy0wzNMbcfAS0H3Iw9lAr7BLgXZ0cUXUvYydBycvOVuNUGuHtTr+8Z1n11OyIwUUWtiEFDh6K0MzgIGQF2SJtj9hQbOtN8pfQ1tCYk06rPKhNpm/NW+Pr4c387FHnXpwMXgcqSzHbLCcldFvNAYJhH/3MlawpsPllz9BQWKnAWesrGzFzww/w861Y5xMpp5OTmflhZFxYT7Sz14rT2+/Mb5A6ZNLaTTSryzjj3YEMFAzw75h167e8MIMi5GX9tGw1SZjr+NWjdB3j3sdsYAN7vWU7+/+z4cXL3AmMFhC/nGm9DqC6PAfG0QfnmlbT/Uk5WOn8gLtVPa/J3BM1D00DwtpHLtKU2PEUAMUcHKGZ4BToHrAbVGvfAwA8/z9CqfNAKFalWQiVLtjIopgwsKDEhESmUnwKZVNIUQEWqVgSH8laoHAiUqLa/qlJAqZArldFelnuV+df5MhTKxxKuUI1saVAhCuDC4bKUy5OmhAifhJCIAz+RvIVwsOpCHx418u6Hlk+j4UqUUilUAL0tFCpC9gk5tHShMhmws0Jdxyen4CBfmlw4aFa2wjwq6cREk6UxInbuaQeoMlKZOOXKrNnL0q3eWuFtFW2gnCcPSt7DJQExRYF9eDJCuIonIoE9NS+LlykgwkrBTLgKaXDlaD5r82pjRT17AA==) format("woff2"); font-weight: 400; font-style: normal; font-display: block; unicode-range: U+0900-097F, U+200C-200D }
-.brand { font-family: Hishob, serif; font-weight: 400; font-size: 1.15em; font-synthesis: none }</style>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap">
 <style>
-/* Layout: one narrow column like a phone checklist. Five numbered steps (a real order), then an optional extra, then the two code blocks with copy buttons. */
-:root {
-  --bg: #F2F5F3; --card: #FFFFFF; --fg: #13201C; --muted: #56655F; --line: #D8E0DC;
-  --accent: #146C63; --on-accent: #FFFFFF; --soft: #E2EFEC; --ok: #1E7A4C;
-  --display: "Bricolage Grotesque", ui-rounded, -apple-system, system-ui, sans-serif;
-  --body: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0E1513; --card: #16201D; --fg: #E4EDEA; --muted: #93A49E; --line: #26332F;
-  --accent: #5CC2B4; --on-accent: #0E1513; --soft: #1B302C; --ok: #67CD97; color-scheme: dark } }
-:root[data-theme="dark"] {
-  --bg: #0E1513; --card: #16201D; --fg: #E4EDEA; --muted: #93A49E; --line: #26332F;
-  --accent: #5CC2B4; --on-accent: #0E1513; --soft: #1B302C; --ok: #67CD97; color-scheme: dark }
+:root { --bg:#F4F6F3; --card:#FFFFFF; --fg:#17201B; --muted:#5E6A64; --line:#DDE3DD; --accent:#2F55C9; --on-accent:#FFFFFF; --soft:#E6ECFB; --ok:#2C8455;
+  --body: -apple-system, system-ui, sans-serif; --mono: ui-monospace, "SF Mono", Menlo, monospace }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0F1412; --card:#171E1B; --fg:#E7EDEA; --muted:#97A49D; --line:#28322E; --accent:#8EA6FF; --on-accent:#0F1412; --soft:#1E2744; --ok:#62C98F; color-scheme:dark } }
+:root[data-theme="dark"] { --bg:#0F1412; --card:#171E1B; --fg:#E7EDEA; --muted:#97A49D; --line:#28322E; --accent:#8EA6FF; --on-accent:#0F1412; --soft:#1E2744; --ok:#62C98F; color-scheme:dark }
 * { box-sizing: border-box }
-body { background: var(--bg); color: var(--fg); font: 16px/1.55 var(--body) }
-main { max-width: 600px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 56px; display: grid; gap: 18px }
-h1 { font: 700 32px/1.1 var(--display); margin: 0; text-wrap: balance; letter-spacing: -0.01em }
-h2 { font: 600 20px/1.25 var(--display); margin: 0; text-wrap: balance }
-p { margin: 0 }
-.lead { color: var(--muted); max-width: 60ch }
-.need { display: flex; flex-wrap: wrap; gap: 8px }
-.need span { font-size: 14px; padding: 4px 10px; border-radius: 999px; background: var(--soft); color: var(--fg) }
-ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: step }
-ol.steps > li { counter-increment: step; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 16px 16px 58px; position: relative; display: grid; gap: 8px; min-width: 0 }
-ol.steps > li::before { content: counter(step); position: absolute; left: 16px; top: 14px; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font: 700 16px/30px var(--display); text-align: center }
-.small { font-size: 14px; color: var(--muted) }
-b { font-weight: 600 }
-code { font: 14px var(--mono); background: var(--soft); border-radius: 5px; padding: 1px 5px; overflow-wrap: anywhere }
-a { color: var(--accent); text-underline-offset: 2px }
-a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px }
-section.box { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 10px; min-width: 0 }
-details { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px }
-details[open] { display: grid; gap: 10px }
-summary { cursor: pointer; font: 600 18px var(--display) }
-details ol, ol.plain { margin: 0; padding-left: 1.3em; display: grid; gap: 8px }
-.label { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
-button.copy { font: 600 16px var(--body); padding: 13px 16px; border-radius: 11px; border: 0; background: var(--accent); color: var(--on-accent); cursor: pointer; width: 100% }
-.status { font-size: 14px; color: var(--ok); min-height: 1.4em }
-pre { margin: 0; max-height: 120px; overflow: auto; font: 12px/1.45 var(--mono); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px; white-space: pre-wrap; word-break: break-all; color: var(--muted) }
+html { scroll-behavior: smooth; scroll-padding-top: 12px }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 var(--body) }
+main { max-width:560px; margin:0 auto; padding-inline:16px; padding-block:20px 48px; display:grid; gap:14px }
+h1 { font-size:26px; margin:0; letter-spacing:-.01em; text-wrap:balance }
+h2 { font-size:18px; margin:0 }
+p { margin:0 }
+a { color:var(--accent) }
+.lead { color:var(--muted) }
+.chip { justify-self:start; font-size:13px; font-weight:600; color:var(--accent); background:var(--soft); border-radius:999px; padding:5px 12px }
+.nav { display:grid; grid-template-columns:1fr 1fr; gap:10px }
+.nav a { display:flex; flex-direction:column; gap:2px; text-decoration:none; color:var(--fg); background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; min-height:64px; justify-content:center }
+.nav a b { font-size:15px } .nav a span { font-size:13px; color:var(--muted) }
+.nav a:focus-visible, .nav a:hover { border-color:var(--accent) }
+section, article.entry { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; display:grid; gap:12px; min-width:0 }
+.head { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap }
+.tag { font-size:12px; font-weight:600; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:2px 10px; white-space:nowrap }
+.tag.me { color:var(--accent); border-color:var(--accent) }
+.small { font-size:14px; color:var(--muted) }
+ol { margin:0; padding-left:1.3em; display:grid; gap:10px }
+ul.small { margin:0; padding-left:1.2em; display:grid; gap:6px }
+li { padding-left:2px }
+b { font-weight:600 }
+code { font:14px var(--mono); background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:0 4px }
+button.copy { font:600 17px var(--body); padding:14px 18px; min-height:48px; border-radius:12px; border:0; background:var(--accent); color:var(--on-accent); cursor:pointer; width:100% }
+button.copy:focus-visible, summary:focus-visible { outline:3px solid var(--fg); outline-offset:2px }
+.status { font-size:14px; color:var(--ok); min-height:1.5em }
+details { border-top:1px solid var(--line); padding-top:10px }
+summary { cursor:pointer; font-weight:600; font-size:15px; min-height:40px; display:flex; align-items:center; list-style:none }
+summary::-webkit-details-marker { display:none }
+summary::before { content:""; width:8px; height:8px; margin-right:10px; border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(-45deg); transition:transform .15s }
+details[open] > summary::before { transform:rotate(45deg) }
+details > *:not(summary) { margin-top:10px }
+details { display:block } details > ol, details > p, details > pre { display:grid }
+pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px; white-space:pre-wrap; word-break:break-all; color:var(--muted) }
+.more { display:flex; align-items:center; justify-content:center; text-align:center; min-height:48px; border:1px solid var(--line); border-radius:12px; background:var(--card); text-decoration:none; font-weight:600 }
+.back { display:inline-flex; align-items:center; min-height:44px }
+.note { background:var(--soft); border-radius:12px; padding:12px 14px; font-size:14px }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto } summary::before { transition:none } }
+h3 { font-size:15px; margin:6px 0 0 }
+a.copy { display:flex; align-items:center; justify-content:center; text-align:center; text-decoration:none; font:600 17px var(--body); padding:14px 18px; min-height:48px; border-radius:12px; background:var(--accent); color:var(--on-accent) }
+a.copy:focus-visible { outline:3px solid var(--fg); outline-offset:2px }
+@font-face { font-family: "Hishob"; src: url(data:font/woff2;base64,d09GMgABAAAAAAS0AA4AAAAACSwAAARiAAFNDgAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbIByBQAZgAFQRCAqGWIU7ATYCJAMcCxQABCAFhGgHIBuKB1FUUSoovkqw4RBbiX+UOmNZVk9qFmuKmHM7fqyI+O+V9VY8D63979zZeTLvY+LZvIomCIWsEhI1WCJ0lcgO/27rPW3wekaProFVMRSr6/OqGrzoJBrefayBRhZjI1va4/tn7f5/lYhOf+/0j2m/0vRRUzQLPApsLxqb5jpfAyTBgAat6XVeFEhhF9AHC0zy3doz/CF42EXWeM1VEiJ0uHYnwTRAETEWwcQyNuDR44GRwECFfgASsI6YVv3SGzcr0sBSFI41fxYeBAwQVBPX5amhh8406zjSRtwCzQEREZ1KXkYLHvIw2mkQu/l710jy82hzhuplUdWyMkMGlJclFnCmeyHXiYMABcvct/DUeIeAo43bAroX/+OBdmVWI5DXRQhYhYCCjjnYmUfHQcA0Y0Vt2xrW7JpLC+hHeu+f2kXnnbJfBF/EwP5M0MAcwISsBnIeAHWjjnS3WdywnajBkjVrSJWAUCdpm7pJ6NE0LxJ77ZAJQg83StsIxjVJ6SOWMHoKS+gS1JpqIQG4tM1cXRlT470F0Rr2hAmM0UXYfFySBk2y8XVNB3sOlwQQYC7QHJiIyBLQdLXH2XS890jz4Z6bTQ5HXjA1v9ijgc0xuy/DZmIUNILLQMdQyxOb6VLSXRuHxPN5WJW6txmzzFXmR69v3tC775DaCdmvOX92MCG5eh8XM4ztwZqM/4KPAMm06u1768/g+uMphzLT/eW2G18towQNdPDykYs247FWc6Yrx/sWgFqApFv1Wa0NomREdUUmrdLJdJo+YO3ubjIW1O42Ji4nR452/EA4aXhkhMNfG1cro8kvczKy0wzNMbcfAS0H3Iw9lAr7BLgXZ0cUXUvYydBycvOVuNUGuHtTr+8Z1n11OyIwUUWtiEFDh6K0MzgIGQF2SJtj9hQbOtN8pfQ1tCYk06rPKhNpm/NW+Pr4c387FHnXpwMXgcqSzHbLCcldFvNAYJhH/3MlawpsPllz9BQWKnAWesrGzFzww/w861Y5xMpp5OTmflhZFxYT7Sz14rT2+/Mb5A6ZNLaTTSryzjj3YEMFAzw75h167e8MIMi5GX9tGw1SZjr+NWjdB3j3sdsYAN7vWU7+/+z4cXL3AmMFhC/nGm9DqC6PAfG0QfnmlbT/Uk5WOn8gLtVPa/J3BM1D00DwtpHLtKU2PEUAMUcHKGZ4BToHrAbVGvfAwA8/z9CqfNAKFalWQiVLtjIopgwsKDEhESmUnwKZVNIUQEWqVgSH8laoHAiUqLa/qlJAqZArldFelnuV+df5MhTKxxKuUI1saVAhCuDC4bKUy5OmhAifhJCIAz+RvIVwsOpCHx418u6Hlk+j4UqUUilUAL0tFCpC9gk5tHShMhmws0Jdxyen4CBfmlw4aFa2wjwq6cREk6UxInbuaQeoMlKZOOXKrNnL0q3eWuFtFW2gnCcPSt7DJQExRYF9eDJCuIonIoE9NS+LlykgwkrBTLgKaXDlaD5r82pjRT17AA==) format("woff2"); font-weight: 400; font-style: normal; font-display: block; unicode-range: U+0900-097F, U+200C-200D }
+.brand { font-family: Hishob, serif; font-weight: 400; font-size: 1.15em; font-synthesis: none }
 </style>
+</head>
+<body>
 <main>
-  <div class="label">For iPhone</div>
+  <span class="chip">For iPhone</span>
   <h1><span class="brand">हिशोब</span> Setup</h1>
-  <p class="lead">Log a spend in two seconds with a double tap on the back of your phone, and see where your money goes on a home-screen dashboard. It also splits bills with friends, sends WhatsApp reminders for money owed, tracks loan EMIs (it finds your loans from your bank and lender emails), keeps a money diary with friends, family and domestic help (pay, advances and days off), and keeps one-off trips out of your monthly numbers. Your data stays in your own Notion.</p>
-  <div class="need"><span>Free Notion account</span><span>Scriptable app (free)</span><span>The file and shortcut link Heet sent you</span><span>About 5 minutes</span></div>
+  <p class="lead">Log a spend in two seconds with a double tap on the back of your phone, and see where your money goes on a home-screen dashboard. It also splits bills with the people you share them with, sends WhatsApp reminders for money owed, tracks loan EMIs (it finds your loans from your bank and lender emails), keeps a money diary with family and domestic help (pay, advances and days off), and keeps one-off trips out of your monthly numbers. Your data stays in your own Notion.</p>
 
-  <section class="box">
-    <h2>Got a setup link from Heet? Use that instead</h2>
-    <p>Open it on your phone and sign in with Google. It walks you through everything below, one step at a time, and makes your Notion tables for you. You don't need this page.</p>
+  <section>
+    <h2>What you need</h2>
+    <ul class="small">
+      <li>A free <b>Notion</b> account</li>
+      <li>The free <b>Scriptable</b> app from the App Store</li>
+      <li>About 10 minutes</li>
+    </ul>
+    <p class="small">Were you sent a setup link? Open it on your phone and sign in with Google instead. It walks you through everything below, one step at a time, and makes your Notion tables for you. You don't need this page.</p>
   </section>
 
-  <ol class="steps">
-    <li><h2>Set up Notion</h2>
-      <p>Open the <a href="https://www.notion.so/3ef80027425f81fda12cebb4a0c2692b" target="_blank" rel="noopener">Expense Tracker template</a> and tap <b>Duplicate</b>.</p>
-      <p>Then go to <a href="https://www.notion.so/profile/integrations" target="_blank" rel="noopener">notion.so/profile/integrations</a> › <b>New integration</b>, name it <b>Expense Tracker</b> and save. Copy the <b>Internal Integration Secret</b> (it starts with <code>ntn_</code>). This is your Notion key.</p>
-      <p>Last, open your new <b>Expense Tracker</b> page › <b>•••</b> › <b>Connections</b> › add <b>Expense Tracker</b>.</p></li>
-    <li><h2>Install the dashboard</h2>
-      <p>Install <b>Scriptable</b> from the App Store and open it once. Then open the <b>Expenses Dashboard</b> file Heet sent you › <b>Share</b> › <b>Save to Files</b> › <b>iCloud Drive › Scriptable</b>.</p>
-      <p>In Scriptable, tap <b>Expenses Dashboard</b> and paste your Notion key when asked. It finds your tables by itself.</p>
-      <p class="small">For the home-screen widget: long-press the home screen › <b>+</b> › Scriptable › add it, then tap the widget and choose <b>Expenses Dashboard</b>.</p></li>
-    <li><h2>Add the double-tap shortcut</h2>
-      <p>Open the shortcut link from Heet › <b>Add Shortcut</b>. There's nothing to fill in.</p>
-      <p>Then <b>Settings › Accessibility › Touch › Back Tap › Double Tap</b> › choose <b>Log Expense</b>. Double-tap the back of your phone to log a spend.</p></li>
-  </ol>
-
-  <section class="box">
-    <h2>Optional: card alerts and bill checks</h2>
-    <p>Reads your bank alert emails in Gmail. It works out your cards and accounts by itself, tags each expense with the card you used, tells you which payments you forgot to log, and checks every card bill for hidden fees.</p>
-    <ol class="plain">
-      <li>Open the <b>card alerts setup link</b> Heet sent you. It works on your phone.</li>
-      <li>Sign in with the Google account that gets your bank alert emails. Google warns that the app isn't verified, because it's a private script rather than a published app. Tap <b>Advanced › Go to Expense Tracker</b> and allow access.</li>
-      <li>Paste your Notion key (the same <code>ntn_</code> key as above) and tap <b>Start</b>.</li>
+  <section id="notion">
+    <div class="head"><h2>1 · Set up Notion</h2><span class="tag me">About 3 minutes</span></div>
+    <ol>
+      <li>Open the <a href="https://www.notion.so/3ef80027425f81fda12cebb4a0c2692b" target="_blank" rel="noopener">Expense Tracker template</a> and tap <b>Duplicate</b>.</li>
+      <li>Go to <a href="https://www.notion.so/profile/integrations" target="_blank" rel="noopener">notion.so/profile/integrations</a> › <b>New integration</b>, name it <b>Expense Tracker</b> and save. Copy the <b>Internal Integration Secret</b> (it starts with <code>ntn_</code>). This is your Notion key.</li>
+      <li>Open your new <b>Expense Tracker</b> page › <b>•••</b> › <b>Connections</b> › add <b>Expense Tracker</b>.</li>
     </ol>
-    <p class="small">On a computer you can instead <a href="https://docs.google.com/spreadsheets/d/1LFBvUm7zaW3GPfugIrKFnqpwBAiFOSvYvUxpwqjatlo/copy" target="_blank" rel="noopener">copy the Card Alerts sheet</a> and tap <b>Expense Tracker › Start</b> in its menu. Use one or the other, not both.</p>
-    <p class="small">The page then shows the cards it found and syncs every 10 minutes. Alerts from HDFC, Axis, ICICI, SBI, Kotak, Amex and Scapia are recognised. If your bank only sends alerts by SMS, you can forward them to your Gmail with an iPhone automation that sends an email titled <code>[CC-SMS]</code>.</p>
   </section>
 
-  <section class="box">
-    <h2>Optional: let it log for you</h2>
-    <p>In the dashboard, tap the gear › <b>Logging</b>. Choose <b>Fill in what I miss</b> or <b>Fully automatic</b>, and expenses are added from your bank's alerts with categories learned from what you pick. It works with the card alerts sheet above, or with just your bank SMS on the iPhone: the Logging section shows the 2-minute Shortcuts setup. It starts in preview, so you can see what it would add before switching it on.</p>
-  </section>
-
-  <details>
-    <summary>Can't save the file? Copy the code instead</summary>
-    <p class="small">In Scriptable, tap <b>+</b>, name the script <b>Expenses Dashboard</b>, and paste this.</p>
-    <button class="copy" id="copy1">Copy the dashboard code</button>
+  <section id="dashboard">
+    <div class="head"><h2>2 · Install the dashboard</h2></div>
+    <button class="copy" id="copy1">Copy the dashboard</button>
     <div class="status" id="status1" aria-live="polite"></div>
-    <pre id="code1">Loading…</pre>
-  </details>
+    <ol>
+      <li>Install <b>Scriptable</b> from the App Store and open it once.</li>
+      <li>In Scriptable, tap <b>+</b>, name the script <b>Expenses Dashboard</b>, paste what you copied, and tap ▶.</li>
+      <li>Paste your Notion key when asked. It finds your tables by itself.</li>
+      <li>For the home-screen widget: long-press the home screen › <b>+</b> › <b>Scriptable</b> › add it, then tap the widget and choose <b>Expenses Dashboard</b>.</li>
+    </ol>
+    <p class="small">Later, update the dashboard from <b>Settings › Updates</b> inside it. You never need to copy it again.</p>
+    <details>
+      <summary>Show a preview of the code</summary>
+      <pre id="code1">Loading…</pre>
+    </details>
+  </section>
+
+  <section id="shortcut">
+    <div class="head"><h2>3 · Add the double-tap shortcut</h2></div>
+    <a class="copy" href="https://www.icloud.com/shortcuts/6427db4c26cb4803962fbaf2e8ed4e67" target="_blank" rel="noopener" id="shortcutadd">Add the Log Expense shortcut</a>
+    <ol>
+      <li>Tap the button, then <b>Add Shortcut</b>. There's nothing to fill in.</li>
+      <li>Go to <b>Settings › Accessibility › Touch › Back Tap › Double Tap</b> and choose <b>Log Expense</b>.</li>
+      <li>Double-tap the back of your phone to log a spend.</li>
+    </ol>
+  </section>
+
+  <section id="alerts">
+    <div class="head"><h2>4 · Card alerts and bill checks</h2><span class="tag">Optional</span></div>
+    <p class="small">Reads your bank alert emails in Gmail. It works out your cards and accounts by itself, tags each expense with the card you used, tells you which payments you forgot to log, and checks every card bill for hidden fees.</p>
+    <a class="copy" href="https://docs.google.com/spreadsheets/d/1LFBvUm7zaW3GPfugIrKFnqpwBAiFOSvYvUxpwqjatlo/copy" target="_blank" rel="noopener" id="sheetcopy">Make your own copy of the sheet</a>
+    <ol>
+      <li>Tap the button, sign in with the Google account that gets your bank alert emails, and tap <b>Make a copy</b>.</li>
+      <li>In your copy, wait a few seconds for the <b>Expense Tracker</b> menu to appear next to Help, then tap <b>Expense Tracker › Start</b>.</li>
+      <li>Google warns that the app isn't verified, because it's a private script rather than a published app. Tap <b>Advanced › Go to…</b> and allow access.</li>
+      <li>Paste your Notion key (the same <code>ntn_</code> key as above) when it asks.</li>
+    </ol>
+    <p class="small">Use a browser, ideally on a computer: the Google Sheets phone app doesn't show the menu. On a phone, open the link in Safari and choose "Request Desktop Website". It then shows the cards it found and syncs every 10 minutes. Alerts from HDFC, Axis, ICICI, SBI, Kotak, Amex and Scapia are recognised. If your bank only sends alerts by SMS, you can forward them to your Gmail with an iPhone automation that sends an email titled <code>[CC-SMS]</code>.</p>
+  </section>
+
+  <section id="logging">
+    <div class="head"><h2>5 · Let it log for you</h2><span class="tag">Optional</span></div>
+    <p class="small">In the dashboard, tap the gear › <b>Logging</b>. Choose <b>Fill in what I miss</b> or <b>Fully automatic</b>, and expenses are added from your bank's alerts, with categories learned from what you pick. It works with the card alerts sheet above, or with just your bank SMS on the iPhone: the Logging section shows the 2-minute Shortcuts setup. It starts in preview, so you can see what it would add before switching it on.</p>
+  </section>
+
+  <p class="small" style="text-align:center">Looking for the latest code or past updates? See the <a href="../copy/">Copy page</a>.</p>
 </main>
 <script src="../analytics.js" defer></script>
 <script>
 (() => {
+  const ITEMS = {"1": ["dashboard.txt", "setup-dashboard"]}   // number -> [file, name used for counting]
   const texts = {}
-  const load = (n, file) => fetch(file).then(r => { if (!r.ok) throw new Error(r.status); return r.text() })
-    .then(t => { texts[n] = t; document.getElementById("code" + n).textContent = t.slice(0, 1200) + "\n\n… (" + Math.round(t.length / 1024) + " KB in total; the button copies all of it)" })
-    .catch(() => { document.getElementById("code" + n).textContent = "Couldn't load the code. Close this page and open it again." })
-  load(1, "dashboard.txt")
+  const load = (n, file) => fetch("" + file).then(r => { if (!r.ok) throw new Error(r.status); return r.text() })
+    .then(t => { texts[n] = t; const pre = document.getElementById("code" + n); if (pre) pre.textContent = t.slice(0, 1500) + "\n\n… (" + Math.round(t.length / 1024) + " KB in total — the button copies all of it)" })
+    .catch(() => { const pre = document.getElementById("code" + n); if (pre) pre.textContent = "Couldn't load this code. Close the page and open it again." })
+  for (const n of Object.keys(ITEMS)) load(n, ITEMS[n][0])
   function selectFallback(n) {
-    const pre = document.getElementById("code" + n)
+    const pre = document.getElementById("code" + n), d = pre.closest("details"); if (d) d.open = true
     pre.textContent = texts[n]; pre.style.maxHeight = "none"
     const range = document.createRange(); range.selectNodeContents(pre)
     const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range)
     document.getElementById("status" + n).textContent = "Your phone blocked the copy button. The code is selected: tap Copy in the menu that appears."
   }
-  for (const n of [1]) {
+  for (const n of Object.keys(ITEMS)) {
     document.getElementById("copy" + n).addEventListener("click", () => {
-      if (window.track) track("copy/" + ({ 1: "setup-dashboard" })[n], "Copy " + ({ 1: "setup-dashboard" })[n])
+      if (window.track) track("copy/" + ITEMS[n][1], "Copy " + ITEMS[n][1])
       const status = document.getElementById("status" + n)
-      if (!texts[n]) { status.textContent = "Still loading. Try again in a second."; return }
-      try { navigator.clipboard.writeText(texts[n]).then(() => { status.textContent = "Copied. Now paste it where the step says." }).catch(() => selectFallback(n)) }
-      catch (e) { selectFallback(n) }
+      if (!texts[n]) { status.textContent = "Still loading, try again in a second."; return }
+      try { navigator.clipboard.writeText(texts[n]).then(() => { status.textContent = "Copied. Now paste it where the steps say." }).catch(() => selectFallback(n)) } catch (e) { selectFallback(n) }
     })
   }
 })()
 </script>
+</body>
+</html>
