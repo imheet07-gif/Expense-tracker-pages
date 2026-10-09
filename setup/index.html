@@ -93,6 +93,7 @@ pre { margin: 0; max-height: 120px; overflow: auto; font: 12px/1.45 var(--mono);
     <pre id="code1">Loading…</pre>
   </details>
 </main>
+<script src="../analytics.js" defer></script>
 <script>
 (() => {
   const texts = {}
@@ -109,6 +110,7 @@ pre { margin: 0; max-height: 120px; overflow: auto; font: 12px/1.45 var(--mono);
   }
   for (const n of [1]) {
     document.getElementById("copy" + n).addEventListener("click", () => {
+      if (window.track) track("copy/" + ({ 1: "setup-dashboard" })[n], "Copy " + ({ 1: "setup-dashboard" })[n])
       const status = document.getElementById("status" + n)
       if (!texts[n]) { status.textContent = "Still loading. Try again in a second."; return }
       try { navigator.clipboard.writeText(texts[n]).then(() => { status.textContent = "Copied. Now paste it where the step says." }).catch(() => selectFallback(n)) }
