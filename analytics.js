@@ -2,7 +2,7 @@
 // To turn it on, put your GoatCounter site code (the part before .goatcounter.com) in SITE below.
 // While SITE is empty, nothing is loaded and nothing is sent. Browsers that send "Do Not Track" are never counted.
 (function () {
-  var SITE = ""
+  var SITE = "expense-tracker"
   window.track = function (name, title) {
     var send = function () { try { window.goatcounter.count({ path: name, title: title || name, event: true }); return true } catch (e) { return false } }
     if (!SITE || !window.goatcounter || !window.goatcounter.count || !send()) setTimeout(function () { if (SITE) send() }, 1500)
