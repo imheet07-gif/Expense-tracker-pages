@@ -1,4 +1,4 @@
-const CODE_VERSION = "6.14.5"
+const CODE_VERSION = "6.14.6"
 const CODE_EDITION = "alerts"
 // Card & Bank Alerts → Notion · SHAREABLE EDITION (for you or a friend; nothing personal is written in the code)
 // Runs inside your own Google account (Google Apps Script), every 10 minutes. No Claude involved.
@@ -2421,6 +2421,68 @@ function addCardOptions(token, db, names) {
   const add = names.filter(n => !keep.some(o => o.name === n))
   if (!add.length && keep.length === cur.length) return
   notion(token, "patch", `databases/${db}`, { properties: { Card: { select: { options: keep.map(o => ({ id: o.id, name: o.name, color: o.color })).concat(add.map(name => ({ name }))) } } } })
+}
+
+// ---------- friends & family: file transfers to and from people in your Money Diary ----------
+// A transfer whose payee or sender matches a name (or UPI ID) on a person in your People table becomes a diary entry.
+// Domestic help (or anyone with "Counts as spending" ticked): the payment also becomes an expense, unless you logged it already.
+// Everyone else: the bank alert is marked Ignored, so it isn't flagged as a payment you forgot to log.
+let PEOPLE_DB = ""    // People: found by name
+let DIARY_DB = ""     // Money Diary: found by name
+const HOUSEHOLD = "Household"                           // Expenses category for domestic help
+const nameKey = s => String(s || "").toLowerCase().replace(/[^a-z0-9@. ]+/g, " ").replace(/\s+/g, " ").trim()
+function loadPeople(token) {
+  return queryAll(token, PEOPLE_DB, {}).map(pg => { const p = pg.properties
+    const name = plain(p.Name), keys = [name].concat(plain(p["Names in bank alerts"]).split(/[,;\n]/)).map(nameKey).filter(k => k.length >= 3 && (k.includes("@") || k.includes(" ")))
+    return { id: pg.id, name, group: sel(p.Group), spend: !!(p["Counts as spending"] && p["Counts as spending"].checkbox), keys } })
+    .filter(x => x.name)
+}
+// The person whose name or UPI ID appears in a bank alert's payee. Longest match wins.
+function personFor(people, merchant) {
+  const m = " " + nameKey(merchant) + " "
+  let best = null, len = 0
+  for (const p of people) for (const k of p.keys) {
+    if ((m.includes(" " + k + " ") || (k.includes("@") && m.includes(k))) && k.length > len) { best = p; len = k.length }
+  }
+  return best
+}
+function syncPeople(token) {
+  if (!PEOPLE_DB || !DIARY_DB) return { filed: 0 }
+  const people = loadPeople(token)
+  if (!people.length) return { filed: 0 }
+  const since = shiftDay(istDay(Date.now()), -CHECK_DAYS)
+  const filed = new Set()
+  for (const pg of queryAll(token, DIARY_DB, { filter: { property: "Date", date: { on_or_after: shiftDay(since, -7) } } })) for (const id of rel(pg.properties.Alert)) filed.add(id.replace(/-/g, ""))
+  const alerts = queryAll(token, ALERTS_DB, { filter: { and: [{ property: "Date", date: { on_or_after: since } }, { property: "Card", select: { equals: "Bank account" } },
+    { or: [{ property: "Type", select: { equals: "Spend" } }, { property: "Type", select: { equals: "Received" } }] }] } })
+  let n = 0
+  for (const pg of alerts) {
+    if (n >= 40) break
+    const p = pg.properties, id = pg.id.replace(/-/g, "")
+    if (filed.has(id) || sel(p.Status) === "Duplicate" || /EMI|charges|bill/i.test(sel(p.Channel))) continue
+    const who = personFor(people, plain(p.Merchant))
+    if (!who) continue
+    const type = sel(p.Type) === "Received" ? "Received" : "Paid", amount = p.Amount.number || 0
+    const start = p.Date.date ? p.Date.date.start : pg.created_time
+    const day = start.length === 10 ? start : istDay(Date.parse(start))
+    let expense = rel(p.Expenses)[0] || ""
+    if (type === "Paid" && who.spend && !expense) {
+      expense = notion(token, "post", "pages", { parent: { database_id: EXPENSES_DB }, properties: {
+        "Category Text": { title: [{ text: { content: HOUSEHOLD } }] }, Category: { select: { name: HOUSEHOLD } }, Amount: { number: amount },
+        Date: { date: { start: day } }, Merchant: { rich_text: [{ text: { content: who.name } }] }, "Payment Method": { select: { name: "UPI" } },
+        Notes: { rich_text: [{ text: { content: "From Money Diary" } }] }, Alerts: { relation: [{ id: pg.id }] } } }).id
+    }
+    const props = {
+      Entry: { title: [{ text: { content: `${type} · ${who.name}` } }] }, Person: { relation: [{ id: who.id }] }, Date: { date: { start: day } },
+      Type: { select: { name: type } }, Kind: { select: { name: who.group === "Domestic help" && type === "Paid" ? "Pay" : "Other" } }, Amount: { number: amount },
+      Source: { select: { name: "Bank alert" } }, Alert: { relation: [{ id: pg.id }] },
+    }
+    if (expense) props.Expense = { relation: [{ id: expense }] }
+    notion(token, "post", "pages", { parent: { database_id: DIARY_DB }, properties: props })
+    if (type === "Paid" && !who.spend && !(p.Ignored && p.Ignored.checkbox)) notion(token, "patch", `pages/${pg.id}`, { properties: { Ignored: { checkbox: true } } })
+    filed.add(id); n++
+  }
+  return { filed: n }
 }
 
 // ---------- insurance: policies, premiums and renewals from your insurers' emails ----------
