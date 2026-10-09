@@ -49,6 +49,9 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
 .back { display:inline-flex; align-items:center; min-height:44px }
 .note { background:var(--soft); border-radius:12px; padding:12px 14px; font-size:14px }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto } summary::before { transition:none } }
+h3 { font-size:15px; margin:6px 0 0 }
+a.copy { display:flex; align-items:center; justify-content:center; text-align:center; text-decoration:none; font:600 17px var(--body); padding:14px 18px; min-height:48px; border-radius:12px; background:var(--accent); color:var(--on-accent) }
+a.copy:focus-visible { outline:3px solid var(--fg); outline-offset:2px }
 @font-face { font-family: "Hishob"; src: url(data:font/woff2;base64,d09GMgABAAAAAAS0AA4AAAAACSwAAARiAAFNDgAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbIByBQAZgAFQRCAqGWIU7ATYCJAMcCxQABCAFhGgHIBuKB1FUUSoovkqw4RBbiX+UOmNZVk9qFmuKmHM7fqyI+O+V9VY8D63979zZeTLvY+LZvIomCIWsEhI1WCJ0lcgO/27rPW3wekaProFVMRSr6/OqGrzoJBrefayBRhZjI1va4/tn7f5/lYhOf+/0j2m/0vRRUzQLPApsLxqb5jpfAyTBgAat6XVeFEhhF9AHC0zy3doz/CF42EXWeM1VEiJ0uHYnwTRAETEWwcQyNuDR44GRwECFfgASsI6YVv3SGzcr0sBSFI41fxYeBAwQVBPX5amhh8406zjSRtwCzQEREZ1KXkYLHvIw2mkQu/l710jy82hzhuplUdWyMkMGlJclFnCmeyHXiYMABcvct/DUeIeAo43bAroX/+OBdmVWI5DXRQhYhYCCjjnYmUfHQcA0Y0Vt2xrW7JpLC+hHeu+f2kXnnbJfBF/EwP5M0MAcwISsBnIeAHWjjnS3WdywnajBkjVrSJWAUCdpm7pJ6NE0LxJ77ZAJQg83StsIxjVJ6SOWMHoKS+gS1JpqIQG4tM1cXRlT470F0Rr2hAmM0UXYfFySBk2y8XVNB3sOlwQQYC7QHJiIyBLQdLXH2XS890jz4Z6bTQ5HXjA1v9ijgc0xuy/DZmIUNILLQMdQyxOb6VLSXRuHxPN5WJW6txmzzFXmR69v3tC775DaCdmvOX92MCG5eh8XM4ztwZqM/4KPAMm06u1768/g+uMphzLT/eW2G18towQNdPDykYs247FWc6Yrx/sWgFqApFv1Wa0NomREdUUmrdLJdJo+YO3ubjIW1O42Ji4nR452/EA4aXhkhMNfG1cro8kvczKy0wzNMbcfAS0H3Iw9lAr7BLgXZ0cUXUvYydBycvOVuNUGuHtTr+8Z1n11OyIwUUWtiEFDh6K0MzgIGQF2SJtj9hQbOtN8pfQ1tCYk06rPKhNpm/NW+Pr4c387FHnXpwMXgcqSzHbLCcldFvNAYJhH/3MlawpsPllz9BQWKnAWesrGzFzww/w861Y5xMpp5OTmflhZFxYT7Sz14rT2+/Mb5A6ZNLaTTSryzjj3YEMFAzw75h167e8MIMi5GX9tGw1SZjr+NWjdB3j3sdsYAN7vWU7+/+z4cXL3AmMFhC/nGm9DqC6PAfG0QfnmlbT/Uk5WOn8gLtVPa/J3BM1D00DwtpHLtKU2PEUAMUcHKGZ4BToHrAbVGvfAwA8/z9CqfNAKFalWQiVLtjIopgwsKDEhESmUnwKZVNIUQEWqVgSH8laoHAiUqLa/qlJAqZArldFelnuV+df5MhTKxxKuUI1saVAhCuDC4bKUy5OmhAifhJCIAz+RvIVwsOpCHx418u6Hlk+j4UqUUilUAL0tFCpC9gk5tHShMhmws0Jdxyen4CBfmlw4aFa2wjwq6cREk6UxInbuaQeoMlKZOOXKrNnL0q3eWuFtFW2gnCcPSt7DJQExRYF9eDJCuIonIoE9NS+LlykgwkrBTLgKaXDlaD5r82pjRT17AA==) format("woff2"); font-weight: 400; font-style: normal; font-display: block; unicode-range: U+0900-097F, U+200C-200D }
 .brand { font-family: Hishob, serif; font-weight: 400; font-size: 1.15em; font-synthesis: none }
 </style>
@@ -56,109 +59,78 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
 <body>
 <main>
   <h1><span class="brand">हिशोब</span> · Copy page</h1>
-  <p class="lead">Copy the code for your dashboard and your card alerts. Use the buttons; you don't need to read the code.</p>
+  <p class="lead">Everything you need to install हिशोब on your iPhone. Tap a button to copy the code, then paste it where the steps say. You never need to read the code.</p>
   <span class="chip">Latest version 6.15.1 · 10 Oct</span>
 
-  <nav class="nav" aria-label="What do you want to do?">
-    <a href="#dashboard"><b>Dashboard</b><span>Set up or update on iPhone</span></a>
-    <a href="#alerts"><b>Card alerts</b><span>Automatic, from Gmail</span></a>
-    <a href="#friends"><b>Share with a friend</b><span>Shared sheet or setup link</span></a>
-    <a href="#private"><b>Private edition</b><span>Data stays on the phone</span></a>
+  <nav class="nav" aria-label="Jump to a step">
+    <a href="#dashboard"><b>1 · The dashboard</b><span>Start here</span></a>
+    <a href="#alerts"><b>2 · Card alerts</b><span>Optional, from your Gmail</span></a>
+    <a href="#private"><b>Private edition</b><span>Data stays on your phone</span></a>
+    <a href="#new"><b>What's new</b><span>Latest changes</span></a>
   </nav>
 
   <section id="dashboard">
-    <div class="head"><h2>The dashboard</h2><span class="tag me">For me</span></div>
-    <p class="small">The screen you open on your iPhone (in Scriptable). <b>After the first time, update it from Settings › Updates inside the dashboard.</b> You only need to copy it again for a first install.</p>
+    <div class="head"><h2>1 · Install the dashboard</h2><span class="tag me">Start here</span></div>
+    <p class="small">This is the screen you open on your iPhone. New here? Follow the <a href="../setup/">Setup guide</a> first; it sets up your Notion and then sends you back to this button. <b>Once it's installed, you never copy it again: update it from Settings › Updates inside the dashboard.</b></p>
     <button class="copy" id="copy2">Copy the dashboard</button>
     <div class="status" id="status2" aria-live="polite"></div>
     <details>
       <summary>Steps and code preview</summary>
       <ol>
         <li>Install <b>Scriptable</b> from the App Store.</li>
-        <li>Tap <b>+</b>, rename the script <b>Expenses Dashboard</b>, paste the code, and tap ▶.</li>
-        <li>Already set up? Don't paste again. Open <b>Settings › Updates</b> in the dashboard and tap <b>Check for updates</b>.</li>
+        <li>In Scriptable, tap <b>+</b>, rename the script <b>Expenses Dashboard</b>, paste what you copied, and tap ▶.</li>
+        <li>Already installed it? Don't paste again. Open <b>Settings › Updates</b> in the dashboard and tap <b>Check for updates</b>.</li>
       </ol>
       <pre id="code2">Loading…</pre>
     </details>
   </section>
 
   <section id="alerts">
-    <div class="head"><h2>Card alerts sync (Google)</h2><span class="tag me">For me</span></div>
-    <p class="small">Every 10 minutes it adds new bank and card alerts to Notion, matches them to what you logged and tags the card. <b>Paste this small loader once; after that it keeps itself up to date.</b></p>
-    <button class="copy" id="copy3">Copy the sync loader</button>
-    <div class="status" id="status3" aria-live="polite"></div>
+    <div class="head"><h2>2 · Turn on card alerts</h2><span class="tag">Optional</span></div>
+    <p class="small">Every 10 minutes, new bank and card alerts from your Gmail are added to your Notion, matched to what you logged, and tagged with the right card. The dashboard shows any payment you haven't logged. Pick whichever way below suits you; the first is the easiest.</p>
+
+    <h3>The easy way: your own copy of a Google Sheet</h3>
+    <a class="copy linkbtn" href="https://docs.google.com/spreadsheets/d/1LFBvUm7zaW3GPfugIrKFnqpwBAiFOSvYvUxpwqjatlo/copy" target="_blank" rel="noopener" id="sheetcopy">Make your own copy of the sheet</a>
+    <ol>
+      <li>Tap the button, sign in to your Google account, and tap <b>Make a copy</b>.</li>
+      <li>In your copy, wait a few seconds for the <b>Expense Tracker</b> menu to appear next to Help.</li>
+      <li>Tap <b>Expense Tracker › Start</b>, allow access when Google asks (tap <b>Advanced › Go to…</b> if it warns the app isn't verified), and paste your Notion key when it asks.</li>
+      <li>That's it. Your cards are found automatically and the sheet shows what it found.</li>
+    </ol>
+    <p class="small">Use a browser, ideally on a computer: the Google Sheets phone app doesn't show the menu. On a phone, open the sheet link in Safari and choose "Request Desktop Website".</p>
+
+    <h3>Were you sent a setup link?</h3>
+    <p class="small">If the person who shared हिशोब with you sent a setup link, open it on your phone. It does all of this for you and walks you through the shortcut and widget too. Use that one <i>or</i> the sheet above, not both.</p>
+
     <details>
-      <summary>Steps and code preview</summary>
+      <summary>Advanced: paste the code yourself</summary>
+      <p class="small">If you prefer your own Google Apps Script project, paste this small loader once. It downloads the real code, checks it, and keeps itself up to date.</p>
+      <button class="copy" id="copy3">Copy the card alerts loader</button>
+      <div class="status" id="status3" aria-live="polite"></div>
       <ol>
         <li>In Notion, open <b>CC Transactions (Beta)</b> › <b>•••</b> › <b>Connections</b> and add the same integration your Expenses table uses.</li>
-        <li>Open <b>script.google.com</b> (easiest on a computer; on a phone use Safari's "Request Desktop Website"), signed in to the Google account whose email you want read. Tap <b>New project</b>, delete what's there, and paste the loader.</li>
+        <li>Open <b>script.google.com</b> (easiest on a computer; on a phone use Safari's "Request Desktop Website"). Tap <b>New project</b>, delete what's there, and paste the loader.</li>
         <li>Paste your Notion key (starts with <code>ntn_</code>) between the quotes on the <code>NOTION_TOKEN</code> line near the top. Save.</li>
         <li>Choose the function <code>install</code> in the toolbar and tap <b>Run</b>. Allow Gmail access when Google asks. It then runs every 10 minutes by itself.</li>
         <li>Clear the key from the <code>NOTION_TOKEN</code> line (leave the quotes) and Save. It's already stored privately.</li>
-        <li><b>Already set up the old way?</b> Paste the loader over the old code in the same project and Save. Your key, cards and timer are kept; you don't need to run install again.</li>
       </ol>
       <p class="small">Two switches at the top of the loader: <code>AUTO_UPDATE</code> (<code>false</code> stops all update checks) and <code>COUNT_ME</code> (<code>false</code> stops the anonymous once-a-day visit count). Your SMS-to-email automation stays as it is.</p>
       <pre id="code3">Loading…</pre>
     </details>
   </section>
 
-  <section id="friends">
-    <div class="head"><h2>Share with a friend</h2><span class="tag">For friends</span></div>
-    <p class="small">Two ways, both set up once by you. Friends then need no code at all. Pick the one that suits them: the <b>shared sheet</b> works best on a computer, the <b>setup link</b> works on a phone.</p>
-  </section>
-
-  <section id="friends-sheet">
-    <div class="head"><h2>Shared sheet (the template)</h2><span class="tag me">Set up once, on a computer</span></div>
-    <p class="small">Friends make a copy of a Google Sheet, tap <b>Expense Tracker › Start</b>, and their cards are found automatically. The script inside is a small loader, so every copy keeps itself up to date.</p>
-    <button class="copy" id="copy4">Copy the sheet loader</button>
-    <div class="status" id="status4" aria-live="polite"></div>
-    <details>
-      <summary>Steps and code preview</summary>
-      <p class="small"><b>Don&rsquo;t paste this into your own sync project.</b> It goes only into the Card Alerts sheet.</p>
-      <ol>
-        <li>Open <a href="https://docs.google.com/spreadsheets/d/1LFBvUm7zaW3GPfugIrKFnqpwBAiFOSvYvUxpwqjatlo/edit" target="_blank" rel="noopener">Expense Tracker – Card Alerts</a> in your Google Drive.</li>
-        <li>Make sure the Config sheet has a <code>sheet</code> row (edition, version, url, fingerprint), like the <code>alerts</code> and <code>link</code> rows. Without it the loader has nothing to download.</li>
-        <li><b>Extensions › Apps Script</b>, delete what's there, paste the sheet loader, and Save. Don't run anything, and never put your own Notion key in this template.</li>
-        <li>Make a test copy from a second Google account, tap <b>Expense Tracker › Start</b>, and check it asks for a Notion key (so yours didn't come along) and starts cleanly.</li>
-        <li>Back in the sheet: <b>Share › General access › Anyone with the link</b> (Viewer). Friends use the sheet's <b>Make a copy</b> link.</li>
-      </ol>
-      <p class="small">Google shows friends a "hasn't verified this app" screen the first time (<b>Advanced › Go to…</b>). The Google Sheets phone app doesn't show the sheet's menu; on a phone use the setup link instead.</p>
-      <pre id="code4">Loading…</pre>
-    </details>
-  </section>
-
-  <section id="friends-link">
-    <div class="head"><h2>Setup link (works on a phone)</h2><span class="tag me">Set up once, on a computer</span></div>
-    <p class="small">One link that sets up everything for a friend, on their phone: their Notion tables, card alerts, the dashboard as a file for Scriptable, and the shortcut, Back Tap and widget steps.</p>
-    <button class="copy" id="copy5">Copy the setup-link loader</button>
-    <div class="status" id="status5" aria-live="polite"></div>
-    <details>
-      <summary>Steps and code preview</summary>
-      <ol>
-        <li>Go to <b>script.google.com</b> › <b>New project</b>. Rename it <b>Expense Tracker</b> (friends see this name when they sign in).</li>
-        <li>Delete what's in Code.gs and paste the setup-link loader. Near the top, paste your Log Expense shortcut's iCloud link between the quotes on the <code>SHORTCUT_LINK</code> line, if it's there (in Shortcuts: ••• on the shortcut › Share › Copy iCloud Link). Save.</li>
-        <li><b>Files › +</b> › <b>HTML</b>, name it <b>dashboard</b>, delete what's in it, and paste the dashboard code from the Dashboard section above. Save. Don't run anything.</li>
-        <li><b>Deploy › New deployment</b> › gear › <b>Web app</b>. Execute as: <b>User accessing the web app</b>. Who has access: <b>Anyone with Google account</b>. <b>Deploy</b>, and allow access when Google asks.</li>
-        <li>Copy the <b>Web app URL</b> (it ends in /exec). That's the setup link to send friends.</li>
-      </ol>
-      <p class="small"><b>Updating later:</b> the loader updates its own code. When a new dashboard comes out, paste it into the <b>dashboard</b> file, then <b>Deploy › Manage deployments</b> › pencil › Version: <b>New version</b> › <b>Deploy</b>. The link stays the same. Friends get the new dashboard by tapping <b>Get the dashboard</b> on the link again.</p>
-      <p class="small">Google shows friends a "hasn't verified this app" screen the first time (<b>Advanced › Go to Expense Tracker</b>). Unverified scripts like this work for up to 100 people.</p>
-      <pre id="code5">Loading…</pre>
-    </details>
-  </section>
-
   <section id="private">
     <div class="head"><h2>Private edition</h2><span class="tag">No Notion, no Google</span></div>
-    <p class="small">A separate copy of the dashboard for someone who wants their data on their phone only. It reads <b>credit card and bank statements</b> (PDFs from net banking) and anything logged by hand. Update it from <b>Settings › Updates</b>, same as the main dashboard.</p>
+    <p class="small">A separate copy of the dashboard if you want your data on your phone only. It reads <b>credit card and bank statements</b> (PDFs from net banking) and anything you log by hand. Update it from <b>Settings › Updates</b>, same as the main dashboard.</p>
     <button class="copy" id="copy6">Copy the private edition</button>
     <div class="status" id="status6" aria-live="polite"></div>
     <details>
       <summary>Steps and code preview</summary>
       <ol>
         <li>Install <b>Scriptable</b> from the App Store.</li>
-        <li>In Scriptable, tap <b>+</b>, rename the script <b>Expenses Dashboard</b>, paste the code, and tap ▶.</li>
+        <li>In Scriptable, tap <b>+</b>, rename the script <b>Expenses Dashboard</b>, paste what you copied, and tap ▶.</li>
         <li>To log by hand: use your <b>Log Expense</b> shortcut with Back Tap, or the dashboard's <b>+ Add expense</b>.</li>
-        <li>Each month: download the card and bank statements, then tap <b>Import a statement</b> and pick the PDFs. If a statement is password protected, it asks for the password. Spends already logged by hand are matched, not added twice.</li>
+        <li>Each month: download your card and bank statements, then tap <b>Import a statement</b> and pick the PDFs. If a statement is password protected, it asks for the password. Spends you already logged by hand are matched, not added twice.</li>
         <li><b>Settings › Your data</b>: choose <b>This iPhone only</b> or <b>iCloud Drive</b>, and <b>Export a backup</b> now and then. If data is kept only on the phone, deleting Scriptable deletes it.</li>
       </ol>
       <p class="small">Card payments, refunds and incoming money aren't counted as spending. ATM withdrawals are left out (log cash spends by hand). Scanned (image) statements can't be read. Card alerts and Gmail features aren't in this edition.</p>
@@ -176,11 +148,11 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
     </ul>
   </article>
   <article class="entry">
-    <h2>New: the shared sheet updates itself too (10 Oct)</h2>
+    <h2>New: card alerts without any code (10 Oct)</h2>
     <ul class="small">
-    <li><b>Friends:</b> make a copy of the sheet, tap <b>Expense Tracker › Start</b> in its menu, paste a Notion key, and allow Gmail. No code to paste, and fixes arrive by themselves.</li>
-    <li><b>You:</b> paste the new <b>sheet loader</b> (see "Shared sheet for friends" below) into the template once. Copies made from then on stay up to date; copies made earlier keep the old code until they are replaced.</li>
-    <li>The same two switches apply: <code>AUTO_UPDATE</code> and <code>COUNT_ME</code>. Phone users who can't see the sheet's menu can use the setup link instead.</li>
+    <li><b>Make your own copy of a Google Sheet</b>, tap <b>Expense Tracker › Start</b> in its menu, paste your Notion key, and allow access. Your cards are found automatically and alerts start flowing. There is no code to paste.</li>
+    <li><b>It keeps itself up to date,</b> so fixes reach you without any work from you.</li>
+    <li>You'll find the button under <b>2 · Turn on card alerts</b> above. On a phone, open the link in Safari and choose "Request Desktop Website", because the Google Sheets app doesn't show the menu.</li>
     </ul>
   </article>
   <article class="entry">
@@ -195,16 +167,17 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
     </ul>
   </article>
   <a class="more" href="history/">Older updates (43) →</a>
+  <p class="small" style="text-align:center">Sharing हिशोब with other people? <a href="owner/">Steps for the person sharing it</a></p>
 </main>
 <script src="../analytics.js" defer></script>
 <script>
 (() => {
+  const ITEMS = {"2": ["dashboard.txt", "dashboard"], "3": ["alerts-sync.txt", "alerts-sync"], "6": ["dashboard-private.txt", "private"]}   // number -> [file, name used for counting]
   const texts = {}
-  const NAMES = { 2: "dashboard", 3: "alerts-sync", 4: "sheet-sync", 5: "setup-link", 6: "private" }
-  const load = (n, file) => fetch(file).then(r => { if (!r.ok) throw new Error(r.status); return r.text() })
-    .then(t => { texts[n] = t; document.getElementById("code" + n).textContent = t.slice(0, 1500) + "\n\n… (" + Math.round(t.length / 1024) + " KB in total — the button copies all of it)" })
-    .catch(() => { document.getElementById("code" + n).textContent = "Couldn't load this code. Close the page and open it again." })
-  load(2, "dashboard.txt"); load(3, "alerts-sync.txt"); load(4, "sheet-sync.txt"); load(5, "link-sync.txt"); load(6, "dashboard-private.txt")
+  const load = (n, file) => fetch("" + file).then(r => { if (!r.ok) throw new Error(r.status); return r.text() })
+    .then(t => { texts[n] = t; const pre = document.getElementById("code" + n); if (pre) pre.textContent = t.slice(0, 1500) + "\n\n… (" + Math.round(t.length / 1024) + " KB in total — the button copies all of it)" })
+    .catch(() => { const pre = document.getElementById("code" + n); if (pre) pre.textContent = "Couldn't load this code. Close the page and open it again." })
+  for (const n of Object.keys(ITEMS)) load(n, ITEMS[n][0])
   function selectFallback(n) {
     const pre = document.getElementById("code" + n), d = pre.closest("details"); if (d) d.open = true
     pre.textContent = texts[n]; pre.style.maxHeight = "none"
@@ -212,9 +185,9 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
     const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range)
     document.getElementById("status" + n).textContent = "Your phone blocked the copy button. The code is selected: tap Copy in the menu that appears."
   }
-  for (const n of [2, 3, 4, 5, 6]) {
+  for (const n of Object.keys(ITEMS)) {
     document.getElementById("copy" + n).addEventListener("click", () => {
-      if (window.track) track("copy/" + NAMES[n], "Copy " + NAMES[n])
+      if (window.track) track("copy/" + ITEMS[n][1], "Copy " + ITEMS[n][1])
       const status = document.getElementById("status" + n)
       if (!texts[n]) { status.textContent = "Still loading, try again in a second."; return }
       try { navigator.clipboard.writeText(texts[n]).then(() => { status.textContent = "Copied. Now paste it where the steps say." }).catch(() => selectFallback(n)) } catch (e) { selectFallback(n) }

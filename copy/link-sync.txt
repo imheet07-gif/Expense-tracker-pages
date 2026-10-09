@@ -76,14 +76,17 @@ function ld_csv_(text) {
   if (cur || row.length) { row.push(cur); rows.push(row) }
   return rows
 }
+let ld_why_ = ""   // what went wrong in the last check, in plain words (shown if there is no code to run yet)
 function ld_answer_() {
   const res = UrlFetchApp.fetch(LD_CONFIG, { muteHttpExceptions: true })
-  if (res.getResponseCode() !== 200) return null
-  const rows = ld_csv_(res.getContentText()); if (rows.length < 2) return null
+  if (res.getResponseCode() !== 200) { ld_why_ = "the update list can't be reached (it answered " + res.getResponseCode() + ")"; return null }
+  const rows = ld_csv_(res.getContentText()); if (rows.length < 2) { ld_why_ = "the update list is empty or isn't published as a table"; return null }
   const head = rows[0].map(h => h.trim().toLowerCase()), col = n => head.indexOf(n)
-  const r = rows.slice(1).find(x => String(x[col("edition")] || "").trim().toLowerCase() === LD_EDITION); if (!r) return null
+  const r = rows.slice(1).find(x => String(x[col("edition")] || "").trim().toLowerCase() === LD_EDITION); if (!r) { ld_why_ = 'the update list has no row named "' + LD_EDITION + '"'; return null }
   const a = { version: String(r[col("version")] || "").trim(), url: String(r[col("url")] || "").trim(), sha256: String(r[col("sha256")] || "").trim().toLowerCase() }
-  return /^\d+(\.\d+)*$/.test(a.version) && /^https:\/\//.test(a.url) && /^[0-9a-f]{64}$/.test(a.sha256) ? a : null
+  const ok = /^\d+(\.\d+)*$/.test(a.version) && /^https:\/\//.test(a.url) && /^[0-9a-f]{64}$/.test(a.sha256)
+  if (!ok) ld_why_ = 'the "' + LD_EDITION + '" row is incomplete: it needs a version like 6.15.1, an https address and a 64-character fingerprint, one per column'
+  return ok ? a : null
 }
 function ld_count_() {
   if (!COUNT_ME || !LD_COUNT) return
@@ -95,22 +98,25 @@ function ld_update_() {
     const p = ld_store_(), cur = ld_read_("cur"), now = Date.now()
     if (cur && (!AUTO_UPDATE || now - Number(p.getProperty("ld_last") || 0) < 20 * 36e5)) return
     p.setProperty("ld_last", String(now))
+    ld_why_ = ""
     const a = ld_answer_()
     ld_count_()
-    if (!a) return
+    if (!a) { p.setProperty("ld_why", ld_why_); return }
     if (cur && !ld_newer_(a.version, cur.ver)) return
     const bad = p.getProperty("ld_bad"); if (bad && cur && !ld_newer_(a.version, bad)) return   // not a version that already failed
     const res = UrlFetchApp.fetch(a.url, { muteHttpExceptions: true })
-    if (res.getResponseCode() !== 200) return
+    if (res.getResponseCode() !== 200) { p.setProperty("ld_why", "the code address in the update list answered " + res.getResponseCode()); return }
     const code = res.getContentText()
-    if (code.length < 20000 || ld_sha_(code) !== a.sha256) return                                // wrong fingerprint: ignore it
+    if (code.length < 20000) { p.setProperty("ld_why", "what the address in the update list returned is too short to be the code"); return }
+    if (ld_sha_(code) !== a.sha256) { p.setProperty("ld_why", "the fingerprint in the update list doesn't match the code it points to (copy the fingerprint again)"); return }   // wrong fingerprint: ignore it
     const v = code.match(/const CODE_VERSION = "([^"]+)"/), e = code.match(/const CODE_EDITION = "([^"]+)"/)
-    if (!v || v[1] !== a.version || !e || e[1] !== LD_EDITION) return
+    if (!e || e[1] !== LD_EDITION) { p.setProperty("ld_why", "the update list points to the wrong edition's code"); return }
+    if (!v || v[1] !== a.version) { p.setProperty("ld_why", "the version in the update list (" + a.version + ") isn't the version of the code (" + (v ? v[1] : "unknown") + ")"); return }
     new Function(code)                                                                           // must at least parse
     if (cur) ld_save_("prev", cur.ver, cur.sha, cur.code)
     ld_save_("cur", a.version, a.sha256, code)
-    p.deleteProperty("ld_bad")
-  } catch (e) { try { Logger.log("update check: " + e) } catch (x) {} }
+    p.deleteProperty("ld_bad"); p.deleteProperty("ld_why")
+  } catch (e) { try { Logger.log("update check: " + e); ld_store_().setProperty("ld_why", "the update check itself failed: " + String(e.message || e).slice(0, 120)) } catch (x) {} }
 }
 function ld_build_(code) {
   return new Function(code + "\nreturn {" + LD_ENTRY.map(n => n + ": typeof " + n + ' === "function" ? ' + n + " : undefined").join(",") + "}")()
@@ -119,7 +125,7 @@ function ld_mod_() {
   if (ld_loaded_) return ld_loaded_
   ld_update_()
   const cur = ld_read_("cur")
-  if (!cur) throw new Error("The code couldn't be downloaded yet. Check your connection and run this again.")
+  if (!cur) throw new Error("The code couldn't be downloaded yet: " + (ld_store_().getProperty("ld_why") || "the update list could not be read") + ". Fix that, wait a couple of minutes for the update list to refresh, then run this again.")
   try { ld_loaded_ = ld_build_(cur.code) } catch (e) {
     const prev = ld_read_("prev"); if (!prev) throw e
     ld_store_().setProperty("ld_bad", cur.ver)                                                    // go back, and don't retry that version
