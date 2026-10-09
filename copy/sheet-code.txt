@@ -1,233 +1,60 @@
 const CODE_VERSION = "6.15"
-const CODE_EDITION = "link"
-// Card & Bank Alerts → Notion · SETUP-LINK EDITION (one script for everyone you share the link with)
-// Each person opens the link on their phone and is walked through the whole setup: Notion (tables made for them),
-// card alerts, the Scriptable dashboard, the Log Expense shortcut, Back Tap and the widget. The sync runs as them,
-// every 10 minutes, on their own Gmail and their own Notion. Nobody needs a computer or a Google Sheet.
-// It reads bank alert emails and the "[CC-SMS]" emails an iPhone forwards, adds each card payment to
-// Notion's "CC Transactions", matches alerts to logged expenses, checks card bills, and keeps loans and
-// insurance up to date, like the other editions.
+const CODE_EDITION = "sheet"
+// Card & Bank Alerts → Notion · SHARED SHEET EDITION (only for the Expense Tracker sheet; not for your own sync)
+// Runs inside your own Google account (Google Apps Script), every 10 minutes. No Claude involved.
+// It reads bank alert emails and the "[CC-SMS]" emails your iPhone forwards, works out the amount,
+// card and merchant, and adds one row per transaction to your Notion "CC Transactions" table.
+// Every run it also matches alerts to the expenses you logged (same amount, within 2 days), writes the
+// card onto each matched expense, and stamps "Last run" on the table so the dashboard can tell if it stops.
+// When a card bill arrives it checks the bill against your alerts for that period and emails you if it's higher.
 //
-// One-time setup (on a computer): Deploy › New deployment › type: Web app.
-//   Execute as: User accessing the web app · Who has access: Anyone with Google account › Deploy.
-// Also add the dashboard: File › + › HTML, name it dashboard, and paste the Expenses Dashboard code into it.
-// Share the Web app URL. After pasting new code: Deploy › Manage deployments › Edit (pencil) › Version: New version › Deploy.
+// Setup: make a copy of the Expense Tracker sheet, then tap Expense Tracker › Start in its menu.
+// Everything else (your cards, your name, your Notion tables) is worked out automatically.
 
-// ---------- the setup page: everything a friend needs, from a phone ----------
-// Each person who opens the link signs in with their own Google account. Their sync runs as them, on their Gmail,
-// with their Notion key and settings in their own private storage for this script (nobody else's run can read it).
-// The page walks them through: Notion (tables made for them), card alerts, the Scriptable dashboard (a file to open),
-// the Log Expense shortcut, Back Tap and the widget, ticking each step off as it's done.
+// ---------- one-tap setup from the Google Sheet ----------
+// (Kept at the top so the editor's Run button picks "start" by default.)
+// The sheet's menu: Expense Tracker › Start. It asks for your Notion key once, finds your tables,
+// recognises your cards and accounts from your bank emails, and starts the 10-minute sync.
 
-// Your iCloud link to the Log Expense shortcut (Shortcuts › ••• on the shortcut › Share › Copy iCloud Link).
-// Fill it in once; it's remembered when you paste newer versions of this code with it left empty.
-const SHORTCUT_LINK = ""
-
-// The dashboard code lives in this project as an HTML file named "dashboard" (File › + › HTML).
-const DASHBOARD_FILE = "dashboard"
-const SCRIPTABLE_APP = "https://apps.apple.com/app/scriptable/id1405459188"
-
-function doGet(e) {
-  const f = e && e.parameter && e.parameter.f
-  if (f === "dashboard" || f === "dashboard-js") {
-    let code = ""
-    try { code = HtmlService.createTemplateFromFile(DASHBOARD_FILE).getRawContent() } catch (x) {}
-    if (!code) return HtmlService.createHtmlOutput("<p style='font:16px -apple-system,sans-serif;padding:20px'>The dashboard isn't in this setup link yet. Ask the person who sent it to add the dashboard file to the script.</p>")
-    if (f === "dashboard-js") return ContentService.createTextOutput(code).setMimeType(ContentService.MimeType.JAVASCRIPT).downloadAsFile("Expenses Dashboard.js")
-    const file = { always_run_in_app: false, icon: { color: "deep-green", glyph: "wallet" }, name: "Expenses Dashboard", script: code, share_sheet_inputs: [] }
-    return ContentService.createTextOutput(JSON.stringify(file)).setMimeType(ContentService.MimeType.JSON).downloadAsFile("Expenses Dashboard.scriptable")
+function start() {
+  const ui = SpreadsheetApp.getUi(), props = PropertiesService.getScriptProperties()
+  let token = props.getProperty("NOTION_TOKEN")
+  if (!token) {
+    const r = ui.prompt("Connect Notion", "Paste your Notion key (it starts with ntn_). It's stored privately in this sheet's script, not in the sheet itself.", ui.ButtonSet.OK_CANCEL)
+    if (r.getSelectedButton() !== ui.Button.OK) return
+    token = r.getResponseText().trim()
+    if (!/^(ntn_|secret_)/.test(token)) { ui.alert("That doesn't look like a Notion key. It should start with ntn_. Copy it again from notion.so/profile/integrations."); return }
+    props.setProperty("NOTION_TOKEN", token)
   }
-  return HtmlService.createHtmlOutput(SETUP_PAGE.replace("__EXEC__", ScriptApp.getService().getUrl() || ""))
-    .setTitle("Expense Tracker setup")
-    .addMetaTag("viewport", "width=device-width, initial-scale=1")
-}
-
-function shortcutLink() {
-  const props = PropertiesService.getUserProperties()
-  if (SHORTCUT_LINK && props.getProperty("SHORTCUT_LINK") !== SHORTCUT_LINK) props.setProperty("SHORTCUT_LINK", SHORTCUT_LINK)
-  return SHORTCUT_LINK || props.getProperty("SHORTCUT_LINK") || ""
-}
-function hasDashboard() { try { return !!HtmlService.createTemplateFromFile(DASHBOARD_FILE).getRawContent() } catch (e) { return false } }
-
-// Everything the page shows.
-function webStatus() {
-  const props = PropertiesService.getUserProperties()
-  let saved = {}, done = {}, tables = []
-  try { saved = JSON.parse(props.getProperty("STATUS") || "{}") } catch (e) {}
-  try { done = JSON.parse(props.getProperty("DONE") || "{}") } catch (e) {}
-  try { tables = JSON.parse(props.getProperty("TABLES") || "[]") } catch (e) {}
-  const token = props.getProperty("NOTION_TOKEN") || ""
-  let email = ""; try { email = Session.getEffectiveUser().getEmail() } catch (e) {}
-  let lastLogged = ""
-  if (token && done.shortcut && !done.logged) {
-    try {
-      const exp = props.getProperty("DB_Expenses")
-      if (exp) { const r = notion(token, "post", `databases/${exp}/query`, { sorts: [{ timestamp: "created_time", direction: "descending" }], page_size: 1 })
-        const p = (r.results || [])[0]; if (p && Date.now() - Date.parse(p.created_time) < 3 * 864e5) { lastLogged = p.created_time; done.logged = true; props.setProperty("DONE", JSON.stringify(done)) } }
-    } catch (e) {}
+  try { findTables(token) } catch (e) {
+    props.deleteProperty("DB_CC Transactions"); props.deleteProperty("DB_Expenses"); props.deleteProperty("DB_Card Bills")
+    if (/unauthorized|invalid/i.test(String(e.message))) props.deleteProperty("NOTION_TOKEN")
+    ui.alert("Couldn't reach your Notion tables", String(e.message || e), ui.ButtonSet.OK); return
   }
-  return {
-    email, connected: !!token, keyEnd: token ? token.slice(-4) : "", tables,
-    running: ScriptApp.getProjectTriggers().some(t => t.getHandlerFunction() === "syncAlerts"),
-    cards: saved.cards || [], accounts: saved.accounts || [], at: saved.at || 0,
-    lastRun: (() => { try { return JSON.parse(props.getProperty("LAST_RUN") || "null") } catch (e) { return null } })(),
-    done, lastLogged, shortcut: shortcutLink(), dashboard: hasDashboard(), scriptable: SCRIPTABLE_APP
-  }
-}
-
-// Step 1: the Notion key. Finds the tables, makes any that are missing (and adds missing columns).
-function webNotion(key) {
-  const props = PropertiesService.getUserProperties()
-  key = String(key || "").trim()
-  if (!/^(ntn_|secret_)/.test(key)) throw new Error("That doesn't look like a Notion key. It starts with ntn_. Copy it again from notion.so/profile/integrations.")
-  let tables
-  try { tables = setupNotion(key) } catch (e) { throw new Error(String(e.message || e).replace(/^Error:\s*/, "").replace(/^Notion: API token is invalid\.?/, "Notion says that key isn't valid. Copy it again from notion.so/profile/integrations.")) }
-  props.setProperty("NOTION_TOKEN", key)
-  for (const k of Object.keys(props.getProperties())) if (/^DB_/.test(k)) props.deleteProperty(k)
-  for (const t of tables) if (t.id) props.setProperty("DB_" + t.name, t.id)
-  props.setProperty("TABLES", JSON.stringify(tables.map(t => ({ name: t.name, state: t.state, added: t.added || 0 }))))
-  return webStatus()
-}
-
-// Step 2: card alerts. Finds the cards from bank emails and turns on the 10-minute sync.
-function webStart() {
-  const props = PropertiesService.getUserProperties(), token = props.getProperty("NOTION_TOKEN")
-  if (!token) throw new Error("Connect Notion first (step 1).")
-  findTables(token)
+  showStatus([["Status", "Looking through your bank emails for cards…"]])
   const found = detectAndSave(token)
   uninstall()
   ScriptApp.newTrigger("syncAlerts").timeBased().everyMinutes(10).create()
   ScriptApp.newTrigger("syncAlerts").timeBased().after(60 * 1000).create()   // first sync in a minute, with your cards loaded
-  saveStatus(found)
-  return webStatus()
-}
-function webRescan() {
-  const token = PropertiesService.getUserProperties().getProperty("NOTION_TOKEN")
-  if (!token) throw new Error("Connect Notion first (step 1).")
-  findTables(token)
-  saveStatus(detectAndSave(token))
-  return webStatus()
-}
-function webStop() { uninstall(); return webStatus() }
-// Runs one sync right now, so you can see straight away whether it works (and why not, if it doesn't).
-function webSyncNow() {
-  try { syncAlerts() } catch (e) { noteRun("error: " + String(e.message || e).slice(0, 200)) }
-  return webStatus()
-}
-function noteRun(note) { try { PropertiesService.getUserProperties().setProperty("LAST_RUN", JSON.stringify({ at: Date.now(), note: String(note || "").slice(0, 300) })) } catch (e) {} }
-// Forget everything for this person: the sync stops and the Notion key and settings are deleted.
-function webForget() { uninstall(); PropertiesService.getUserProperties().deleteAllProperties(); return webStatus() }
-// Ticks for the steps done on the phone itself (Scriptable, dashboard, shortcut, Back Tap, widget).
-function webMark(step, on) {
-  const props = PropertiesService.getUserProperties()
-  let done = {}; try { done = JSON.parse(props.getProperty("DONE") || "{}") } catch (e) {}
-  if (on) done[step] = Date.now(); else delete done[step]
-  props.setProperty("DONE", JSON.stringify(done))
-  return webStatus()
-}
-// The key, for the copy button (only ever returned to its owner).
-function webKey() { return PropertiesService.getUserProperties().getProperty("NOTION_TOKEN") || "" }
-
-function saveStatus(found) {
-  PropertiesService.getUserProperties().setProperty("STATUS", JSON.stringify({ cards: found.cards.map(c => c.name), name: found.name || "", accounts: found.accounts || [], at: Date.now() }))
+  showStatus(statusRows(found, "Syncing every 10 minutes. The first sync starts in about a minute."))
+  ui.alert("All set", found.cards.length
+    ? `Found ${found.cards.length} card${found.cards.length === 1 ? "" : "s"}: ${found.cards.map(c => c.name).join(", ")}. They're now in your Notion Card column. New alerts sync every 10 minutes.`
+    : "No credit card alerts found in your email yet. Your cards will be added automatically as alerts arrive. New alerts sync every 10 minutes.", ui.ButtonSet.OK)
 }
 
-// ----- Notion: the tables the tracker uses, made in the page you connected -----
-const NT_ORDER = ["Expenses", "CC Transactions", "Card Bills", "Loans", "People", "Money Diary", "Insurance"]
-function ntSchemas(ids) {
-  const opts = list => ({ select: { options: list.map(x => typeof x === "string" ? { name: x } : { name: x[0], color: x[1] }) } })
-  const rupee = { number: { format: "rupee" } }, num = { number: {} }, text = { rich_text: {} }, date = { date: {} }, box = { checkbox: {} }
-  const CATS = [["Credit Card Dues", "blue"], ["Groceries", "green"], ["Food & Dining", "orange"], ["Subscriptions", "pink"], ["Shopping", "pink"], ["Bills & Utilities", "gray"],
-    ["Entertainment", "purple"], ["Health", "red"], ["Travel", "yellow"], ["Personal", "brown"], ["Gifts", "orange"], ["Other", "default"]]
-  return {
-    "Expenses": { "Category Text": { title: {} }, Amount: rupee, Card: opts([]), Category: opts(CATS), Created: { created_time: {} }, Date: date, Event: opts([]),
-      Merchant: text, Notes: text, Owed: rupee, "Owed by": text, "Paid back": box, "Payment Method": opts([["UPI", "green"], ["Credit Card", "blue"], ["Debit Card", "purple"], ["Cash", "yellow"]]) },
-    "CC Transactions": { Merchant: { title: {} }, Amount: rupee, Card: opts([["Bank account", "orange"], ["Unknown", "gray"]]),
-      Category: opts([["Food & Dining", "orange"], ["Groceries", "green"], ["Shopping", "pink"], ["Travel", "yellow"], ["Entertainment", "purple"], ["Bills & Utilities", "gray"], ["Subscriptions", "pink"],
-        ["Health", "red"], ["Personal", "brown"], ["Gifts", "orange"], ["Fees & Charges", "gray"], ["Loan EMI", "red"], ["LIC", "blue"], ["Health insurance", "green"], ["Family transfer", "purple"], ["Other", "default"]]),
-      Channel: opts([["Card", "blue"], ["UPI on credit card", "purple"], ["UPI from bank a/c", "orange"], ["EMI / auto-debit", "red"], ["Bank charges", "gray"], ["Cheque", "brown"], ["Other bank debit", "yellow"], ["Card bill payment", "green"]]),
-      Created: { created_time: {} }, Currency: text, Date: date, Ignored: box, "Always skip": box, "Message ID": text, Raw: text,
-      Source: opts([["Email", "blue"], ["SMS", "green"], ["Statement", "purple"]]), Status: opts([["Parsed", "green"], ["Needs review", "red"], ["Duplicate", "gray"]]),
-      Type: opts([["Spend", "orange"], ["Refund", "green"], ["Reversal", "purple"], ["Bill payment", "blue"]]),
-      ...(ids["Expenses"] ? { Expenses: { relation: { database_id: ids["Expenses"], type: "dual_property", dual_property: {} } } } : {}) },
-    "Card Bills": { Bill: { title: {} }, Card: opts([]), "Cycle from": date, Details: text, Difference: rupee, "Due date": date, Expected: rupee, "Message ID": text, "Minimum due": rupee,
-      Notified: box, Result: opts([["Matches", "green"], ["Extra charges", "red"], ["Lower than expected", "yellow"], ["Not enough data", "gray"]]), Seen: box, "Statement date": date, "Total due": rupee },
-    "Loans": { Loan: { title: {} }, Account: text, Active: box, "As of": date, Closed: date, "Debit day": num, Disbursed: rupee, "Doc figures": text, EMI: rupee, "From email": text,
-      "Interest basis": opts([["Actual days", "blue"], ["Equal months", "gray"]]), "Late alert sent": date, "Lender match": text, "Loan amount": rupee, Notes: text, Outstanding: rupee,
-      Rate: num, "Rate history": text, "Reminder sent": date, Start: date, Suggested: box, Tenure: num,
-      Type: opts([["Home loan", "blue"], ["Car loan", "green"], ["Personal loan", "orange"], ["Education loan", "purple"], ["Other", "gray"]]) },
-    "People": { Name: { title: {} }, Active: box, "Counts as spending": box, Group: opts([["Domestic help", "orange"], ["Family", "purple"], ["Friend", "blue"], ["Other", "gray"]]),
-      "Monthly pay": rupee, "Names in bank alerts": text, Notes: text, "Paid leave": num, "Pay day": num, Phone: { phone_number: {} }, Since: date,
-      "Pay type": opts([["Monthly salary", "blue"], ["Per day", "green"], ["Monthly bill", "orange"], ["None", "gray"]]), "Rate per day": rupee },
-    "Money Diary": { Entry: { title: {} }, Amount: rupee, Date: date, Days: num, Notes: text,
-      Kind: opts([["Pay", "orange"], ["Advance", "yellow"], ["Bonus", "pink"], ["Lent", "blue"], ["Paid back", "green"], ["Gift", "purple"], ["Share", "brown"], ["Other", "gray"]]),
-      Source: opts([["Manual", "gray"], ["Bank alert", "blue"]]), Type: opts([["Paid", "red"], ["Received", "green"], ["Day off", "yellow"], ["Note", "gray"]]),
-      ...(ids["People"] ? { Person: { relation: { database_id: ids["People"], type: "single_property", single_property: {} } } } : {}),
-      ...(ids["Expenses"] ? { Expense: { relation: { database_id: ids["Expenses"], type: "single_property", single_property: {} } } } : {}),
-      ...(ids["CC Transactions"] ? { Alert: { relation: { database_id: ids["CC Transactions"], type: "single_property", single_property: {} } } } : {}) },
-    "Insurance": { Policy: { title: {} }, Insurer: text, Type: opts([["Term life", "blue"], ["Life", "purple"], ["Health", "green"], ["Home", "orange"], ["Motor", "yellow"], ["Other", "gray"]]),
-      "Policy no": text, Cover: rupee, Premium: rupee, Frequency: opts([["Monthly", "blue"], ["Quarterly", "green"], ["Half-yearly", "orange"], ["Yearly", "purple"], ["Single", "gray"]]),
-      "Next due": date, "Grace days": num, "Auto-pay": box, "Last paid": date, "Last paid amount": rupee, Start: date, Ends: date, Covers: text, Benefits: text,
-      Match: text, Active: box, Suggested: box, Notes: text, "Doc figures": text }
-  }
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu("Expense Tracker")
+    .addItem("Start", "start")
+    .addItem("Look for new cards", "rescanCards")
+    .addSeparator()
+    .addItem("Stop syncing", "stop")
+    .addToUi()
+  try { if (!PropertiesService.getScriptProperties().getProperty("NOTION_TOKEN")) showStatus([["Status", "Not set up yet. Tap Expense Tracker › Start in the menu above."]]) } catch (e) {}
 }
-const ntTitle = o => ((o.title || []).map(t => t.plain_text).join("") || (o.properties && Object.values(o.properties).filter(p => p.type === "title").map(p => (p.title || []).map(t => t.plain_text).join("")).join("")) || "").trim()
-function ntSearch(token, type) {
-  const out = []; let cursor
-  for (let i = 0; i < 5; i++) {
-    const r = notion(token, "post", "search", Object.assign({ filter: { property: "object", value: type }, page_size: 100 }, cursor ? { start_cursor: cursor } : {}))
-    out.push(...(r.results || []).filter(x => !x.archived && !x.in_trash))
-    if (!r.has_more) break; cursor = r.next_cursor
-  }
-  return out
-}
-function setupNotion(token) {
-  const dbs = ntSearch(token, "database"), ids = {}, found = {}, result = []
-  for (const name of NT_ORDER) {
-    const lower = name.toLowerCase()
-    const hit = dbs.find(d => ntTitle(d).toLowerCase() === lower) || dbs.find(d => ntTitle(d).toLowerCase().startsWith(lower))
-    if (hit) { ids[name] = hit.id.replace(/-/g, ""); found[name] = hit }
-  }
-  // where new tables go: the page your existing tables sit in, else the page you connected
-  let parent = ""
-  for (const name of NT_ORDER) { const d = found[name]; if (d && d.parent && d.parent.type === "page_id") { parent = d.parent.page_id; break } }
-  const missing = NT_ORDER.filter(n => !ids[n])
-  if (missing.length && !parent) {
-    const pages = ntSearch(token, "page")
-    const pick = pages.find(p => /expense|money|finance/i.test(ntTitle(p))) || pages.find(p => p.parent && p.parent.type === "workspace") || pages[0]
-    if (!pick) throw new Error("Your Notion key works, but it can't see any page yet. In Notion, open the page you made (or the Expense Tracker template you duplicated) › ••• › Connections › add Expense Tracker. Then tap Connect again.")
-    parent = pick.id
-  }
-  for (const name of NT_ORDER) {
-    if (ids[name]) {
-      // add any columns this table is missing (never changes the ones you have)
-      const have = (found[name].properties) || {}, want = ntSchemas(ids)[name], add = {}
-      for (const [col, def] of Object.entries(want)) if (!have[col] && !def.title && !def.relation) add[col] = def
-      if (Object.keys(add).length) { try { notion(token, "patch", `databases/${ids[name]}`, { properties: add }) } catch (e) { Logger.log(`columns for ${name}: ${e}`) } }
-      result.push({ name, id: ids[name], state: "found", added: Object.keys(add).length })
-      continue
-    }
-    const db = notion(token, "post", "databases", { parent: { type: "page_id", page_id: parent }, title: [{ type: "text", text: { content: name } }], properties: ntSchemas(ids)[name] })
-    ids[name] = db.id.replace(/-/g, "")
-    // the two-way link between Expenses and CC Transactions shows on Expenses as "Alerts"
-    if (name === "CC Transactions" && ids["Expenses"]) {
-      try {
-        const exp = notion(token, "get", `databases/${ids["Expenses"]}`)
-        const back = Object.entries(exp.properties || {}).find(([k, p]) => p.type === "relation" && p.relation && p.relation.database_id.replace(/-/g, "") === ids[name] && k !== "Alerts")
-        if (back && !(exp.properties || {}).Alerts) notion(token, "patch", `databases/${ids["Expenses"]}`, { properties: { [back[1].id]: { name: "Alerts" } } })
-      } catch (e) { Logger.log("Alerts link: " + e) }
-    }
-    result.push({ name, id: ids[name], state: "created" })
-  }
-  return result
-}
-
-// The page itself (built from link_page.html).
-const SETUP_PAGE = "<!doctype html><html><head><meta charset=\"utf-8\"><base target=\"_top\">\n<style>\n:root{--bg:#F3F5F2;--card:#fff;--fg:#16201B;--muted:#5F6B65;--line:#DFE4DF;--accent:#2F55C9;--accent-soft:#E6ECFB;--ok:#2C8455;--ok-soft:#E3F2EA;--bad:#B9443A;--on-accent:#fff}\n@media (prefers-color-scheme:dark){:root{--bg:#0F1412;--card:#171E1B;--fg:#E7EDEA;--muted:#95A39C;--line:#27312D;--accent:#8EA6FF;--accent-soft:#1E274A;--ok:#5CC08A;--ok-soft:#163324;--bad:#E8796E;--on-accent:#0F1412}}\n*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 -apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%}\nmain{max-width:560px;margin:0 auto;padding:20px 16px 48px}\nh1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}.muted{color:var(--muted);font-size:14px}p{margin:8px 0}\n.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin:14px 0 4px}.bar i{display:block;height:100%;background:var(--ok);border-radius:3px;transition:width .3s}\n.step{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:12px 0;overflow:hidden}\n.head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}\n.num{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;background:var(--accent-soft);color:var(--accent)}\n.step.done .num{background:var(--ok-soft);color:var(--ok)}\n.head h2{font-size:17px;margin:0;flex:1}.chip{font-size:13px;color:var(--muted)}.step.done .chip{color:var(--ok);font-weight:600}\n.body{padding:0 16px 16px 56px}.step.closed .body{display:none}\nol{padding-left:18px;margin:6px 0}li{margin:6px 0}\na{color:var(--accent)}\n.btn{display:inline-block;font:600 16px -apple-system,system-ui,sans-serif;border:0;border-radius:10px;padding:11px 16px;margin:8px 8px 0 0;background:var(--accent);color:var(--on-accent);text-decoration:none;cursor:pointer}\n.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}.btn:disabled{opacity:.5}\ninput[type=text]{width:100%;font:16px ui-monospace,monospace;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);margin-top:4px}\n.tick{display:flex;align-items:center;gap:10px;margin-top:12px;font-weight:600}.tick input{width:22px;height:22px;accent-color:var(--ok)}\n.ok{color:var(--ok);font-weight:600}.bad{color:var(--bad)}.list{margin:6px 0;padding:0;list-style:none}.list li{margin:3px 0}\ndetails{margin-top:10px}summary{color:var(--accent);cursor:pointer;font-size:15px}\ncode{font:14px ui-monospace,monospace;background:var(--bg);padding:1px 5px;border-radius:5px}\n</style></head><body><main>\n<h1>Set up Expense Tracker</h1>\n<p class=\"muted\" id=\"who\">Loading…</p>\n<div class=\"bar\"><i id=\"bar\" style=\"width:0\"></i></div>\n<p class=\"muted\" id=\"count\"></p>\n<div id=\"steps\"></div>\n<p class=\"muted\">Your data stays in your own Notion and Google account. <a href=\"#\" id=\"again\">Check again</a></p>\n</main>\n<script>\nvar EXEC = \"__EXEC__\"\nvar $ = function (id) { return document.getElementById(id) }\nvar esc = function (s) { return String(s == null ? \"\" : s).replace(/[&<>\"]/g, function (c) { return { \"&\": \"&amp;\", \"<\": \"&lt;\", \">\": \"&gt;\", '\"': \"&quot;\" }[c] }) }\nvar S = null, open = {}, msgs = {}, busy = false\n\nfunction call(fn, args, step, busyText) {\n  if (busy) return; busy = true\n  msgs[step] = { cls: \"muted\", text: busyText || \"Working…\" }; draw()\n  var r = google.script.run.withSuccessHandler(function (s) { busy = false; msgs[step] = null; S = s; draw() })\n    .withFailureHandler(function (e) { busy = false; msgs[step] = { cls: \"bad\", text: String(e && e.message || e).replace(/^(Exception|Error):\\s*/, \"\") }; draw() })\n  r[fn].apply(r, args || [])\n}\nfunction msg(step) { var m = msgs[step]; return m ? '<p class=\"' + m.cls + '\">' + esc(m.text) + '</p>' : \"\" }\nfunction tick(step, label) { return '<label class=\"tick\"><input type=\"checkbox\" data-mark=\"' + step + '\"' + (S.done[step] ? \" checked\" : \"\") + '> ' + esc(label) + '</label>' }\n\nfunction lastRunHtml(r) {\n  if (!r) return '<p class=\"muted\">The first sync runs within 10 minutes. Tap <b>Sync now</b> to run it straight away.</p>'\n  var when = new Date(r.at), t = when.toLocaleDateString(undefined, { day: \"numeric\", month: \"short\" }) + \", \" + when.toLocaleTimeString(undefined, { hour: \"numeric\", minute: \"2-digit\" })\n  var bad = /^error/i.test(r.note) || /failed|too many times/i.test(r.note)\n  return '<p class=\"' + (bad ? \"bad\" : \"muted\") + '\"><b>Last sync ' + esc(t) + ':</b> ' + esc(String(r.note || \"done\").replace(/^error:\\s*/i, \"\")) + '</p>'\n}\nfunction steps() {\n  var s = S, d = s.done, list = []\n  var nOk = s.connected && s.tables.length\n  list.push({ id: \"notion\", title: \"Connect Notion\", done: nOk, body:\n    (nOk ? '<p class=\"ok\">✓ Connected (key ending ' + esc(s.keyEnd) + ')</p><ul class=\"list\">' + s.tables.map(function (t) {\n        return '<li>' + (t.state === \"created\" ? \"＋ \" : \"✓ \") + esc(t.name) + (t.state === \"created\" ? \" (made for you)\" : t.added ? \" (\" + t.added + \" column\" + (t.added === 1 ? \"\" : \"s\") + \" added)\" : \"\") + '</li>' }).join(\"\") + '</ul>'\n      + '<details><summary>Use a different Notion key</summary>' : \"\")\n    + '<ol><li>Open <a href=\"https://www.notion.so/profile/integrations\" target=\"_blank\" rel=\"noopener\">notion.so/profile/integrations</a> › <b>New integration</b>, name it <b>Expense Tracker</b>, and save. Copy the <b>Internal Integration Secret</b> (it starts with <code>ntn_</code>).</li>'\n    + '<li>Give it a page: <a href=\"https://www.notion.so/3ef80027425f81fda12cebb4a0c2692b\" target=\"_blank\" rel=\"noopener\">duplicate the template</a>, or just make an empty page called <b>Expense Tracker</b>. On that page tap <b>•••</b> › <b>Connections</b> › add <b>Expense Tracker</b>.</li>'\n    + '<li>Paste the key here. Any tables you don\\'t have yet are made for you.</li></ol>'\n    + '<input type=\"text\" id=\"key\" autocomplete=\"off\" autocapitalize=\"off\" spellcheck=\"false\" placeholder=\"ntn_…\"><button class=\"btn\" id=\"connect\">Connect</button>'\n    + (nOk ? '</details>' : \"\") + msg(\"notion\") })\n  list.push({ id: \"alerts\", title: \"Card alerts\", done: s.running, optional: true, body:\n    (s.running ? '<p class=\"ok\">✓ Syncing your bank alert emails every 10 minutes</p>' : '<p>Reads your bank\\'s alert emails in Gmail, adds each card payment to Notion, tells you which ones you forgot to log, and checks card bills for hidden fees. Optional, but it\\'s what makes the dashboard smart.</p>')\n    + (s.cards.length ? '<p><b>Cards:</b> ' + esc(s.cards.join(\", \")) + '</p>' : s.at ? '<p>No cards found yet; they\\'re added as alerts arrive.</p>' : \"\")\n    + (s.accounts.length ? '<p><b>Bank accounts:</b> ' + esc(s.accounts.map(function (a) { return \"••\" + a }).join(\", \")) + '</p>' : \"\")\n    + (s.running ? lastRunHtml(s.lastRun) + '<button class=\"btn\" id=\"syncnow\">Sync now</button><button class=\"btn ghost\" id=\"rescan\">Look for new cards</button><button class=\"btn ghost\" id=\"stop\">Stop syncing</button>'\n                 : '<button class=\"btn\" id=\"start\"' + (nOk ? \"\" : \" disabled\") + '>Start syncing</button>' + (nOk ? \"\" : '<p class=\"muted\">Connect Notion first.</p>'))\n    + msg(\"alerts\") })\n  list.push({ id: \"scriptable\", title: \"Install Scriptable\", done: !!d.scriptable, body:\n    '<p>The free app that runs your dashboard and widget.</p><a class=\"btn\" href=\"' + esc(s.scriptable) + '\" target=\"_blank\" rel=\"noopener\">Get Scriptable</a>'\n    + '<p class=\"muted\">Open it once after installing.</p>' + tick(\"scriptable\", \"Installed and opened\") })\n  list.push({ id: \"dashboard\", title: \"Add the dashboard\", done: !!d.dashboard, body: !s.dashboard\n    ? '<p>Use the <b>Expenses Dashboard</b> file you were sent: open it › Share › <b>Save to Files</b> › iCloud Drive › <b>Scriptable</b>.</p>' + tick(\"dashboard\", \"It opens in Scriptable\")\n    : '<ol><li>Tap <b>Get the dashboard</b>. Safari asks to download it: tap <b>Download</b>.</li>'\n    + '<li>Tap the <b>download arrow</b> in Safari\\'s address bar, then the file. Choose <b>Scriptable</b> if asked; it adds <b>Expenses Dashboard</b>.</li>'\n    + '<li>In Scriptable, tap <b>Expenses Dashboard</b>. When it asks for your Notion key, paste it.</li></ol>'\n    + '<a class=\"btn\" href=\"' + esc(EXEC) + '?f=dashboard\" target=\"_top\">Get the dashboard</a><button class=\"btn ghost\" id=\"copykey\"' + (s.connected ? \"\" : \" disabled\") + '>Copy my Notion key</button>'\n    + '<input type=\"text\" id=\"keybox\" readonly style=\"display:none\">'\n    + '<details><summary>It didn\\'t open in Scriptable</summary><p>Get <a href=\"' + esc(EXEC) + '?f=dashboard-js\" target=\"_top\">the plain file</a> instead. When it opens, tap <b>Share</b> › <b>Save to Files</b> › iCloud Drive › <b>Scriptable</b> › Save. It then shows up in Scriptable.</p></details>'\n    + tick(\"dashboard\", \"The dashboard opens and shows my month\") + msg(\"dashboard\") })\n  var link = s.shortcut\n  list.push({ id: \"shortcut\", title: \"Double-tap to log\", done: !!d.shortcut && !!d.logged, body:\n    '<ol><li>' + (link ? '<a class=\"btn\" href=\"' + esc(link) + '\" target=\"_blank\" rel=\"noopener\">Add the Log Expense shortcut</a><br>' : 'Open the <b>Log Expense</b> shortcut link you were sent. ') + 'Tap <b>Add Shortcut</b>. There\\'s nothing to fill in.</li>'\n    + '<li>Go to <b>Settings › Accessibility › Touch › Back Tap › Double Tap</b> and choose <b>Log Expense</b>.</li>'\n    + '<li>Double-tap the back of your phone and log a test spend (you can delete it later).</li></ol>'\n    + tick(\"shortcut\", \"Shortcut added and Back Tap set\")\n    + (d.shortcut ? (d.logged ? '<p class=\"ok\">✓ Your test spend reached Notion</p>' : '<p class=\"muted\">Log a test spend, then tap <a href=\"#\" class=\"recheck\">Check again</a>.</p>') : \"\") })\n  list.push({ id: \"widget\", title: \"Home-screen widget\", done: !!d.widget, body:\n    '<ol><li>Long-press an empty spot on your home screen › <b>+</b> (or <b>Edit › Add Widget</b>).</li><li>Search <b>Scriptable</b>, pick a size, and add it.</li>'\n    + '<li>Tap the new widget once (while still editing) › <b>Script</b> › <b>Expenses Dashboard</b>.</li></ol>' + tick(\"widget\", \"Widget added\") })\n  list.push({ id: \"forget\", title: \"Remove my setup\", done: false, extra: true, body:\n    '<p class=\"muted\">Stops the card-alert sync and deletes your Notion key from this setup link. Your Notion data stays.</p><button class=\"btn ghost\" id=\"forget\">Remove</button>' + msg(\"forget\") })\n  return list\n}\n\nfunction draw() {\n  if (!S) return\n  $(\"who\").textContent = S.email ? \"Signed in as \" + S.email : \"\"\n  var list = steps(), main = list.filter(function (x) { return !x.extra }), n = main.filter(function (x) { return x.done }).length\n  $(\"bar\").style.width = Math.round(100 * n / main.length) + \"%\"\n  $(\"count\").textContent = n === main.length ? \"All done. Enjoy!\" : n + \" of \" + main.length + \" done\"\n  // open every unfinished step up to the next required one (so optional card alerts show alongside it)\n  var req = main.findIndex(function (x) { return !x.done && !x.optional }), auto = {}\n  main.forEach(function (x, i) { if (!x.done && (req < 0 || i <= req)) auto[x.id] = true })\n  var html = \"\"\n  list.forEach(function (x, i) {\n    var isOpen = open[x.id] != null ? open[x.id] : !!auto[x.id] || !!msgs[x.id]\n    html += '<section class=\"step' + (x.done ? \" done\" : \"\") + (isOpen ? \"\" : \" closed\") + '\"><div class=\"head\" data-step=\"' + x.id + '\"><span class=\"num\">' + (x.done ? \"✓\" : x.extra ? \"–\" : i + 1) + '</span><h2>' + esc(x.title) + '</h2><span class=\"chip\">' + (x.extra ? \"\" : x.done ? \"Done\" : x.optional ? \"Optional\" : \"To do\") + '</span></div><div class=\"body\">' + x.body + '</div></section>'\n  })\n  $(\"steps\").innerHTML = html\n  wire()\n}\nfunction wire() {\n  document.querySelectorAll(\".head\").forEach(function (h) { h.onclick = function () { var id = h.dataset.step, sec = h.parentNode; open[id] = sec.classList.contains(\"closed\"); sec.classList.toggle(\"closed\") } })\n  document.querySelectorAll(\"[data-mark]\").forEach(function (c) { c.onchange = function () { var st = c.dataset.mark; open[st] = !c.checked || st === \"shortcut\"; call(\"webMark\", [st, c.checked], st, \"Saving…\") } })\n  document.querySelectorAll(\".recheck\").forEach(function (a) { a.onclick = function (e) { e.preventDefault(); call(\"webStatus\", [], \"shortcut\", \"Checking…\") } })\n  var b\n  if ((b = $(\"connect\"))) b.onclick = function () { var k = $(\"key\").value.trim(); if (!k) { msgs.notion = { cls: \"bad\", text: \"Paste your Notion key first.\" }; draw(); return } open.notion = true; call(\"webNotion\", [k], \"notion\", \"Checking your Notion and making any missing tables…\") }\n  if ((b = $(\"start\"))) b.onclick = function () { open.alerts = true; call(\"webStart\", [], \"alerts\", \"Looking through your bank emails for cards. This can take a minute…\") }\n  if ((b = $(\"syncnow\"))) b.onclick = function () { open.alerts = true; call(\"webSyncNow\", [], \"alerts\", \"Syncing now. This can take a minute…\") }\n  if ((b = $(\"rescan\"))) b.onclick = function () { call(\"webRescan\", [], \"alerts\", \"Looking for cards…\") }\n  if ((b = $(\"stop\"))) b.onclick = function () { call(\"webStop\", [], \"alerts\", \"Stopping…\") }\n  if ((b = $(\"forget\"))) b.onclick = function () { if (this.dataset.sure) return call(\"webForget\", [], \"forget\", \"Removing…\"); this.dataset.sure = \"1\"; this.textContent = \"Tap again to remove\" }\n  if ((b = $(\"copykey\"))) b.onclick = function () {\n    google.script.run.withSuccessHandler(function (k) {\n      var box = $(\"keybox\"); box.value = k; box.style.display = \"block\"; box.focus(); box.select(); box.setSelectionRange(0, k.length)\n      var ok = false; try { ok = document.execCommand(\"copy\") } catch (e) {}\n      msgs.dashboard = { cls: ok ? \"ok\" : \"muted\", text: ok ? \"Copied. Paste it in Scriptable when it asks.\" : \"Select the key above and tap Copy.\" }\n      var old = $(\"keymsg\"); if (old) old.remove(); var p = document.createElement(\"p\"); p.id = \"keymsg\"; p.className = msgs.dashboard.cls; p.textContent = msgs.dashboard.text; box.parentNode.insertBefore(p, box.nextSibling); msgs.dashboard = null\n    }).webKey()\n  }\n}\n$(\"again\").onclick = function (e) { e.preventDefault(); call(\"webStatus\", [], \"x\", \"Checking…\") }\ngoogle.script.run.withSuccessHandler(function (s) { S = s; draw() }).withFailureHandler(function (e) { $(\"steps\").innerHTML = '<section class=\"step\"><div class=\"body\" style=\"padding:16px\" class=\"bad\">' + esc(e && e.message || e) + '</div></section>' }).webStatus()\n</script></body></html>\n"
 
 // NOTION_TOKEN is the one in the loader (the file you pasted)
-// Your cards, name and family, found from your bank emails at setup (and refreshed daily).
-const SAVED = (() => { try { return PropertiesService.getUserProperties().getProperties() } catch (e) { return {} } })()
+// Your cards, name and family, found from your bank emails by Start (and refreshed daily).
+const SAVED = (() => { try { return PropertiesService.getScriptProperties().getProperties() } catch (e) { return {} } })()
 const MY_CARDS = (() => { try { return JSON.parse(SAVED.MY_CARDS || "[]") } catch (e) { return [] } })()
 const MY_NAME = SAVED.MY_NAME || ""
 const FAMILY = (() => { try { return JSON.parse(SAVED.FAMILY || "[]") } catch (e) { return [] } })()
@@ -275,7 +102,7 @@ function cardByBank(bank) {
 
 // Finds your three Notion tables by name (they must be connected to your integration).
 function findTables(token) {
-  const props = PropertiesService.getUserProperties()
+  const props = PropertiesService.getScriptProperties()
   const find = name => {
     const saved = props.getProperty("DB_" + name)
     if (saved) return saved
@@ -289,7 +116,7 @@ function findTables(token) {
 }
 
 function install() {
-  const props = PropertiesService.getUserProperties()
+  const props = PropertiesService.getScriptProperties()
   if (NOTION_TOKEN) props.setProperty("NOTION_TOKEN", NOTION_TOKEN.trim())
   if (!props.getProperty("NOTION_TOKEN")) throw new Error("Paste your Notion token on the NOTION_TOKEN line first, then run install again.")
   findTables(props.getProperty("NOTION_TOKEN"))
@@ -305,11 +132,12 @@ function uninstall() {
 
 function syncAlerts() {
   MARKUPS = null   // re-read each run, in case you changed them
-  const lock = LockService.getUserLock()
+  const lock = LockService.getScriptLock()
   if (!lock.tryLock(5000)) return
   try {
-    const token = PropertiesService.getUserProperties().getProperty("NOTION_TOKEN")
-    if (!token) throw new Error("Not set up yet: open the setup link and tap Start.")
+    if (!SpreadsheetApp.getActiveSpreadsheet()) throw new Error("This is the shared-sheet code. It only runs inside the Expense Tracker sheet. Paste the Card alerts sync code here instead.")
+    const token = PropertiesService.getScriptProperties().getProperty("NOTION_TOKEN")
+    if (!token) throw new Error("Not set up yet: open the sheet and tap Expense Tracker › Start.")
     findTables(token)
     loadCardRegistry(token)
     if (Date.now() - Number(SAVED.DETECTED_AT || 0) > 864e5) { try { detectAndSave(token) } catch (e) { Logger.log("card scan: " + e) } }
@@ -402,7 +230,7 @@ function syncAlerts() {
     heartbeat(token, summary)
     Logger.log(`Checked ${msgs.length} emails: added ${counts.added} (${counts.review} need review), skipped ${counts.dup} duplicates and ${counts.ignored} non-transactions. ${summary}`)
   } catch (e) {
-    try { heartbeat(PropertiesService.getUserProperties().getProperty("NOTION_TOKEN"), "error: " + String(e.message || e).slice(0, 150)) } catch (e2) {}
+    try { heartbeat(PropertiesService.getScriptProperties().getProperty("NOTION_TOKEN"), "error: " + String(e.message || e).slice(0, 150)) } catch (e2) {}
     throw e
   } finally {
     lock.releaseLock()
@@ -468,7 +296,7 @@ function toRupees(r, token) {
 }
 // Rupees per unit of a currency on a day (ECB reference rate via frankfurter.app; open.er-api.com as a fallback).
 function fxRate(cur, day) {
-  const props = PropertiesService.getUserProperties(), key = `fx|${cur}|${day}`
+  const props = PropertiesService.getScriptProperties(), key = `fx|${cur}|${day}`
   const saved = props.getProperty(key)
   if (saved) return Number(saved)
   let rate = null
@@ -800,7 +628,7 @@ function readAutoLog(token) {
 }
 // What you chose before: each expense linked to a bank alert pairs the bank's merchant text with your category and name.
 function autoHistory(token) {
-  const cache = CacheService.getUserCache(), hit = cache.get("autoHistory")
+  const cache = CacheService.getScriptCache(), hit = cache.get("autoHistory")
   if (hit) try { return JSON.parse(hit) } catch (e) {}
   const since = shiftDay(istDay(Date.now()), -150)
   const exp = {}
@@ -870,7 +698,6 @@ function autoName(m) {
 
 // "Last run …" on the table's description: the dashboard warns you if this goes stale.
 function heartbeat(token, summary) {
-  noteRun(summary)
   notion(token, "patch", `databases/${ALERTS_DB}`, { description: [{ type: "text", text: { content: `Filled by your Google Apps Script. Last run ${istIso(Date.now())} · ${summary}` } }] })
 }
 
@@ -1454,7 +1281,7 @@ let LOANS_DB = ""      // Loans: found by name
 const REMIND_DAYS_BEFORE = 2   // email this many days before the debit date
 
 function syncLoans(token) {
-  const props = PropertiesService.getUserProperties(), now = Date.now()
+  const props = PropertiesService.getScriptProperties(), now = Date.now()
   const hourIst = new Date(now + 330 * 6e4).getUTCHours()
   if (hourIst < 8 || hourIst >= 21) return { sent: 0 }                                // no emails at night
   if (now - Number(props.getProperty("LOANS_CHECKED_AT") || 0) < 3 * 36e5) return { sent: 0 }   // every 3 hours is plenty
@@ -1640,7 +1467,7 @@ function loanMailSummary(found) {
 // The first run reads a year of lender emails, and six months of bank alerts for EMI debits (no new expenses).
 
 function ensureLoanColumns(token) {
-  const props = PropertiesService.getUserProperties()
+  const props = PropertiesService.getScriptProperties()
   if (props.getProperty("LOAN_COLS_OK") === "4") return
   notion(token, "patch", `databases/${LOANS_DB}`, { properties: {
     Account: { rich_text: {} }, "Loan amount": { number: { format: "rupee" } }, Disbursed: { number: { format: "rupee" } },
@@ -1650,7 +1477,7 @@ function ensureLoanColumns(token) {
 
 function syncLoanMails(token) {
   if (!LOANS_DB) return { updated: 0, added: 0 }
-  const props = PropertiesService.getUserProperties(), now = Date.now()
+  const props = PropertiesService.getScriptProperties(), now = Date.now()
   const receiptsDone = props.getProperty("LOAN_RECEIPTS_V2") === "1"
   if (receiptsDone && now - Number(props.getProperty("LOAN_MAIL_AT") || 0) < 20 * 36e5) return { updated: 0, added: 0 }
   ensureLoanColumns(token)
@@ -1752,7 +1579,7 @@ const wordsOfLoan = s => String(s || "").toLowerCase().replace(/[^a-z0-9 ]+/g, "
 // One-time: read six months of bank alerts and save the EMI-like debits, so loans are recognised from day one.
 // Runs in small steps (one per sync) and never adds expenses or To do items: these are all older than your logging.
 function scanLoanHistory(token) {
-  const props = PropertiesService.getUserProperties()
+  const props = PropertiesService.getScriptProperties()
   const step = props.getProperty("LOAN_HISTORY_AT")
   if (step === "done") return { saved: 0 }
   const start = Number(step || 0), PAGE = 100
@@ -2147,7 +1974,7 @@ function pdfToText(blob) {
 
 function syncLoanDocs(token) {
   if (!LOANS_DB) return { read: 0, locked: 0 }
-  const props = PropertiesService.getUserProperties(), now = Date.now()
+  const props = PropertiesService.getScriptProperties(), now = Date.now()
   if (props.getProperty("DOCS_OFF") === "1") return { read: 0, locked: 0 }
   const done = new Set(JSON.parse(props.getProperty("DOCS_SEEN") || "[]"))
   const first = !props.getProperty("DOCS_AT")
@@ -2218,7 +2045,65 @@ function saveDocPayments(token, paid, account, lenderName) {
   return rows.length
 }
 
-// (Uploading PDFs straight from the dashboard needs your own copy of the script; with the setup link, email them to yourself with [LOAN-DOC] in the subject.)
+// ---------- direct upload from the dashboard ----------
+// One-time setup (on a computer): Deploy › New deployment › Web app, Execute as: Me, Who has access: Anyone › Deploy.
+// Then run uploadLink() and paste the link it prints into the dashboard (Loans tab › Add a loan document).
+// The link carries a secret key; anyone with the full link could send PDFs to this script, so keep it private.
+function uploadLink() {
+  const props = PropertiesService.getScriptProperties()
+  let key = props.getProperty("UPLOAD_KEY")
+  if (!key) { key = Utilities.getUuid().replace(/-/g, ""); props.setProperty("UPLOAD_KEY", key) }
+  const url = ScriptApp.getService().getUrl()
+  if (!url) { Logger.log("Deploy this script as a web app first: Deploy › New deployment › Web app (Execute as: Me, Who has access: Anyone)."); return }
+  const link = url + "?k=" + key
+  Logger.log("Paste this link into the dashboard:\n" + link)
+  // also email it to you, so it's on your phone to copy
+  try { MailApp.sendEmail(Session.getEffectiveUser().getEmail(), "Your loan upload link", `Copy this link on your iPhone, then in the dashboard tap Loans › Add a loan document › Paste upload link:\n\n${link}\n\nKeep it private: anyone with it could send files to your script. (Sent by your card-alerts Google Apps Script.)`) } catch (e) {}
+  return link
+}
+// Makes a new key, so an old link stops working. Run uploadLink() again afterwards.
+function resetUploadKey() { PropertiesService.getScriptProperties().deleteProperty("UPLOAD_KEY"); Logger.log("Key reset. Run uploadLink() for a new link.") }
+
+function doPost(e) {
+  const out = o => ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON)
+  const props = PropertiesService.getScriptProperties()
+  const key = props.getProperty("UPLOAD_KEY")
+  if (!key || !e || !e.parameter || e.parameter.k !== key) return out({ ok: false, error: "This upload link isn't valid. Run uploadLink() in the script and paste the new link." })
+  let body
+  try { body = JSON.parse(e.postData.contents) } catch (x) { return out({ ok: false, error: "Couldn't read the upload." }) }
+  const token = props.getProperty("NOTION_TOKEN")
+  // insurance scans from the dashboard: read here, saved on the policy by the dashboard
+  if (body.kind === "policy") {
+    const results = []
+    for (const f of (body.files || []).slice(0, 5)) {
+      const name = String(f.name || "document.pdf").slice(0, 80)
+      try {
+        const t = pdfToText(Utilities.newBlob(Utilities.base64Decode(f.b64), "application/pdf", name))
+        if (!t.text) { results.push({ name, locked: !!t.locked, error: t.locked ? "" : "Google couldn't read this PDF." }); continue }
+        const figures = parsePolicyDoc(t.text, { filename: name })
+        results.push(figures ? { name, figures } : { name, error: "No policy details found in it." })
+      } catch (x) { results.push({ name, error: String(x.message || x).slice(0, 120) }) }
+    }
+    return out({ ok: true, results })
+  }
+  if (!token || !LOANS_DB) return out({ ok: false, error: "The sync isn't set up yet." })
+  const rows = loadDocRows(token), today = istDay(Date.now()), results = []
+  for (const f of (body.files || []).slice(0, 5)) {
+    const name = String(f.name || "document.pdf").slice(0, 80)
+    try {
+      const blob = Utilities.newBlob(Utilities.base64Decode(f.b64), "application/pdf", name)
+      const t = pdfToText(blob)
+      if (!t.text) { results.push({ name, locked: !!t.locked, error: t.locked ? "" : "Google couldn't read this PDF." }); continue }
+      const lender = lenderOf("", t.text.slice(0, 1500))
+      const doc = parseLoanDoc(t.text, { filename: name, subject: "", from: "", mailDay: today })
+      if (!doc) { results.push({ name, error: "No loan figures found in it." }); continue }
+      const entry = Object.assign({ file: name, lender: lender && lender.name }, doc)
+      const loan = attachDoc(token, rows, entry, name, lender)
+      results.push({ name, kind: doc.kind, lender: lender && lender.name, loan, figures: Object.assign({}, doc, { paid: undefined, paidCount: (doc.paid || []).length || undefined, paidAdded: entry.paidAdded }), entry: loan ? null : Object.assign({}, entry, { paid: undefined }), unmatched: !loan })
+    } catch (x) { results.push({ name, error: String(x.message || x).slice(0, 120) }) }
+  }
+  return out({ ok: true, results })
+}
 
 // ---------- duplicates ----------
 // The same payment often arrives twice: the bank's email and the forwarded SMS, or the bank debit
@@ -2518,9 +2403,23 @@ function mergeCardNames(found, existing) {
   })
 }
 
+function rescanCards() {
+  const token = PropertiesService.getScriptProperties().getProperty("NOTION_TOKEN")
+  if (!token) return start()
+  findTables(token)
+  const found = detectAndSave(token)
+  showStatus(statusRows(found, ScriptApp.getProjectTriggers().length ? "Syncing every 10 minutes." : "Stopped."))
+  SpreadsheetApp.getUi().alert(`Cards: ${found.cards.map(c => c.name).join(", ") || "none found yet"}`)
+}
+
+function stop() {
+  uninstall()
+  showStatus([["Status", "Stopped. Tap Expense Tracker › Start to sync again."]])
+}
+
 // Reads the last 4 months of bank emails, saves your cards/name, and adds the cards to Notion's Card columns.
 function detectAndSave(token) {
-  const props = PropertiesService.getUserProperties()
+  const props = PropertiesService.getScriptProperties()
   const msgs = []
   for (const t of GmailApp.search(GMAIL_QUERY.replace(`newer_than:${LOOKBACK}`, "newer_than:120d") + ' OR (from:cred.club "bill summary" newer_than:120d)', 0, 250))
     for (const m of t.getMessages().slice(-10)) msgs.push({ subject: m.getSubject(), from: m.getFrom(), body: m.getPlainBody().slice(0, 3000) })
@@ -2552,6 +2451,25 @@ function addCardOptions(token, db, names) {
   const add = names.filter(n => !keep.some(o => o.name === n))
   if (!add.length && keep.length === cur.length) return
   notion(token, "patch", `databases/${db}`, { properties: { Card: { select: { options: keep.map(o => ({ id: o.id, name: o.name, color: o.color })).concat(add.map(name => ({ name }))) } } } })
+}
+
+function statusRows(found, state) {
+  return [["Status", state],
+    ["Cards", found.cards.map(c => c.name).join(", ") || "None yet: they're added as alerts arrive"],
+    ["Your name (for skipping transfers to yourself)", found.name || "Not found yet"],
+    ["Bank accounts", found.accounts.map(a => "••" + a).join(", ") || "None found"],
+    ["Updated", new Date().toLocaleString()]]
+}
+function showStatus(rows) {
+  try {
+    const ss = SpreadsheetApp.getActive(); if (!ss) return
+    const sh = ss.getSheets()[0]
+    sh.clear(); sh.getRange(1, 1, 1, 2).setValues([["Expense Tracker", ""]]).setFontWeight("bold").setFontSize(14)
+    sh.getRange(3, 1, rows.length, 2).setValues(rows)
+    sh.getRange(3, 1, rows.length, 1).setFontWeight("bold")
+    sh.setColumnWidth(1, 280); sh.setColumnWidth(2, 520)
+    sh.getRange(3 + rows.length + 1, 1).setValue("Menu: Expense Tracker › Start, Look for new cards, or Stop syncing.").setFontColor("#666666")
+  } catch (e) { Logger.log("status: " + e) }
 }
 
 // ---------- insurance: policies, premiums and renewals from your insurers' emails ----------
@@ -2657,7 +2575,7 @@ function addMonthsDay(iso, n) {
 }
 // The Insurance table: found by name once, or made next to your Expenses table the first time a policy turns up.
 function policiesDb(token, create) {
-  const props = PropertiesService.getUserProperties(), saved = props.getProperty("POLICIES_DB")
+  const props = PropertiesService.getScriptProperties(), saved = props.getProperty("POLICIES_DB")
   if (saved) return saved
   const res = notion(token, "post", "search", { query: "Insurance", filter: { property: "object", value: "database" }, page_size: 20 })
   const hit = (res.results || []).find(d => (d.title || []).map(t => t.plain_text).join("").trim().toLowerCase() === "insurance")
@@ -2681,7 +2599,7 @@ function POLICY_COLUMNS() {
     Match: { rich_text: {} }, Active: { checkbox: {} }, Suggested: { checkbox: {} }, Notes: { rich_text: {} }, "Doc figures": { rich_text: {} } }
 }
 function syncPolicyMails(token) {
-  const props = PropertiesService.getUserProperties(), now = Date.now()
+  const props = PropertiesService.getScriptProperties(), now = Date.now()
   if (now - Number(props.getProperty("POLICY_MAIL_AT2") || 0) < 20 * 36e5) return { updated: 0, added: 0 }
   const first = !props.getProperty("POLICY_MAIL_AT2")   // "2": looked back a year again once, to pick up LIC emails
   const found = []
@@ -2891,7 +2809,7 @@ function parsePolicyDoc(text, meta) {
 // [POLICY-DOC]) are read here, a few per run. Their figures go on the matching policy in the Insurance table for you to
 // confirm on the dashboard ("Use these"); a policy not in the table yet is added as a suggestion. Receipts are skipped.
 function syncPolicyDocs(token) {
-  const props = PropertiesService.getUserProperties(), now = Date.now()
+  const props = PropertiesService.getScriptProperties(), now = Date.now()
   if (props.getProperty("DOCS_OFF") === "1") return { read: 0, locked: 0 }
   const seen = new Set(JSON.parse(props.getProperty("POLICY_DOCS_SEEN") || "[]")), first = !props.getProperty("POLICY_DOCS_AT")
   const insurers = '(tataaia OR "tata aia" OR hdfcergo OR "hdfc ergo" OR hdfclife OR "hdfc life" OR icicilombard OR iciciprulife OR starhealth OR "star health" OR nivabupa OR "niva bupa" OR careinsurance OR "care health" OR licindia OR maxlife OR sbilife OR sbigeneral OR bajajallianz OR godigit OR acko OR policybazaar OR adityabirla OR manipalcigna OR tataaig)'

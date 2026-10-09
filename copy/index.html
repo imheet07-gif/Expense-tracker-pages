@@ -27,6 +27,15 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
   <p class="lead">Code for your spending screen and for the card-alerts sync. Use the buttons to copy; you don't need to read the code.</p>
 
   <section>
+    <h2>New: the shared sheet updates itself too (10 Oct)</h2>
+    <ul class="small">
+    <li><b>Friends:</b> make a copy of the sheet, tap <b>Expense Tracker › Start</b> in its menu, paste a Notion key, and allow Gmail. No code to paste, and fixes arrive by themselves.</li>
+    <li><b>You:</b> paste the new <b>sheet loader</b> (see "Shared sheet for friends" below) into the template once. Copies made from then on stay up to date; copies made earlier keep the old code until they are replaced.</li>
+    <li>The same two switches apply: <code>AUTO_UPDATE</code> and <code>COUNT_ME</code>. Phone users who can't see the sheet's menu can use the setup link instead.</li>
+    </ul>
+  </section>
+
+  <section>
     <h2>New: a clearer top bar, month and year pickers, and custom splits (10 Oct)</h2>
     <ul class="small">
     <li><b>The top bar now says "Money"</b> and holds only the tabs. The month no longer sits above tabs that don't use it.</li>
@@ -423,15 +432,17 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
     <pre id="code2">Loading…</pre>
   </section>
   <section>
-    <h2>For sharing only: code for the Card Alerts sheet</h2>
+    <h2>Shared sheet for friends: the template (for you, once)</h2>
     <p class="small"><b>Don&rsquo;t paste this into your own sync project.</b> It goes only into the Card Alerts sheet. If it&rsquo;s pasted anywhere else, it now stops and says so.</p>
-    <p class="small">Your friends copy this sheet, tap <b>Start</b>, and their cards are found automatically. You only do this once, ideally on a computer.</p>
+    <p class="small">Your friends copy this sheet, tap <b>Start</b>, and their cards are found automatically. The script inside is now a small loader, so every copy keeps itself up to date. You only do this once, ideally on a computer.</p>
     <ol>
       <li>Open <a href="https://docs.google.com/spreadsheets/d/1LFBvUm7zaW3GPfugIrKFnqpwBAiFOSvYvUxpwqjatlo/edit" target="_blank" rel="noopener">Expense Tracker – Card Alerts</a> in your Google Drive.</li>
-      <li><b>Extensions › Apps Script</b>, delete what's there, paste the code below, and Save. Don't run anything; this copy isn't for your own alerts.</li>
+      <li>Make sure the Config sheet has a <code>sheet</code> row (edition, version, url, fingerprint), the same as for <code>alerts</code> and <code>link</code>. Without it the loader has nothing to download.</li>
+      <li><b>Extensions › Apps Script</b>, delete what's there, paste the <b>sheet loader</b> below, and Save. Don't run anything, and never put your own Notion key in this template; this copy isn't for your own alerts.</li>
+      <li>Before you share it, make a test copy from a second Google account, tap <b>Expense Tracker › Start</b>, and check that it asks for a Notion key (so yours didn't come along) and starts cleanly.</li>
       <li>Back in the sheet: <b>Share › General access › Anyone with the link</b> (Viewer).</li>
     </ol>
-    <button class="copy" id="copy4">Copy the sheet code</button>
+    <button class="copy" id="copy4">Copy the sheet loader</button>
     <div class="status" id="status4" aria-live="polite"></div>
     <pre id="code4">Loading…</pre>
   </section>
