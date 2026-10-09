@@ -27,6 +27,16 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
   <p class="lead">Code for your spending screen and for the card-alerts sync. Use the buttons to copy; you don't need to read the code.</p>
 
   <section>
+    <h2>New: the Google scripts now update themselves (10 Oct)</h2>
+    <ul class="small">
+    <li><b>Paste once, never again.</b> The <b>Card alerts sync</b> and the <b>Setup link</b> code below is now a small <b>loader</b>. It downloads the real code, checks it against a fingerprint, keeps it in your Google account and runs it. New versions install themselves, and if a new version ever fails to start it goes back to the one that worked.</li>
+    <li><b>Already using the sync?</b> Paste the new loader over the old code in the same project and Save. Your token, cards and 10-minute timer are kept, so you don't need to run install again. For the <b>Setup link</b> also do Deploy › Manage deployments › pencil › New version › Deploy once. If the loader asks for the Notion key, leave the line empty.</li>
+    <li><b>What it contacts:</b> about once a day it reads the public update sheet. If <code>COUNT_ME</code> is <code>true</code> it also makes one anonymous visit count with no name, email or ID, so the author can see roughly how many people use it. Nothing else leaves your account beyond what the sync already did with your own Notion and Gmail.</li>
+    <li><b>Two switches</b> at the top of the loader: change <code>AUTO_UPDATE</code> to <code>false</code> to stop all update checks (you keep the code you have), or <code>COUNT_ME</code> to <code>false</code> to switch off the visit count.</li>
+    </ul>
+  </section>
+
+  <section>
     <h2>New: Check for updates, no more copy and paste (9 Oct)</h2>
     <ul class="small">
     <li><b>Settings › Updates:</b> tap <b>Check for updates</b>. If there's a newer version you see what's new, and <b>Update now</b> replaces the script for you. Close it and open it again to use the new version.</li>
@@ -325,7 +335,7 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
     <h2>Fix: duplicate alerts and missed $ spends (4 Oct, night)</h2>
     <p class="small">Some payments you had already logged showed up again in To do, as a second copy from the forwarded SMS with the card shown as "Unknown". I've marked those copies as duplicates in Notion, so they're gone. The new sync code also catches this case from now on. It also reads alerts written with a currency symbol, like Amex&rsquo;s "$53.10 at ANTHROPIC PB", which were being skipped. After you paste it, alerts from the last 2 days are read again, so that one will appear.</p>
     <ol>
-      <li>Tap <b>Copy the sync code</b> (in the "Card alerts sync" section, not the sheet code at the bottom).</li>
+      <li>Tap <b>Copy the sync loader</b> (in the "Card alerts sync" section, not the sheet code at the bottom).</li>
       <li>In your Apps Script project, select all, paste, and Save.</li>
     </ol>
   </section>
