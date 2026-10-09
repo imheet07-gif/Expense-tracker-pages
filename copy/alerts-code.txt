@@ -1,4 +1,4 @@
-const CODE_VERSION = "6.13"
+const CODE_VERSION = "6.14"
 const CODE_EDITION = "alerts"
 // Card & Bank Alerts → Notion · SHAREABLE EDITION (for you or a friend; nothing personal is written in the code)
 // Runs inside your own Google account (Google Apps Script), every 10 minutes. No Claude involved.
