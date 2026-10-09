@@ -1,4 +1,4 @@
-const CODE_VERSION = "6.14"
+const CODE_VERSION = "6.14.1"
 const CODE_EDITION = "link"
 // Card & Bank Alerts → Notion · SETUP-LINK EDITION (one script for everyone you share the link with)
 // Each person opens the link on their phone and is walked through the whole setup: Notion (tables made for them),
