@@ -1,4 +1,4 @@
-const CODE_VERSION = "6.15"
+const CODE_VERSION = "6.15.1"
 const CODE_EDITION = "sheet"
 // Card & Bank Alerts → Notion · SHARED SHEET EDITION (only for the Expense Tracker sheet; not for your own sync)
 // Runs inside your own Google account (Google Apps Script), every 10 minutes. No Claude involved.

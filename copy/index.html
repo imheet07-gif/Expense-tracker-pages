@@ -49,13 +49,15 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
 .back { display:inline-flex; align-items:center; min-height:44px }
 .note { background:var(--soft); border-radius:12px; padding:12px 14px; font-size:14px }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto } summary::before { transition:none } }
+@font-face { font-family: "Hishob"; src: url(data:font/woff2;base64,d09GMgABAAAAAAS0AA4AAAAACSwAAARiAAFNDgAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbIByBQAZgAFQRCAqGWIU7ATYCJAMcCxQABCAFhGgHIBuKB1FUUSoovkqw4RBbiX+UOmNZVk9qFmuKmHM7fqyI+O+V9VY8D63979zZeTLvY+LZvIomCIWsEhI1WCJ0lcgO/27rPW3wekaProFVMRSr6/OqGrzoJBrefayBRhZjI1va4/tn7f5/lYhOf+/0j2m/0vRRUzQLPApsLxqb5jpfAyTBgAat6XVeFEhhF9AHC0zy3doz/CF42EXWeM1VEiJ0uHYnwTRAETEWwcQyNuDR44GRwECFfgASsI6YVv3SGzcr0sBSFI41fxYeBAwQVBPX5amhh8406zjSRtwCzQEREZ1KXkYLHvIw2mkQu/l710jy82hzhuplUdWyMkMGlJclFnCmeyHXiYMABcvct/DUeIeAo43bAroX/+OBdmVWI5DXRQhYhYCCjjnYmUfHQcA0Y0Vt2xrW7JpLC+hHeu+f2kXnnbJfBF/EwP5M0MAcwISsBnIeAHWjjnS3WdywnajBkjVrSJWAUCdpm7pJ6NE0LxJ77ZAJQg83StsIxjVJ6SOWMHoKS+gS1JpqIQG4tM1cXRlT470F0Rr2hAmM0UXYfFySBk2y8XVNB3sOlwQQYC7QHJiIyBLQdLXH2XS890jz4Z6bTQ5HXjA1v9ijgc0xuy/DZmIUNILLQMdQyxOb6VLSXRuHxPN5WJW6txmzzFXmR69v3tC775DaCdmvOX92MCG5eh8XM4ztwZqM/4KPAMm06u1768/g+uMphzLT/eW2G18towQNdPDykYs247FWc6Yrx/sWgFqApFv1Wa0NomREdUUmrdLJdJo+YO3ubjIW1O42Ji4nR452/EA4aXhkhMNfG1cro8kvczKy0wzNMbcfAS0H3Iw9lAr7BLgXZ0cUXUvYydBycvOVuNUGuHtTr+8Z1n11OyIwUUWtiEFDh6K0MzgIGQF2SJtj9hQbOtN8pfQ1tCYk06rPKhNpm/NW+Pr4c387FHnXpwMXgcqSzHbLCcldFvNAYJhH/3MlawpsPllz9BQWKnAWesrGzFzww/w861Y5xMpp5OTmflhZFxYT7Sz14rT2+/Mb5A6ZNLaTTSryzjj3YEMFAzw75h167e8MIMi5GX9tGw1SZjr+NWjdB3j3sdsYAN7vWU7+/+z4cXL3AmMFhC/nGm9DqC6PAfG0QfnmlbT/Uk5WOn8gLtVPa/J3BM1D00DwtpHLtKU2PEUAMUcHKGZ4BToHrAbVGvfAwA8/z9CqfNAKFalWQiVLtjIopgwsKDEhESmUnwKZVNIUQEWqVgSH8laoHAiUqLa/qlJAqZArldFelnuV+df5MhTKxxKuUI1saVAhCuDC4bKUy5OmhAifhJCIAz+RvIVwsOpCHx418u6Hlk+j4UqUUilUAL0tFCpC9gk5tHShMhmws0Jdxyen4CBfmlw4aFa2wjwq6cREk6UxInbuaQeoMlKZOOXKrNnL0q3eWuFtFW2gnCcPSt7DJQExRYF9eDJCuIonIoE9NS+LlykgwkrBTLgKaXDlaD5r82pjRT17AA==) format("woff2"); font-weight: 400; font-style: normal; font-display: block; unicode-range: U+0900-097F, U+200C-200D }
+.brand { font-family: Hishob, serif; font-weight: 400; font-size: 1.15em; font-synthesis: none }
 </style>
 </head>
 <body>
 <main>
-  <h1>हिशोब · Copy page</h1>
+  <h1><span class="brand">हिशोब</span> · Copy page</h1>
   <p class="lead">Copy the code for your dashboard and your card alerts. Use the buttons; you don't need to read the code.</p>
-  <span class="chip">Latest version 6.15 · 10 Oct</span>
+  <span class="chip">Latest version 6.15.1 · 10 Oct</span>
 
   <nav class="nav" aria-label="What do you want to do?">
     <a href="#dashboard"><b>Dashboard</b><span>Set up or update on iPhone</span></a>
@@ -166,6 +168,14 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
 
   <h2 id="new" style="margin-top:6px">What's new</h2>
   <article class="entry">
+    <h2>New: the app is called हिशोब (10 Oct)</h2>
+    <ul class="small">
+    <li><b>हिशोब</b> means "the accounts" in Marathi. The dashboard header now shows it in a bold Marathi display font (Rozha One) that is built into the app, so nothing is loaded from the internet. This works the same in the Private edition.</li>
+    <li>The Copy, Setup and front pages carry the same name and lettering.</li>
+    <li>Update from <b>Settings › Updates</b>, as before.</li>
+    </ul>
+  </article>
+  <article class="entry">
     <h2>New: the shared sheet updates itself too (10 Oct)</h2>
     <ul class="small">
     <li><b>Friends:</b> make a copy of the sheet, tap <b>Expense Tracker › Start</b> in its menu, paste a Notion key, and allow Gmail. No code to paste, and fixes arrive by themselves.</li>
@@ -184,16 +194,7 @@ pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); bac
     <li>Update from <b>Settings › Updates</b>, as before.</li>
     </ul>
   </article>
-  <article class="entry">
-    <h2>New: the Google scripts now update themselves (10 Oct)</h2>
-    <ul class="small">
-    <li><b>Paste once, never again.</b> The <b>Card alerts sync</b> and the <b>Setup link</b> code below is now a small <b>loader</b>. It downloads the real code, checks it against a fingerprint, keeps it in your Google account and runs it. New versions install themselves, and if a new version ever fails to start it goes back to the one that worked.</li>
-    <li><b>Already using the sync?</b> Paste the new loader over the old code in the same project and Save. Your token, cards and 10-minute timer are kept, so you don't need to run install again. For the <b>Setup link</b> also do Deploy › Manage deployments › pencil › New version › Deploy once. If the loader asks for the Notion key, leave the line empty.</li>
-    <li><b>What it contacts:</b> about once a day it reads the public update sheet. If <code>COUNT_ME</code> is <code>true</code> it also makes one anonymous visit count with no name, email or ID, so the author can see roughly how many people use it. Nothing else leaves your account beyond what the sync already did with your own Notion and Gmail.</li>
-    <li><b>Two switches</b> at the top of the loader: change <code>AUTO_UPDATE</code> to <code>false</code> to stop all update checks (you keep the code you have), or <code>COUNT_ME</code> to <code>false</code> to switch off the visit count.</li>
-    </ul>
-  </article>
-  <a class="more" href="history/">Older updates (42) →</a>
+  <a class="more" href="history/">Older updates (43) →</a>
 </main>
 <script src="../analytics.js" defer></script>
 <script>
