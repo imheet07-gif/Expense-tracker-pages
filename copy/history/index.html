@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Older updates · हिशोब · Copy page</title>
+<style>
+:root { --bg:#F4F6F3; --card:#FFFFFF; --fg:#17201B; --muted:#5E6A64; --line:#DDE3DD; --accent:#2F55C9; --on-accent:#FFFFFF; --soft:#E6ECFB; --ok:#2C8455;
+  --body: -apple-system, system-ui, sans-serif; --mono: ui-monospace, "SF Mono", Menlo, monospace }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0F1412; --card:#171E1B; --fg:#E7EDEA; --muted:#97A49D; --line:#28322E; --accent:#8EA6FF; --on-accent:#0F1412; --soft:#1E2744; --ok:#62C98F; color-scheme:dark } }
+:root[data-theme="dark"] { --bg:#0F1412; --card:#171E1B; --fg:#E7EDEA; --muted:#97A49D; --line:#28322E; --accent:#8EA6FF; --on-accent:#0F1412; --soft:#1E2744; --ok:#62C98F; color-scheme:dark }
+* { box-sizing: border-box }
+html { scroll-behavior: smooth; scroll-padding-top: 12px }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 var(--body) }
+main { max-width:560px; margin:0 auto; padding-inline:16px; padding-block:20px 48px; display:grid; gap:14px }
+h1 { font-size:26px; margin:0; letter-spacing:-.01em; text-wrap:balance }
+h2 { font-size:18px; margin:0 }
+p { margin:0 }
+a { color:var(--accent) }
+.lead { color:var(--muted) }
+.chip { justify-self:start; font-size:13px; font-weight:600; color:var(--accent); background:var(--soft); border-radius:999px; padding:5px 12px }
+.nav { display:grid; grid-template-columns:1fr 1fr; gap:10px }
+.nav a { display:flex; flex-direction:column; gap:2px; text-decoration:none; color:var(--fg); background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; min-height:64px; justify-content:center }
+.nav a b { font-size:15px } .nav a span { font-size:13px; color:var(--muted) }
+.nav a:focus-visible, .nav a:hover { border-color:var(--accent) }
+section, article.entry { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; display:grid; gap:12px; min-width:0 }
+.head { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap }
+.tag { font-size:12px; font-weight:600; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:2px 10px; white-space:nowrap }
+.tag.me { color:var(--accent); border-color:var(--accent) }
+.small { font-size:14px; color:var(--muted) }
+ol { margin:0; padding-left:1.3em; display:grid; gap:10px }
+ul.small { margin:0; padding-left:1.2em; display:grid; gap:6px }
+li { padding-left:2px }
+b { font-weight:600 }
+code { font:14px var(--mono); background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:0 4px }
+button.copy { font:600 17px var(--body); padding:14px 18px; min-height:48px; border-radius:12px; border:0; background:var(--accent); color:var(--on-accent); cursor:pointer; width:100% }
+button.copy:focus-visible, summary:focus-visible { outline:3px solid var(--fg); outline-offset:2px }
+.status { font-size:14px; color:var(--ok); min-height:1.5em }
+details { border-top:1px solid var(--line); padding-top:10px }
+summary { cursor:pointer; font-weight:600; font-size:15px; min-height:40px; display:flex; align-items:center; list-style:none }
+summary::-webkit-details-marker { display:none }
+summary::before { content:""; width:8px; height:8px; margin-right:10px; border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(-45deg); transition:transform .15s }
+details[open] > summary::before { transform:rotate(45deg) }
+details > *:not(summary) { margin-top:10px }
+details { display:block } details > ol, details > p, details > pre { display:grid }
+pre { margin:0; max-height:140px; overflow:auto; font:12px/1.45 var(--mono); background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px; white-space:pre-wrap; word-break:break-all; color:var(--muted) }
+.more { display:flex; align-items:center; justify-content:center; text-align:center; min-height:48px; border:1px solid var(--line); border-radius:12px; background:var(--card); text-decoration:none; font-weight:600 }
+.back { display:inline-flex; align-items:center; min-height:44px }
+.note { background:var(--soft); border-radius:12px; padding:12px 14px; font-size:14px }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto } summary::before { transition:none } }
+h3 { font-size:15px; margin:6px 0 0 }
+a.copy { display:flex; align-items:center; justify-content:center; text-align:center; text-decoration:none; font:600 17px var(--body); padding:14px 18px; min-height:48px; border-radius:12px; background:var(--accent); color:var(--on-accent) }
+a.copy:focus-visible { outline:3px solid var(--fg); outline-offset:2px }
+@font-face { font-family: "Hishob"; src: url(data:font/woff2;base64,d09GMgABAAAAAAS0AA4AAAAACSwAAARiAAFNDgAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbIByBQAZgAFQRCAqGWIU7ATYCJAMcCxQABCAFhGgHIBuKB1FUUSoovkqw4RBbiX+UOmNZVk9qFmuKmHM7fqyI+O+V9VY8D63979zZeTLvY+LZvIomCIWsEhI1WCJ0lcgO/27rPW3wekaProFVMRSr6/OqGrzoJBrefayBRhZjI1va4/tn7f5/lYhOf+/0j2m/0vRRUzQLPApsLxqb5jpfAyTBgAat6XVeFEhhF9AHC0zy3doz/CF42EXWeM1VEiJ0uHYnwTRAETEWwcQyNuDR44GRwECFfgASsI6YVv3SGzcr0sBSFI41fxYeBAwQVBPX5amhh8406zjSRtwCzQEREZ1KXkYLHvIw2mkQu/l710jy82hzhuplUdWyMkMGlJclFnCmeyHXiYMABcvct/DUeIeAo43bAroX/+OBdmVWI5DXRQhYhYCCjjnYmUfHQcA0Y0Vt2xrW7JpLC+hHeu+f2kXnnbJfBF/EwP5M0MAcwISsBnIeAHWjjnS3WdywnajBkjVrSJWAUCdpm7pJ6NE0LxJ77ZAJQg83StsIxjVJ6SOWMHoKS+gS1JpqIQG4tM1cXRlT470F0Rr2hAmM0UXYfFySBk2y8XVNB3sOlwQQYC7QHJiIyBLQdLXH2XS890jz4Z6bTQ5HXjA1v9ijgc0xuy/DZmIUNILLQMdQyxOb6VLSXRuHxPN5WJW6txmzzFXmR69v3tC775DaCdmvOX92MCG5eh8XM4ztwZqM/4KPAMm06u1768/g+uMphzLT/eW2G18towQNdPDykYs247FWc6Yrx/sWgFqApFv1Wa0NomREdUUmrdLJdJo+YO3ubjIW1O42Ji4nR452/EA4aXhkhMNfG1cro8kvczKy0wzNMbcfAS0H3Iw9lAr7BLgXZ0cUXUvYydBycvOVuNUGuHtTr+8Z1n11OyIwUUWtiEFDh6K0MzgIGQF2SJtj9hQbOtN8pfQ1tCYk06rPKhNpm/NW+Pr4c387FHnXpwMXgcqSzHbLCcldFvNAYJhH/3MlawpsPllz9BQWKnAWesrGzFzww/w861Y5xMpp5OTmflhZFxYT7Sz14rT2+/Mb5A6ZNLaTTSryzjj3YEMFAzw75h167e8MIMi5GX9tGw1SZjr+NWjdB3j3sdsYAN7vWU7+/+z4cXL3AmMFhC/nGm9DqC6PAfG0QfnmlbT/Uk5WOn8gLtVPa/J3BM1D00DwtpHLtKU2PEUAMUcHKGZ4BToHrAbVGvfAwA8/z9CqfNAKFalWQiVLtjIopgwsKDEhESmUnwKZVNIUQEWqVgSH8laoHAiUqLa/qlJAqZArldFelnuV+df5MhTKxxKuUI1saVAhCuDC4bKUy5OmhAifhJCIAz+RvIVwsOpCHx418u6Hlk+j4UqUUilUAL0tFCpC9gk5tHShMhmws0Jdxyen4CBfmlw4aFa2wjwq6cREk6UxInbuaQeoMlKZOOXKrNnL0q3eWuFtFW2gnCcPSt7DJQExRYF9eDJCuIonIoE9NS+LlykgwkrBTLgKaXDlaD5r82pjRT17AA==) format("woff2"); font-weight: 400; font-style: normal; font-display: block; unicode-range: U+0900-097F, U+200C-200D }
+.brand { font-family: Hishob, serif; font-weight: 400; font-size: 1.15em; font-synthesis: none }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../">← Back to the Copy page</a>
+  <h1>Older updates</h1>
+  <p class="note"><b>Old steps below.</b> Many of these entries say "paste the new code". That is no longer needed: update the dashboard from <b>Settings › Updates</b>, and the Google scripts update themselves. This page is a record of what changed and when.</p>
+  <article class="entry">
+    <h2>Version 7.8: new banks are recognised more reliably (13 Oct)</h2>
+    <ul class="small">
+    <li><b>New bank accounts from SMS:</b> a bank that happens to end in the same digits as another of your cards or accounts is no longer mistaken for it, so it is added to <i>Settings › Cards &amp; bank accounts</i>. An account you removed is remembered by its bank name, not just its digits.</li>
+    <li><b>Banks found by your Google script too:</b> when a bank SMS or email reaches the CC Transactions table from a bank you haven't added, that bank's account is now added to <i>Settings › Cards &amp; bank accounts</i> by the Google script as well (before, only the iPhone shortcut did it). An account you remove in the app is remembered in a "Removed accounts" line on the Card Bills description, next to "Removed cards".</li>
+    <li><b>The shortcut tells you what it did:</b> after each bank SMS the reply says whether the account was added, was already listed, was one you removed, or could not be added and why. The same line is written to the log file.</li>
+    </ul>
+  </section>
+
+<section data-v="7.7" data-date="13 Oct">
+    <h2>Version 7.7: a full check-up, with the fixes (13 Oct)</h2>
+    <p class="small">Every part of the app was read through by independent reviewers who tried to break it. These are the real problems they found, now fixed, each with a test so it can't come back.</p>
+    <ul class="small">
+    <li><b>Statements:</b> two identical purchases on the same day (two coffees) are both imported; a card refund written as <b>-1,299.00</b> or <b>(2,000.00)</b> is a credit, not spending; a row marked <b>Dr</b> is spending whatever its words; UPI AutoPay subscriptions (Netflix, Spotify) are spending, not "credit card bill"; a "0.00" in the other column no longer loses the row; "balance forward" lines are not spending; statements listed newest first read correctly; impossible dates (31 Feb) are ignored; and a long PDF says if it had to stop reading.</li>
+    <li><b>Loans and insurance:</b> "Cr" after an amount (a credit mark) is no longer read as <b>crore</b>; an insurance receipt now gives the <b>next</b> due date, not the one just paid; a loan table listed newest first anchors on the latest balance.</li>
+    <li><b>Trends and Overview:</b> a category you added in Notion no longer breaks the charts; the <b>3-month average</b> uses only the months you have; a budget in rupees is judged in rupees when you view another currency; a page left open overnight moves to the new day; the title buttons work on every tab; drafts of "Who owes me" and "Multiple categories" come back if a save fails; the People pay ledger counts from the day you start tracking and always reaches this month.</li>
+    <li><b>Log Expense shortcut:</b> typed amounts like "Rs.450" or "450 for 2 people" are read correctly (they were logged as ₹0.45 and ₹4502); dates like "12/10/2026" or "Oct 12, 2026" work; categories match ignoring case.</li>
+    <li><b>Safer data:</b> in the private edition, moving your data between iCloud and the phone, and restoring a backup, can no longer lose it (the old copy is kept until the new one is checked); a bank SMS whose save failed is retried instead of being forgotten; changing your Notion key also resets the table checks.</li>
+    <li><b>Small things:</b> a bank SMS from a bank the app has never seen, charging a fee ("SMS charges", "GST", "Chrgs"), is now logged as <b>that bank's charges</b> under Bills &amp; Utilities, with the bank and account digits in the note, instead of "Unknown" under Other; a bank the app has not seen before is also <b>added by itself</b> to Settings › Cards &amp; bank accounts (an account you remove stays removed); there is a new payment method, <b>Bank transfer</b> (NEFT, IMPS, RTGS, net banking and "TRF" bank SMS, and bank fees), with its own filter chip, colour and place in the edit lists, so these are no longer filed as Debit Card or UPI; <b>Add</b> under <i>Settings › Cards &amp; bank accounts</i> now says what is missing (the bank's name, or the last digits) instead of doing nothing, and if Notion refuses the change you are told why in a message in front of the Settings panel (it used to show only behind it); the bank list in that form is much longer (Bandhan, Standard Chartered, Citi, IDBI and more), on iPhone the form now updates when you choose from its lists (choosing <i>Other</i> shows the Bank name box; a bank account no longer shows a Card name box), and what you type there is no longer lost if the page refreshes while you tap Add; Esc no longer closes Settings while you are typing in a box; the Events tab fits the narrowest phones.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>Version 7.6: made for iPad and computers (12 Oct)</h2>
+    <ul class="small">
+    <li>On an <b>iPad or a computer</b> the dashboard no longer sits in a narrow column with empty sides. In a wide window (iPad on its side, a Mac or PC) the tabs move into a <b>sidebar</b> on the left and the cards sit in <b>two columns</b>; an iPad held upright keeps the tabs on top and uses two columns too. Settings and the month and year pickers open as a panel in the middle of the screen. On a keyboard, <b>Tab</b> and <b>Enter</b> move through the tabs and <b>Esc</b> closes Settings.</li>
+    <li><b>Phones look and work exactly as before.</b> Turn an iPad or resize a window and the layout follows, then goes back to the phone layout when it is narrow again.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>Version 7.5: a quicker, clearer home-screen widget (12 Oct)</h2>
+    <ul class="small">
+    <li>The widget does less work each time (this month and last month's expenses and your bank alerts, nothing else), so it finishes sooner and iOS can refresh it more often. If Notion or the alert check is slow it shows the last saved figures instead of waiting.</li>
+    <li>It now asks iOS to refresh every 10 minutes instead of 30. iOS still decides the real timing, and the widget now shows <b>Updated 3:42 pm</b> (or <b>Saved</b> with the time of the saved copy), so you always know how fresh it is.</li>
+    <li>Fixed: the <b>large</b> widget's "Recently logged" list stopped the widget from drawing at all. It works again.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>Version 7.4: Card EMIs on the Loans tab (12 Oct)</h2>
+    <ul class="small">
+    <li><b>Card EMIs</b>: when you import a card statement that has an EMI (a purchase converted to EMI), the Loans tab now shows it: the item and card, how many instalments are paid, about how much you pay a month, how much is left, the month it ends, and the interest so far. It is read from the statements, nothing to type. If an instalment's statement hasn't been imported it says so, and finished EMIs fold away under "Finished". It changes none of your totals; the purchase still counts when you made it.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>Version 7.3: PDF statements read properly (11 Oct)</h2>
+    <ul class="small">
+    <li><b>Loan statements</b> are read row by row, so the EMIs you really paid are found even when they changed: step-up and step-down plans, interest-only periods, EMI holidays, rate changes, part payments and a final balloon payment. A statement whose header says "Sanctioned" is no longer mistaken for a sanction letter. Bounced EMIs, late fees and interest that is only accruing are not counted as payments, and the lender's own balance on the last paid row is used.</li>
+    <li><b>Bank statements</b>: loan EMI debits (NACH, ECS, EMI, loan account numbers) are filed under Bills &amp; Utilities and credit card bill payments under Credit Card Dues, recognised by their wording. Look-alike names such as a cafe with "EMI" in it are left alone. (Linking them to your own loans comes in a later version.)</li>
+    <li><b>Credit card EMI conversions</b>: a purchase you converted to EMI counts once, when you made it. The monthly instalments' principal is not counted again; the interest and fees still are. If the original purchase happened before you started importing statements, those instalments are not counted anywhere.</li>
+    <li>A repayment <b>schedule</b> (a plan from EMI 1 with no paid marks) is no longer treated as payments already made.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>Version 7.2: a quick tour (11 Oct)</h2>
+    <ul class="small">
+    <li><b>A one-minute tour</b> for people new to the app: a "New here?" card on Overview walks through the main parts (Overview, adding an expense, Trends, shared bills and people, statements, loans and insurance, Settings). It highlights the real buttons, and you can skip at any time. If you already use the app it won't appear on its own; replay it any time from <b>Settings › App › Take the tour</b>.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>Version 7.1: small fixes (11 Oct)</h2>
+    <ul class="small">
+    <li>The <b>date box</b> in Add expense and Edit no longer sticks out past the other boxes on iPhone.</li>
+    <li>The update check now also understands a <b>Fingerprint</b> column heading in the update sheet.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>Version 7: your currency, a monthly budget, a tidier Settings (11 Oct)</h2>
+    <ul class="small">
+    <li><b>Currency</b>: see everything in another currency (₹, $, €, £, AED, S$, C$, A$, CHF, ¥) in <b>Settings › Appearance › Currency</b>, properly converted. Choose <b>each expense's own day</b> (a March spend stays the same in dollars) or <b>today's rate</b>; the private edition can also use <b>your own rate</b> with no lookup. Rates are fetched only when needed and remembered on your phone (only the currency pair and dates are sent). If rates can't be fetched, amounts stay in rupees rather than show a wrong number. What you type and what is saved stays in rupees (₹); Notion never changes.</li>
+
+    <li><b>Monthly budget</b> can now change from month to month. Set it for the month you are viewing (in Settings, or tap <b>Change this month's budget</b> on Overview). A month with none of its own uses the latest earlier one, and earlier months keep theirs.</li>
+    <li><b>Your Notion tables update themselves</b>: when a new version needs a new column, the app adds it (only adds, never changes or deletes) and tells you what it did. <b>Settings › Notion connection › Check my Notion tables</b> runs the check now.</li>
+    <li><b>Settings</b> is now four groups: Spending, Logging &amp; data, Appearance and App. Nothing was removed.</li>
+    <li><b>Edit</b> on an expense now opens the details form straight away (merchant, note, date, how you paid). Category, Multiple categories, Who owes me, One-off and Delete sit under it.</li>
+    <li><b>＋ Add expense</b> now sits beside Import statements.</li>
+    <li>Update from <b>Settings › Updates</b>, as before.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>New: add, edit and delete an expense (10 Oct)</h2>
+    <ul class="small">
+    <li><b>＋ Add expense</b> at the top of the Expenses tab: amount, merchant, category, how you paid, date and a note.</li>
+    <li><b>Edit › Edit details</b> fixes a merchant name (alerts often cut names off, like "Veg Tre" for "Veg Treat"), the note, the date or how it was paid. Tick <b>Always call it…</b> and earlier expenses with that name are fixed too, and the new name shows from then on. Your remembered names are listed in <b>Settings › Merchant names</b>.</li>
+    <li><b>Edit › Delete</b> asks first. In Notion the expense goes to the Trash for 30 days; in the private edition it is removed for good.</li>
+    <li>The amount can't be edited, because splits and "who owes me" depend on it: delete and add again.</li>
+    <li>Update from <b>Settings › Updates</b>, as before.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>Clearer buttons when you edit an expense (10 Oct)</h2>
+    <ul class="small">
+    <li><b>Multiple categories</b> (was "Split by category") is for one purchase that covers different things, like a Blinkit order. Once set it reads <b>Edit the categories</b>, and <b>Back to one category</b> undoes it.</li>
+    <li><b>Who owes me</b> (was "Split / owed") is for when other people pay you back part of it. <b>Clear who owes me</b> removes it.</li>
+    <li>Update from <b>Settings › Updates</b>, as before.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>New: split one expense into parts (10 Oct)</h2>
+    <ul class="small">
+    <li>An Amazon or Blinkit order is often several kinds of spending. Open an expense, tap <b>Edit › Split by category</b> (this is separate from <b>Split / owed</b>, which is about who pays you back), and give each part its own category (and a note if you like). It stays <b>one expense with its full total</b>; the category charts count each part under its own category.</li>
+    <li>You can also split a bank alert while you add it, in <b>Check new alerts</b>.</li>
+    <li>The parts must add up to the amount; the screen shows what's left to assign.</li>
+    <li>The first time you save parts, the app adds a <b>Parts</b> column to your Notion Expenses table by itself. If Notion won't allow that, it tells you the two-minute manual step.</li>
+    <li>Update from <b>Settings › Updates</b>, as before.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>New: choose the title at the top (10 Oct)</h2>
+    <ul class="small">
+    <li><b>Settings › Title</b> lets you pick <b>हिशोब</b> (the default), <b>Ledger</b> or <b>Money</b>, or type your own words (up to 20 characters). It is saved with your other settings on this iPhone.</li>
+    <li>Long titles shrink a little to fit beside the time and buttons, even on the smallest phones.</li>
+    <li>Update from <b>Settings › Updates</b>, as before.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>New: change your Notion key, and a smarter shortcut (10 Oct)</h2>
+    <ul class="small">
+    <li><b>Settings › Notion connection</b> lets you paste a new Notion key (it's checked with Notion first, so a typo can't lock you out) or <b>Start over</b>. This only changes what your iPhone remembers; your expenses in Notion are never touched.</li>
+    <li><b>The Log Expense shortcut</b> can now hand its details to the dashboard as plain text, and a bare amount such as <code>450</code> is accepted too.</li>
+    <li>Update from <b>Settings › Updates</b>, as before.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>New: the app is called हिशोब (10 Oct)</h2>
+    <ul class="small">
+    <li><b>हिशोब</b> means "the accounts" in Marathi. The dashboard header now shows it in a bold Marathi display font (Rozha One) that is built into the app, so nothing is loaded from the internet. This works the same in the Private edition.</li>
+    <li>The Copy, Setup and front pages carry the same name and lettering.</li>
+    <li>Update from <b>Settings › Updates</b>, as before.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>New: card alerts without any code (10 Oct)</h2>
+    <ul class="small">
+    <li><b>Make your own copy of a Google Sheet</b>, tap <b>Expense Tracker › Start</b> in its menu, paste your Notion key, and allow access. Your cards are found automatically and alerts start flowing. There is no code to paste.</li>
+    <li><b>It keeps itself up to date,</b> so fixes reach you without any work from you.</li>
+    <li>You'll find the button under <b>2 · Turn on card alerts</b> above. On a phone, open the link in Safari and choose "Request Desktop Website", because the Google Sheets app doesn't show the menu.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>New: a clearer top bar, month and year pickers, and custom splits (10 Oct)</h2>
+    <ul class="small">
+    <li><b>The top bar now says "Money"</b> and holds only the tabs. The month no longer sits above tabs that don't use it.</li>
+    <li><b>Overview:</b> the month is just under the tabs. Tap the month name to jump to any month: pick a year, then a month. On a past month a <b>This month</b> button takes you straight back.</li>
+    <li><b>Trends:</b> one year choice at the top (Calendar or FY, with arrows). Tap the year to pick any year from a list. The year summary, both charts and the average card all follow it, so going back a year is one tap.</li>
+    <li><b>Expenses:</b> tap the selected month chip to open the same month picker.</li>
+    <li><b>Splitting an expense:</b> Edit › Split / owed now has <b>Full, 90%, 75%, 50%, 25%</b> and an <b>Other %</b> box for each person, a plain amount box for any custom figure, and <b>Split the other ₹X equally</b> for whatever is left. Your share always shows as what remains.</li>
+    <li>Update from <b>Settings › Updates</b>, as before.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>New: the Google scripts now update themselves (10 Oct)</h2>
+    <ul class="small">
+    <li><b>Paste once, never again.</b> The <b>Card alerts sync</b> and the <b>Setup link</b> code below is now a small <b>loader</b>. It downloads the real code, checks it against a fingerprint, keeps it in your Google account and runs it. New versions install themselves, and if a new version ever fails to start it goes back to the one that worked.</li>
+    <li><b>Already using the sync?</b> Paste the new loader over the old code in the same project and Save. Your token, cards and 10-minute timer are kept, so you don't need to run install again. For the <b>Setup link</b> also do Deploy › Manage deployments › pencil › New version › Deploy once. If the loader asks for the Notion key, leave the line empty.</li>
+    <li><b>What it contacts:</b> about once a day it reads the public update sheet. If <code>COUNT_ME</code> is <code>true</code> it also makes one anonymous visit count with no name, email or ID, so the author can see roughly how many people use it. Nothing else leaves your account beyond what the sync already did with your own Notion and Gmail.</li>
+    <li><b>Two switches</b> at the top of the loader: change <code>AUTO_UPDATE</code> to <code>false</code> to stop all update checks (you keep the code you have), or <code>COUNT_ME</code> to <code>false</code> to switch off the visit count.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>New: Check for updates, no more copy and paste (9 Oct)</h2>
+    <ul class="small">
+    <li><b>Settings › Updates:</b> tap <b>Check for updates</b>. If there's a newer version you see what's new, and <b>Update now</b> replaces the script for you. Close it and open it again to use the new version.</li>
+    <li><b>Nothing happens by itself.</b> The app never checks for updates in the background. Tapping Check contacts the update server and sends nothing about you, and it works the same in the Private edition.</li>
+    <li><b>Safe by design:</b> each update is checked against a fingerprint before it is installed, your current version is kept, and <b>Restore previous version</b> puts it back.</li>
+    <li><b>Just this once</b> you need to paste this version the usual way. After that, updates come from Settings.</li>
+    </ul>
+  </article>
+  <article class="entry">
+    <h2>New: import statements, merchant categories, and a year-to-date view (7 Oct)</h2>
+    <ul class="small">
+    <li><b>Import statements:</b> Expenses tab › <b>Import statements (PDF)</b>. Pick one or more bank or credit card statements (password-protected ones ask once). Each spend you didn't log is added to Notion. Spends you already logged (by hand, the shortcut or auto-log) just get their card filled in. Ones waiting in your alert inbox are linked to the alert, so it stops asking. Importing the same statement again adds nothing. Card payments, refunds, incoming money, cash withdrawals and investments (IPO, SIP, broker) aren't counted as spending.</li>
+    <li><b>Big bank transfers (₹1 lakh or more):</b> after the rest is saved, you're asked about each one: <b>It was spending</b>, <b>Spending, but a one-off</b> (saved under "Big one-offs", outside your monthly budget), or <b>Just moving money</b> (skipped, and not asked again). <b>Skip all for now</b> asks again next time you import that statement. Card spends and debit card purchases of any size are always added.</li>
+    <li><b>Taking an import back:</b> Settings › <b>Imported statements</b> lists each import with <b>Remove</b> (tap twice). It deletes only the expenses that import added (they go to Notion's Trash for 30 days). Expenses you'd logged yourself stay, with the card it filled in cleared, and alerts it used go back to your inbox. Imports from before this update aren't listed.</li>
+    <li><b>Learns from your logging:</b> each imported spend gets the category (and the name) you've used for that merchant before, or else what the merchant's name suggests.</li>
+    <li><b>Merchant categories:</b> on any expense, <b>Edit › Category</b>. With "Always put … here" ticked, that merchant always goes there, its earlier expenses move too, and imports use it. Listed in Settings › Merchant categories.</li>
+    <li><b>Auto-log preview, clearer:</b> payments less than an hour old now show as "waiting" (in "Fill in what I miss" they're added only after an hour, if you haven't logged them), instead of "Nothing would have been added". If To do has unlogged payments from before auto-log started, the preview says those won't be added for you.</li>
+    <li><b>Year to date:</b> the top of the Trends tab shows what you've spent this year: the total, the monthly average, the change against the same months last year, each category's share (tap one to see its expenses), and where most of it went. It follows the Year summary's calendar year or financial year switch. The Expenses tab also has a year filter now.</li></ul>
+    <p class="small">The PDF is read on your iPhone; only the expenses go to Notion. The first import adds an <b>Import ID</b> column to your Expenses table. For a full year, import a few months at a time: each spend takes about half a second to save. Paste the new <b>Expenses Dashboard</b> (version 6.8). If you use the setup link, also paste it into the link's <b>dashboard</b> file and deploy a new version, so friends get it. The private edition has all of this too: paste it again.</p>
+  </article>
+  <article class="entry">
+    <h2>New: Private edition, kept on the iPhone only (7 Oct)</h2>
+    <p class="small">For a friend who doesn't want their spending in Notion or Google. Same dashboard, but there's no Notion, no Google script and no email reading. Everything is saved in one file on their iPhone (or in their own iCloud Drive, if they choose). Copy it from the <b>Private edition</b> section at the bottom.</p>
+    <p class="small">Your own setup doesn't change; don't paste this over your dashboard.</p>
+    <p class="small"><b>Update: merchant categories.</b> Open any expense › <b>Edit › Category</b>, pick one, and leave "Always put … here" ticked: that merchant always goes to that category, its earlier expenses move too, and future statements use it. A longer rule wins ("Swiggy Instamart" → Groceries even when "Swiggy" → Food &amp; Dining). See and remove them in Settings › Your data › Merchant categories. Paste the private edition again.</p>
+    <p class="small"><b>Update:</b> now reads statements whose rows start with a serial number (Bank of India and similar), joins descriptions that wrap onto a second line, and leaves out investments (IPO bids, SIPs, broker payments), withdrawals to self, and bank transfers of ₹1 lakh or more, so they don't count as spending. Paste the private edition again.</p>
+  </article>
+  <article class="entry">
+    <h2>New: add your cards and bank accounts from the dashboard (7 Oct)</h2>
+    <p class="small">Settings (gear) › <b>Cards &amp; bank accounts</b> lists every card and account, with <b>Rename</b> and <b>×</b>, and <b>+ Add a card or account</b>: pick credit card, debit card or bank account, the bank, an optional card name and the last digits. It shows exactly how it will appear ("HDFC Regalia ••1234").</p>
+    <ul class="small"><li><b>Credit cards</b> you add are recognised in alerts by their last digits.</li>
+    <li><b>Debit cards</b>: a bank alert that says "debit card XX1234" is tagged to that card, and the expense is logged as Debit Card.</li>
+    <li><b>Bank accounts</b>: bank alerts show which account they came from (for example "UPI · Example Bank ••1234").</li>
+    <li><b>Rename</b> keeps past expenses and the card's forex markup. <b>Remove</b> stops tagging it, and the script won't add it back when it rescans your email.</li></ul>
+    <p class="small">Paste all of these: the new <b>Expenses Dashboard</b> (version 6.7), the <b>Card Alerts Sync</b>, and, if you share them, the <b>shared-sheet edition</b> and the <b>setup-link code</b> (then Deploy › Manage deployments › New version).</p>
+  </article>
+  <article class="entry">
+    <h2>Cleaner empty chart, clearer sync warning (7 Oct)</h2>
+    <p class="small">With little or no spending yet, the chart's money axis showed "₹1, ₹1, ₹0, ₹0"; it now counts in whole rupees up to at least ₹1,000. "The alert sync hasn't run yet" now tells setup-link users to open the link › Card alerts › <b>Sync now</b> to see why. Paste the new <b>Expenses Dashboard</b> (version 6.6).</p>
+  </article>
+  <article class="entry">
+    <h2>Remove a person (7 Oct)</h2>
+    <p class="small">People tab › tap the person › <b>Edit details</b> › <b>Remove</b> (tap twice to confirm). They and their diary entries go to Notion's Trash, where you can restore them for 30 days; expenses already logged for them stay. Paste the new <b>Expenses Dashboard</b> (version 6.5).</p>
+  </article>
+  <article class="entry">
+    <h2>People tab: full width, diary per person (7 Oct)</h2>
+    <p class="small">The People cards no longer shrink with space on both sides: on iPhone each tab could size itself to its content, and now always fills the width. The combined diary is gone from the People list; tap a person to see their diary (days off fold into one row per month). Paste the new <b>Expenses Dashboard</b> (version 6.4).</p>
+  </article>
+  <article class="entry">
+    <h2>Fix: gap at the top and squeezed screens (7 Oct)</h2>
+    <p class="small">The real cause of the squeezed People tab: when the sync warning showed, the top bar ("7:43 AM · ⚠ Sync") was wider than the screen, which pushed the whole page sideways. 6.2's attempt made it worse (a gap above the top bar). Now the warning shows on its own without the time, the top bar always fits, and the gap is gone. Paste the new <b>Expenses Dashboard</b> (version 6.3).</p>
+  </article>
+  <article class="entry">
+    <h2>Tidier People tab, forex markup picker (7 Oct)</h2>
+    <ul class="small"><li><b>Days off fold up:</b> in the diary, each person's days off for a month are one row ("Nitu · Days off in October · 3 days") that opens like a dropdown to show the dates, each with its own ×.</li>
+    <li><b>Forex markup:</b> in Settings, pick each card's markup from a list (0% to 3.5%, or Other… for anything else) instead of typing it.</li>
+    <li><b>Layout:</b> the People tab now always fills the screen width; on some iPhones its cards were squeezed and shifted to the right.</li></ul>
+    <p class="small">Paste the new <b>Expenses Dashboard</b> (Settings should show version 6.2). If you use the setup link, paste it into the <b>dashboard</b> file there too and deploy a new version.</p>
+  </article>
+  <article class="entry">
+    <h2>Setup link: see whether the sync works (7 Oct)</h2>
+    <p class="small">Step 2 on the setup link now shows when the card-alert sync last ran and what it found, or the exact error if it failed, plus a <b>Sync now</b> button to run it straight away. Paste the new setup-link code into Code.gs, then Deploy › Manage deployments › pencil › New version › Deploy.</p>
+  </article>
+  <article class="entry">
+    <h2>New: one setup link that installs everything (7 Oct)</h2>
+    <p class="small">Friends no longer need a computer, the Notion template, or the copy-paste steps. The setup link walks them through the whole thing on their phone: Notion tables are made for them, card alerts start with one tap, the dashboard comes as a file that opens in Scriptable, and the shortcut, Back Tap and widget are checked off as they go. Set it up once from <b>For sharing only: the setup link</b> at the bottom of this page (it now also needs the dashboard pasted in as a second file).</p>
+  </article>
+  <article class="entry">
+    <h2>Shared-sheet edition: Run now starts setup (7 Oct)</h2>
+    <p class="small">Pressing <b>Run</b> in the script editor used to run a small helper and fail with <i>"Cannot read properties of undefined (reading 'replace')"</i>. Run now picks <b>start</b> by default, the same as <b>Expense Tracker › Start</b> in the sheet. Paste the new <b>Shared-sheet edition</b> into the template sheet; anyone with a copy can paste it too, or just use the menu.</p>
+  </article>
+  <article class="entry">
+    <h2>Better at reading loan and policy PDFs (7 Oct)</h2>
+    <p class="small">The PDF reader used to look only for "Label: value" on one line, so it missed figures laid out in tables. It now also reads:</p>
+    <ul class="small"><li><b>Tables:</b> a row of headings with the values on the row below (Policy No. · Start date · End date · Sum insured), and a label with its value on the next line.</li>
+    <li><b>Google's reader output:</b> a block of labels followed by a block of values, and statement rows where the date isn't first. A loan statement now gives all of its EMIs instead of just 2.</li>
+    <li><b>Small print:</b> footnote marks ("Interest Rate¹", "Regular EMI Amount⁴"), "Rs. 18,456/-", "₹1 Crore", "5 Lakh", dates like 12-Nov-26, LIC modes (YLY, HLY), receipt totals and payment dates.</li>
+    <li>It picks the regular EMI over the first one, and ignores phone and account numbers.</li>
+    <li>When nothing can be read on the iPhone, it offers to send the PDF to your Google script (which reads it a different way) instead of stopping at "nothing found".</li></ul>
+    <p class="small">Also fixes <i>"daysInMonth is not defined"</i>, which stopped the insurance email step. Paste the new <b>Expenses Dashboard</b> (Settings should show version 6.1) and the new <b>Card Alerts Sync</b> (or shared-sheet edition), then run <b>install</b> once.</p>
+  </article>
+  <article class="entry">
+    <h2>New: LIC and other policies found from your premiums (7 Oct)</h2>
+    <p class="small">LIC doesn't email policy numbers or schedules (only BillDesk receipts and bill reminders), so the email reader skipped it. Now:</p>
+    <ul class="small"><li><b>From your bank alerts:</b> insurance premiums you've paid in the last 15 months (LIC, Policybazaar, insurers by name) that aren't on a policy yet show under <b>Premiums seen in your bank alerts</b>, with how often they seem to recur and when the next one is likely. <b>Track it</b> opens the policy form filled in; <b>Not insurance</b> stops it being suggested. Different amounts to the same insurer are treated as different policies.</li>
+    <li><b>From your email:</b> LIC's BillDesk receipts and premium-due reminders (CRED, banks) are now read too, matched by the premium amount.</li>
+    <li>Premiums found this way also mark yearly policies paid, not just monthly ones.</li></ul>
+    <p class="small">Paste the new <b>Expenses Dashboard</b> (Settings should show version 6.0) and the new <b>Card Alerts Sync</b> (or shared-sheet edition). The script looks back a year once more to pick up past LIC emails.</p>
+  </article>
+  <article class="entry">
+    <h2>Insurance folds too (7 Oct)</h2>
+    <p class="small">Insurance on the Loans &amp; insurance tab now folds into one line like Loans (policies, the next premium and when, premiums a year). Tap it to open or close; it stays the way you left it. It starts open, and while you haven't folded it, it opens by itself when a premium is due soon or overdue, or a policy or document is waiting for you to check. Paste the new <b>Expenses Dashboard</b> code; Settings should show version 5.9.</p>
+  </article>
+  <article class="entry">
+    <h2>Fix: Insurance table not created, and loans fold away (7 Oct)</h2>
+    <p class="small"><b>Insurance:</b> if your Expenses table sits at the top of your Notion workspace (not inside a page), Notion doesn't let scripts add a table next to it, so no policies showed. The Insurance table is now added next to your Loans or People table instead (inside Friends &amp; Family, for example). Premiums bought through Policybazaar and similar brokers, which your bank shows in the broker's name, are now matched to the right policy by amount.</p>
+    <p class="small"><b>Loans</b> on the Loans &amp; insurance tab fold into one line (open loans, EMI a month, what's left, any EMI due or late). Tap it to open the full loan details; it stays the way you left it.</p>
+    <p class="small">Paste the new <b>Expenses Dashboard</b> code (Settings should show version 5.8) and the new <b>Card Alerts Sync</b> (or shared-sheet edition).</p>
+  </article>
+  <article class="entry">
+    <h2>New: insurance documents (7 Oct)</h2>
+    <p class="small">Open a policy and tap <b>Add a document</b>, or <b>From PDF</b> at the top of Insurance, then pick the policy schedule, a renewal notice or a receipt from Files.</p>
+    <ul class="small"><li><b>Read on your iPhone.</b> Password-protected PDFs work too: type the password once (often your date of birth) and you can have it remembered on this iPhone.</li>
+    <li><b>What's picked out:</b> cover, premium and how often, start, renewal and end dates, and who's covered (relationships only, never names or dates of birth). It also tries for benefits: no-claim bonus, room rent, co-pay, pre-existing and specific illness waiting periods (with the date cover starts), pre/post hospital days, check-ups, restore benefit and riders.</li>
+    <li><b>You confirm.</b> The policy shows what would change and which benefits would be added. <b>Use these</b> saves them; <b>Ignore</b> doesn't. A PDF for a policy you haven't added becomes a new policy.</li>
+    <li><b>Kept for later.</b> A copy goes to iCloud Drive › Scriptable › Insurance, listed under <b>Documents</b> on the policy; tap it to open (handy for a claim).</li>
+    <li><b>Scans</b> go to your Google script if you've set up the upload link (the same one loan documents use).</li>
+    <li><b>From your email:</b> policy schedules and policy copies your insurers attach to emails are read by the Google script, a few a day, and shown on the policy the same way, with a link to the email.</li></ul>
+    <p class="small">Update both scripts: the <b>Expenses Dashboard</b> (Settings should show version 5.7) and the <b>Card Alerts Sync</b> (or shared-sheet edition). If you use the upload link, also redeploy: Deploy › Manage deployments › pencil › Version: New version › Deploy.</p>
+  </article>
+  <article class="entry">
+    <h2>New: insurance on the Loans &amp; insurance tab (7 Oct)</h2>
+    <p class="small">Your life, health, home and motor policies now sit next to your loans. For each one you'll see the next premium and when it's due (or that it auto-debits), the last premium paid, cover, who's covered, and a list of benefits you can fill in: bonus, free check-ups, waiting periods, room rent limit and so on.</p>
+    <ul class="small"><li><b>From your email:</b> once a day the Google script reads premium receipts, "premium due" and renewal notices, and Policybazaar emails. It creates an <b>Insurance</b> table next to your Expenses table and adds each policy it finds as a suggestion. Tap <b>Track it</b>, then <b>Edit</b> to fill in anything missing. Only the last 4 digits of policy numbers are saved.</li>
+    <li><b>Paid or not:</b> a premium is marked paid from the insurer's receipt email, from a card or bank alert with the insurer's name and the premium amount, or with <b>Mark paid</b>. The next due date then moves on by itself.</li>
+    <li><b>Reminders:</b> your phone reminds you 15 days and 2 days before a premium is due, and 3 days before the grace period ends. For auto-debit policies you get one heads-up the day before. Upcoming and overdue premiums also show in To do on the Overview.</li>
+    <li><b>Add one by hand:</b> gear › <b>Insurance</b> › <b>Add a policy</b>, or Add on the Loans &amp; insurance tab.</li></ul>
+    <p class="small">Update both scripts. Paste the new <b>Expenses Dashboard</b> code (Settings should show version 5.6). Replace the code in your Google Apps Script with the new <b>Card Alerts Sync</b> (or the shared-sheet edition) and save; nothing else to set up.</p>
+  </article>
+  <article class="entry">
+    <h2>New: drivers, milk, newspaper and your own groups in People (7 Oct)</h2>
+    <p class="small"><b>Who</b> now has Driver, Cook, Milk and Newspaper, and <b>New group…</b> for anything else (car cleaner, tuition, gym). Each person also has <b>How you pay them</b>:</p>
+    <ul class="small"><li><b>Monthly salary</b>: works the way domestic help always has, with days off, paid leave and advances.</li>
+    <li><b>Per day</b> (milk, paper): set the daily amount, e.g. ₹68 for two packets. Tap the days with no delivery on the calendar, and the month's bill is the days delivered times that amount. Payments made by the 5th (or the day you set) count for the month before.</li>
+    <li><b>Fixed monthly bill</b>: the same amount every month.</li></ul>
+    <p class="small">People are listed under their group. The first time you save someone, two columns, <b>Pay type</b> and <b>Rate per day</b>, are added to your People table in Notion. Paste the new <b>Expenses Dashboard</b> code; Settings should show version 5.5.</p>
+  </article>
+  <article class="entry">
+    <h2>New: a pay link in WhatsApp reminders (7 Oct)</h2>
+    <p class="small">The next time you send a reminder for money owed, you'll be asked once for your UPI ID (like name@okhdfc). After that every reminder ends with a <b>tap-to-pay</b> link that opens your friend's UPI app with your UPI ID and the amount filled in, plus your UPI ID written out in case the link isn't tappable. Change or remove it under the gear › <b>Pay link in reminders</b>. Your UPI ID stays on this iPhone. When they pay, the money coming in shows up on their page and asks whether it was for these bills, as before. Paste the new <b>Expenses Dashboard</b> code; Settings should show version 5.4.</p>
+  </article>
+  <article class="entry">
+    <h2>New: call or WhatsApp people from the People tab (7 Oct)</h2>
+    <p class="small">Open someone in <b>People</b> and tap <b>Link contact</b>: pick them from your iPhone contacts (or type a number). After that their page has <b>Call</b>, <b>WhatsApp</b> and <b>Message</b> buttons, and payment reminders for money owed go straight to their WhatsApp chat. The number is kept only in this iPhone's Keychain, never in Notion. The first time, iOS asks to let Scriptable see your contacts; if you say no you can still type numbers. Paste the new <b>Expenses Dashboard</b> code; Settings should show version 5.3.</p>
+  </article>
+  <article class="entry">
+    <h2>New: expenses that log themselves (7 Oct)</h2>
+    <p class="small">Gear › <b>Logging</b> has three choices: <b>I'll log myself</b> (as now), <b>Fill in what I miss</b> (anything you haven't logged within an hour is added for you) and <b>Fully automatic</b>. The category comes from what you chose before for the same merchant, and every guess says why ("You chose Food &amp; Dining for this merchant: 6 of 6 times"). When it's unsure, the expense is added marked <b>check category</b> and shows on the Overview with a category picker, so your fix teaches it. New users are asked once on the Overview.</p>
+    <p class="small"><b>Where payments come from:</b> your Gmail bank alerts (this sync, or a friend's card alerts sheet), or <b>bank SMS on the iPhone</b> for anyone who hasn't set up the Google sheet: a Shortcuts automation hands each SMS to the dashboard script, and the steps are in the Logging section. It always starts with a <b>preview</b>: nothing is added, the Overview shows "would have added 3 · you logged 6 of 9 yourself", and you tap <b>Go live</b> when it looks right. Card bill payments, loan EMIs, refunded spends and transfers to people in your People list are never added. Neither are payments from before you turned it on.</p>
+    <ol>
+      <li>Paste the new <b>Card alerts sync</b> code (and the sheet code below, for friends) and Save. No new permissions.</li>
+      <li>Paste the new <b>Expenses Dashboard</b> code; Settings shows version 5.2.</li>
+      <li>Gear › Logging › pick a mode › Save. Leave "Start with a preview" ticked for the first few days.</li>
+    </ol>
+  </article>
+  <article class="entry">
+    <h2>Faster refresh (7 Oct)</h2>
+    <p class="small">The dashboard asks Notion only for expenses that changed since the last refresh, and fetches alerts, bills, loans and people at the same time instead of one after another. It starts loading the moment the page is on screen. Every 6 hours, when you tap Refresh, or after anything is deleted, it re-reads everything so removals show up too.</p>
+  </article>
+  <article class="entry">
+    <h2>New: add a loan from Settings (7 Oct)</h2>
+    <p class="small">Gear › <b>Add a loan</b>: the lender (as your bank's EMI alert names it), type, and the EMI and debit day if you know them, plus rate, amount owed and term if you want interest vs principal and months left. The Loans tab appears as soon as there's a loan. If your Notion copy has no Loans table yet, one is created next to your Expenses table. Paste the new <b>Expenses Dashboard</b> code.</p>
+  </article>
+  <article class="entry">
+    <h2>Smoother saving, and Settings behind a gear (7 Oct)</h2>
+    <p class="small"><b>Settings</b> now open from the gear at the top right, as a panel over the page; tap Done or outside it to close. Refresh is the circular-arrow button next to it, and the header just shows the time of the last update with a tick when the sync is healthy.</p>
+    <p class="small"><b>Saving</b> no longer jolts the page: the button you pressed shows a spinner, a thin bar runs under the header until everything (including loans and people) has reloaded, and the confirmation pops up as a short message at the bottom instead of a box that pushes the page down. Charts no longer replay their animation after each save. Paste the new <b>Expenses Dashboard</b> code; Settings should show version 5.0.</p>
+  </article>
+  <article class="entry">
+    <h2>Fix: People tab missing (7 Oct)</h2>
+    <p class="small">The People tab used to stay hidden if the dashboard couldn't open the new Notion tables. It now always shows, and tells you how to connect them if that's the problem. Settings now shows the dashboard version (this one is 4.9), so you can check the new code is in. Paste the new <b>Expenses Dashboard</b> code.</p>
+  </article>
+  <article class="entry">
+    <h2>Update: money owed lives in People, and a days-off calendar (6 Oct, night)</h2>
+    <p class="small"><b>Owed to you</b> has moved into the People tab. Each person's page lists their unpaid split bills with <b>Paid</b>, <b>All paid back</b> and the <b>WhatsApp reminder</b>; people who owe you sit at the top of the list. A name on a split bill ("Asha") is matched to the person ("Asha Verma"); if it could be two people, or isn't in your list yet, it shows with its own page where you can <b>Link</b> it or <b>Add to People</b>, once. When someone who owes you sends you money, their page asks whether it was for those bills. It never marks them paid by itself. On the Overview, the Friends &amp; family row now carries the total owed.</p>
+    <p class="small"><b>Days-off calendar.</b> On your domestic help's page, a month calendar shows their days off. Go back to any month, tap the days you missed (switch to <b>Half day</b> for half days), tap a marked day to clear it, then <b>Save</b>, all in one go. Tapping a month under Pay jumps the calendar there, and the pay for that month updates.</p>
+    <ol><li>Paste the new <b>Expenses Dashboard</b> code. Also paste the new <b>Card alerts sync</b> code (a small change: one-word names like "Asha" are used for split bills only, never to file bank transfers, so another Asha's payment isn't filed under her).</li>
+    <li>If you haven't done the steps in the section below yet, do those too.</li></ol>
+  </article>
+  <article class="entry">
+    <h2>New: Friends &amp; family, money coming in, and four fixes (6 Oct, evening)</h2>
+    <p class="small"><b>People tab.</b> A daily diary of money with people. Add your domestic help with their monthly pay, pay day and paid days off; the tab then shows each month's pay (less any extra days off), what you've paid, advances and what's left. Tap <b>Day off today</b> to mark leave. For friends and family it shows what you've sent and got back, plus anything they owe from split bills. Payments to domestic help also go into your expenses (as Household), so they count in your spending; money to friends and family doesn't.</p>
+    <p class="small"><b>Automatic filing.</b> Bank transfers to or from anyone in your People list are added to the diary by the sync. Transfers to people it doesn't know show under <b>Who is this?</b>: pick the person once and future ones are filed by themselves, or tap <b>Not a friend</b>.</p>
+    <p class="small"><b>Money coming in</b> is now saved too (it used to be dropped), as "Received" from people or "Refund" from lenders and shops. It never shows as an expense to log. A refund from a lender would be caught this way.</p>
+    <p class="small"><b>Fixes:</b> a part payment on a loan statement is no longer read twice; the account number is now read from lender statements; a loan no longer takes payments from before it started or from the same bank's other businesses (insurance, securities); and rows marked Duplicate never show as payments to log.</p>
+    <ol>
+      <li>In Notion, open <b>Friends &amp; Family</b> (sidebar › Private) › <b>•••</b> › <b>Connections</b> and add the same integration your Expenses table uses. This lets both the dashboard and the sync see the new People and Money Diary tables.</li>
+      <li>Paste the new <b>Card alerts sync</b> code into your Apps Script project and Save. No new permissions are needed. If you use the upload link, also do Manage deployments › edit › New version.</li>
+      <li>Paste the new <b>Expenses Dashboard</b> code into Scriptable.</li>
+      <li>Open the <b>People</b> tab › <b>Add a person</b>. Under "Names in bank alerts", add how your bank writes their name or their UPI ID, if you know it.</li>
+    </ol>
+  </article>
+  <article class="entry">
+    <h2>Fix: PDF reader error, and EMIs from statements (6 Oct)</h2>
+    <p class="small">The "unsupported type" error when adding a PDF is fixed. The reader now keeps each table row together, so a <b>statement of account</b> also gives the list of EMIs and part payments in it. Any payment your bank alerts missed is added to your loan (marked Ignored, so it never shows as an expense to log). Dues, charges, bounces and the foreclosure line are left out. An EMI that arrives as a plain bank debit now counts: the sync files such debits under Loan EMI. And a new loan's first EMI is now split right (mostly interest), even with "As of" set to that day.</p>
+    <p class="small">Paste both: the new <b>Expenses Dashboard</b> code, and the new <b>Card alerts sync</b> code. If you use the upload link, also do Manage deployments › New version.</p>
+  </article>
+  <article class="entry">
+    <h2>New: loan PDFs are read on your iPhone (5 Oct)</h2>
+    <p class="small">Loans tab › <b>Add a loan document (PDF)</b> now reads the PDF right on your phone: no Google script, upload link or email needed. If it has a password, you're asked for it (and can save it on the phone), so locked PDFs work too. It finds the loan by account number, or asks which loan it's for, then the figures wait on the card for <b>Use these</b>. Only scanned PDFs (photos of paper) can't be read here; for those it offers to send them to your Google script. Just paste the new <b>Expenses Dashboard</b> code.</p>
+  </article>
+  <article class="entry">
+    <h2>New: upload loan PDFs straight from the dashboard (5 Oct)</h2>
+    <p class="small">Loans tab › <b>Add a loan document (PDF)</b> › pick it in Files. It goes straight to your Google script, which reads it in a few seconds and tells you what it found ("read for Home loan · Example Housing Finance: rate 8.3%, outstanding ₹40L"). The figures then wait on the loan's card for <b>Use these</b>. Until you set up the link below, the button offers to send it by email instead.</p>
+    <p class="small"><b>One-time setup, on a computer</b>, in your Apps Script project (after pasting the new sync code and running <code>authorizeDocs</code>):</p>
+    <ol>
+      <li><b>Deploy › New deployment</b> › gear icon › <b>Web app</b>. Execute as: <b>Me</b>. Who has access: <b>Anyone</b>. Tap <b>Deploy</b> and allow access if asked.</li>
+      <li>Choose <code>uploadLink</code> in the toolbar › <b>Run</b>. Copy the link from the execution log (it ends with <code>?k=</code> and a key).</li>
+      <li>The link is also emailed to you ("Your loan upload link"). On your iPhone, open that email, press and hold the link › <b>Copy Link</b>.</li>
+      <li>Open the dashboard › <b>Loans</b> tab › <b>Add a loan document (PDF)</b> › pick any loan PDF › when it asks "Send it how?", tap <b>Paste upload link</b> › the copied link is already in the box › <b>Save</b>. That PDF is uploaded straight away.</li>
+    </ol>
+    <p class="small"><b>Keep the link private</b>: the key in it is what stops others sending files to your script. If it leaks, run <code>resetUploadKey</code>, then <code>uploadLink</code> again, and paste the new link. <b>When you paste future code updates</b>, also do Deploy › Manage deployments › edit (pencil) › Version: <b>New version</b> › Deploy, because the upload link keeps running the version it was deployed with. The 10-minute sync always runs the latest code.</p>
+  </article>
+  <article class="entry">
+    <h2>New: loan PDFs (5 Oct)</h2>
+    <p class="small">The sync now reads PDFs your lenders email you (statements of account, repayment schedules, interest certificates, foreclosure statements, sanction letters). Google Drive turns each one into text, scans included, and the copy is deleted straight away. Only the figures are kept, and nothing changes until you confirm: the loan's card in the Loans tab shows "From the lender's statement (2 Jan 2026): rate …, outstanding …, EMIs left …" with <b>Use these</b> or <b>Ignore</b>. Interest certificates are shown next to the dashboard's estimate, since they're the figure to file with.</p>
+    <p class="small"><b>Password-protected PDFs</b> (common with some banks) can't be read by Drive. The card says so; open the PDF in Files, enter the password, then Share › Print › Share again › <b>Send loan doc</b>, which sends an unlocked copy.</p>
+    <ol>
+      <li>Paste the new <b>Card alerts sync</b> code and Save.</li>
+      <li><b>Important:</b> choose <code>authorizeDocs</code> in the toolbar › <b>Run</b> › allow Drive access. Until you do, Google pauses the 10-minute sync, because the code now asks for a new permission.</li>
+      <li>Paste the new <b>Expenses Dashboard</b> code.</li>
+      <li>For a PDF that isn't in your email: Loans tab › <b>Add a loan document (PDF)</b>. Pick it in Files; the first time, enter your Gmail address. Mail opens with it attached and tagged; tap Send. A password-protected PDF is caught before sending, with steps to unlock it.</li>
+      <li>Optional, to send from other apps' Share button: in Shortcuts, make a new shortcut named <b>Send loan doc</b>. In its details, turn on <b>Show in Share Sheet</b> (Files and PDFs). Add <b>Send Email</b>: to your Gmail address, subject <code>[LOAN-DOC]</code>, message = Shortcut Input. Turn off Show Compose Sheet. It needs the Mail app set up with an account.</li>
+    </ol>
+  </article>
+  <article class="entry">
+    <h2>Fix: a top-up loan's EMIs (5 Oct)</h2>
+    <p class="small">A bank may send no debit alert for a top-up loan's small EMIs, so the sync never saw them. The lender did email an "EMI received" receipt every month. The sync now saves those receipts as payments, unless a bank alert for the same EMI already exists, and matches them to the right loan by account number. The first run after you paste reads a year of receipts. The top-up shows in the Loans tab as "Home loan top-up · Example Housing Finance".</p>
+    <p class="small">For future top-ups (with any lender): an email naming a new loan account adds it as "Found in your email", named "Home loan top-up" when the email says top-up. And if a second regular debit to a lender you already track shows up at a different amount, the Loans tab asks "Another loan with Example Bank? (a top-up, say)" with Track it / Not a loan.</p>
+    <ol><li>Paste the new <b>Card alerts sync</b> code, and the new <b>Expenses Dashboard</b> code.</li></ol>
+  </article>
+  <article class="entry">
+    <h2>Fix: past-EMI look-back saved wrong rows (5 Oct, early)</h2>
+    <p class="small">The one-time look-back over six months of bank alerts saved a few old card spends and newsletters that mention "EMI", and a second copy of an EMI (the bank's email arrived hours after the SMS). I've marked those rows as duplicates in Notion. The new sync code only keeps clear loan repayments from your bank account, and treats an SMS and a late bank email of the same payment on the same day as one. The Loans tab now shows the interest vs principal chart as soon as one loan has figures.</p>
+    <ol>
+      <li><b>Paste the new Card alerts sync code soon</b>, so the look-back stops adding rows.</li>
+      <li>Paste the new <b>Expenses Dashboard</b> code.</li>
+    </ol>
+  </article>
+  <article class="entry">
+    <h2>New: a Loans tab, interest vs principal, rate changes and term (4 Oct, late)</h2>
+    <p class="small"><b>Loans tab.</b> Loans now have their own tab next to Events. The top shows what you pay in EMIs every month, what's still to repay, this year's interest and principal, a month-by-month chart for all loans together (one loan until it closes, the next from its first EMI), and what was paid in the month you're viewing. Each loan has its own chart: orange is interest, blue is principal, faded bars are estimates; tap a bar for that month's split. The Overview keeps a one-line Loans summary that opens the tab.</p>
+    <p class="small"><b>Rate changes.</b> Each rate is kept with the date it applies from, so earlier months keep the old rate and this year's interest stays right for tax time. When your lender emails a new rate, the sync adds it from the date in the email and emails you once. If you change it yourself, tap <b>Rate changed, or update outstanding</b>, enter the new rate and the date it applies from.</p>
+    <p class="small"><b>When the lender changes the EMI instead</b> (as some lenders do when rates fall): the new EMI is used from the month it's debited, and the card works out the rate it implies if the term stayed the same, e.g. "EMI went down from ₹50,000 to ₹48,800 on 2 Sep … your rate went from 8.75% to about 8.47%", with a <b>Use 8.47%</b> button that adds it to the rate history. If a prepayment came just before, it says so instead, since the EMI may have dropped because of the prepayment.</p>
+    <p class="small"><b>Term.</b> The end date and EMIs left are worked out from the outstanding, rate and EMI, which is how banks handle a rate change when the EMI stays the same. Add the original term (in months, from your sanction letter) to see how many months earlier or later than planned the loan now ends. Prepayments pull it earlier, rate rises push it later.</p>
+    <p class="small"><b>A new loan needs only the rate now.</b> Without an outstanding, it starts from the amount disbursed. If this week's debit is interest only, it shows as almost all interest, which is right.</p>
+    <ol>
+      <li>Paste the new <b>Expenses Dashboard</b> code into Scriptable.</li>
+      <li>Paste the new <b>Card alerts sync</b> code into your Apps Script project and Save.</li>
+      <li>After the first debit: Loans tab › <b>Add rate</b>, and the term if you know it.</li>
+    </ol>
+  </article>
+  <article class="entry">
+    <h2>Clearer loans in past months (4 Oct, late)</h2>
+    <p class="small">When you look at an earlier month, the Loans row names the lender ("Example Housing · ₹50,000 paid 2 Aug"), and the panel starts with <b>Paid in August</b>: each payment that month with its lender, type and date, then your loans as they are now. The top-up loan's ₹474 debits now count as its EMIs instead of fees. Paste the new <b>Expenses Dashboard</b> code; the sync code also changed slightly, so paste that too.</p>
+  </article>
+  <article class="entry">
+    <h2>New: loans read from your email, and why EMIs were missing (4 Oct, late)</h2>
+    <p class="small"><b>Why you didn't see your EMIs:</b> most likely your Notion integration can't open the <b>Loans</b> table yet, so the dashboard had no loans to show in any month. The EMIs themselves are safe in Notion. The new dashboard says so plainly when this happens, instead of hiding the Loans row.</p>
+    <p class="small"><b>What's new:</b> once a day the sync reads your lenders' emails ("EMI due", "EMI received", sanction, disbursement, foreclosure). It fills in the account number, EMI, debit date, rate and loan amount, and closes a loan when the lender confirms it. A loan it hasn't seen before shows up as "Found in your email" for you to confirm. The first run also reads six months of bank alerts for EMI debits, so a new user's loans are recognised on day one. Regular auto-debits with no lender name (3+ months, same amount, same date) are suggested too, with a "Not a loan" button.</p>
+    <ol>
+      <li>In Notion, open <b>Loans</b> (sidebar › Private) › <b>•••</b> › <b>Connections</b> and add the same integration your Expenses table uses.</li>
+      <li>Paste the new <b>Expenses Dashboard</b> code into Scriptable.</li>
+      <li>Paste the new <b>Card alerts sync</b> code into your Apps Script project and Save. No new permissions are needed.</li>
+    </ol>
+  </article>
+  <article class="entry">
+    <h2>Fix: duplicate alerts and missed $ spends (4 Oct, night)</h2>
+    <p class="small">Some payments you had already logged showed up again in To do, as a second copy from the forwarded SMS with the card shown as "Unknown". I've marked those copies as duplicates in Notion, so they're gone. The new sync code also catches this case from now on. It also reads alerts written with a currency symbol, like "$12.00 at EXAMPLE STORE", which were being skipped. After you paste it, alerts from the last 2 days are read again, so that one will appear.</p>
+    <ol>
+      <li>Tap <b>Copy the sync loader</b> (in the "Card alerts sync" section, not the sheet code at the bottom).</li>
+      <li>In your Apps Script project, select all, paste, and Save.</li>
+    </ol>
+  </article>
+  <article class="entry">
+    <h2>New: loan switch and a simpler Overview (4 Oct)</h2>
+    <p class="small"><b>Loan switch.</b> A loan marked closed keeps this year's interest and principal for tax time, and no longer raises "late" alerts. A new loan shows "Waiting for the first EMI debit" until the first auto-debit arrives. The sync then picks up the EMI amount and date by itself and reminders start from the next month. A payment that is a fee, not an EMI, is counted as fees. Once both loans have figures, you'll also see this year's combined home-loan interest.</p>
+    <p class="small"><b>Overview.</b> The page is about half as long: a <b>To do</b> card at the top for anything that needs you; spending and the top 5 categories in one card; one <b>Cards, loans and money owed</b> card with a summary line for each (tap a row to open it); and the 3 latest expenses.</p>
+    <ol>
+      <li>Paste the new <b>Expenses Dashboard</b> code into Scriptable.</li>
+      <li>Paste the new <b>Card alerts sync</b> code into your Apps Script project and Save.</li>
+      <li>After the first EMI, open <b>Loans</b> › <b>Add rate and outstanding</b> and enter them from your lender's app.</li>
+    </ol>
+  </article>
+  <article class="entry">
+    <h2>Home loan EMI (4 Oct)</h2>
+    <p class="small">A home loan EMI (for example ₹50,000 on the 2nd) is tracked as a fixed cost: it's shown under the month's total and in a new <b>Loans</b> card, and no longer appears as "payments not logged". The card shows whether this month's EMI is paid, due or late. Add your rate and outstanding there to see the balance, months left, interest vs principal and figures for the financial year. The sync emails you 2 days before each debit, and again if a debit isn't seen 2 days after the due date.</p>
+    <ol>
+      <li>In Notion, open the new <b>Loans</b> table (sidebar › Private) › <b>•••</b> › <b>Connections</b> › add your integration.</li>
+      <li>Paste the new <b>Expenses Dashboard</b> code into Scriptable.</li>
+      <li>Paste the new <b>Card alerts sync</b> code into your Apps Script project and Save. No new permissions are needed.</li>
+      <li>In the dashboard's Loans card, enter the rate and outstanding from your lender's app (the outstanding right after an EMI, with that EMI's date).</li>
+    </ol>
+  </article>
+  <article class="entry">
+    <h2>New: WhatsApp reminders (4 Oct)</h2>
+    <p class="small">In <b>Owed to you</b>, each person now has a <b>WhatsApp reminder</b> button. It opens WhatsApp with a friendly message listing what they owe, and you tap Send. The first time, pick their number from your contacts (Scriptable will ask for Contacts access) or type it in. It's saved only on this iPhone, never in Notion. To change a number later, tap the person and use the link under their expenses. Just paste the new <b>Expenses Dashboard</b> code below; nothing else to set up.</p>
+  </article>
+  <article class="entry">
+    <h2>New: card bill check and foreign spends (4 Oct)</h2>
+    <p class="small">When a card bill arrives (Scapia's statement email, or CRED's "bill generated" email for HDFC, Amex and others), the sync adds up your alerts for that billing period and compares the total with the bill. If the bill is higher, you get an email, and the <b>Credit cards</b> card on the dashboard lists each bill due that month, whether it's paid, and how much extra and the likely reason, such as a fee plus 18% GST.</p>
+    <ol>
+      <li>In Notion, open the new <b>Card Bills</b> table (in your sidebar under Private) › <b>•••</b> › <b>Connections</b> and add the same integration your Expenses table uses.</li>
+      <li>In your Apps Script project, select all, paste the new <b>Card alerts sync</b> code below over it, and Save. Your token is already stored, so leave the <code>NOTION_TOKEN</code> line empty.</li>
+      <li>Choose the function <code>syncAlerts</code> in the toolbar and tap <b>Run</b> once. Google will ask for one new permission, to send you email. Allow it, or the 10-minute timer will stop.</li>
+      <li>In Scriptable, paste the new <b>Expenses Dashboard</b> code over the old one.</li>
+    </ol>
+    <p class="small"><b>Foreign-currency spends</b> (Amex, HDFC, Axis) are now saved too. The rupee amount is estimated from that day's exchange rate plus the card's forex markup and GST on it, and shown with "≈". The markups start at 3.5% for Amex, HDFC and Axis and 0% for Scapia. If a bank changes its rate, update it in the dashboard under <b>Settings › Forex markup</b>; it's saved to Notion and the sync uses it from then on. On bills with foreign spends the check allows 1.5% of those spends for rate differences. Anything above that is flagged as extra.</p>
+    <p class="small">That first run checks your bills from the last 4 months. Bills from before your alerts started show as "Can't check". A bank that doesn't email its bill isn't covered yet. If you forward that bank's bill SMS with the same <code>[CC-SMS]</code> automation, it will be picked up.</p>
+  </article>
+  <a class="back" href="../">← Back to the Copy page</a>
+</main>
+<script src="../../analytics.js" defer></script>
+</body>
+</html>

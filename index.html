@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>हिशोब</title>
+<style id="hishob-font">@font-face { font-family: "Hishob"; src: url(data:font/woff2;base64,d09GMgABAAAAAAS0AA4AAAAACSwAAARiAAFNDgAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbIByBQAZgAFQRCAqGWIU7ATYCJAMcCxQABCAFhGgHIBuKB1FUUSoovkqw4RBbiX+UOmNZVk9qFmuKmHM7fqyI+O+V9VY8D63979zZeTLvY+LZvIomCIWsEhI1WCJ0lcgO/27rPW3wekaProFVMRSr6/OqGrzoJBrefayBRhZjI1va4/tn7f5/lYhOf+/0j2m/0vRRUzQLPApsLxqb5jpfAyTBgAat6XVeFEhhF9AHC0zy3doz/CF42EXWeM1VEiJ0uHYnwTRAETEWwcQyNuDR44GRwECFfgASsI6YVv3SGzcr0sBSFI41fxYeBAwQVBPX5amhh8406zjSRtwCzQEREZ1KXkYLHvIw2mkQu/l710jy82hzhuplUdWyMkMGlJclFnCmeyHXiYMABcvct/DUeIeAo43bAroX/+OBdmVWI5DXRQhYhYCCjjnYmUfHQcA0Y0Vt2xrW7JpLC+hHeu+f2kXnnbJfBF/EwP5M0MAcwISsBnIeAHWjjnS3WdywnajBkjVrSJWAUCdpm7pJ6NE0LxJ77ZAJQg83StsIxjVJ6SOWMHoKS+gS1JpqIQG4tM1cXRlT470F0Rr2hAmM0UXYfFySBk2y8XVNB3sOlwQQYC7QHJiIyBLQdLXH2XS890jz4Z6bTQ5HXjA1v9ijgc0xuy/DZmIUNILLQMdQyxOb6VLSXRuHxPN5WJW6txmzzFXmR69v3tC775DaCdmvOX92MCG5eh8XM4ztwZqM/4KPAMm06u1768/g+uMphzLT/eW2G18towQNdPDykYs247FWc6Yrx/sWgFqApFv1Wa0NomREdUUmrdLJdJo+YO3ubjIW1O42Ji4nR452/EA4aXhkhMNfG1cro8kvczKy0wzNMbcfAS0H3Iw9lAr7BLgXZ0cUXUvYydBycvOVuNUGuHtTr+8Z1n11OyIwUUWtiEFDh6K0MzgIGQF2SJtj9hQbOtN8pfQ1tCYk06rPKhNpm/NW+Pr4c387FHnXpwMXgcqSzHbLCcldFvNAYJhH/3MlawpsPllz9BQWKnAWesrGzFzww/w861Y5xMpp5OTmflhZFxYT7Sz14rT2+/Mb5A6ZNLaTTSryzjj3YEMFAzw75h167e8MIMi5GX9tGw1SZjr+NWjdB3j3sdsYAN7vWU7+/+z4cXL3AmMFhC/nGm9DqC6PAfG0QfnmlbT/Uk5WOn8gLtVPa/J3BM1D00DwtpHLtKU2PEUAMUcHKGZ4BToHrAbVGvfAwA8/z9CqfNAKFalWQiVLtjIopgwsKDEhESmUnwKZVNIUQEWqVgSH8laoHAiUqLa/qlJAqZArldFelnuV+df5MhTKxxKuUI1saVAhCuDC4bKUy5OmhAifhJCIAz+RvIVwsOpCHx418u6Hlk+j4UqUUilUAL0tFCpC9gk5tHShMhmws0Jdxyen4CBfmlw4aFa2wjwq6cREk6UxInbuaQeoMlKZOOXKrNnL0q3eWuFtFW2gnCcPSt7DJQExRYF9eDJCuIonIoE9NS+LlykgwkrBTLgKaXDlaD5r82pjRT17AA==) format("woff2"); font-weight: 400; font-style: normal; font-display: block; unicode-range: U+0900-097F, U+200C-200D }
+.brand { font-family: Hishob, serif; font-weight: 400; font-size: 1.15em; font-synthesis: none }</style>
+<style>
+  :root { --bg:#F3F5F2; --card:#fff; --fg:#16201B; --muted:#5B675F; --line:#DCE2DD; --accent:#1F7A4D; --on:#fff }
+  @media (prefers-color-scheme: dark) { :root { --bg:#101512; --card:#18201B; --fg:#E8EEE9; --muted:#9AA79F; --line:#2A352E; --accent:#4FBF86; --on:#0B120E } }
+  * { box-sizing: border-box }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 -apple-system, system-ui, "Segoe UI", sans-serif }
+  main { max-width:520px; margin:0 auto; padding:48px 16px }
+  h1 { font-size:28px; margin:0 0 6px }
+  p { color:var(--muted); margin:0 0 24px }
+  a.card { display:block; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px 18px 16px; margin-bottom:14px; color:inherit; text-decoration:none }
+  a.card:focus-visible { outline:3px solid var(--accent); outline-offset:2px }
+  a.card b { display:block; font-size:18px; margin-bottom:2px }
+  a.card span { color:var(--muted); font-size:15px }
+  a.card em { display:inline-block; margin-top:12px; padding:10px 16px; background:var(--accent); color:var(--on); border-radius:10px; font-style:normal; font-weight:600 }
+  p.lead { margin:0 0 16px }
+  ul.list { margin:0 0 20px; padding-left:1.2em; color:var(--muted); display:grid; gap:6px }
+  .need { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px 18px; margin-bottom:18px }
+  .need ul { margin:8px 0 0; padding-left:1.2em; color:var(--muted); display:grid; gap:4px }
+  a.card.main { border-color:var(--accent) }
+  details { margin-top:6px; border-top:1px solid var(--line); padding-top:10px }
+  summary { cursor:pointer; font-weight:600; min-height:44px; display:flex; align-items:center }
+  summary::after { content:"▾"; margin-left:8px; color:var(--muted) }
+  summary:focus-visible { outline:3px solid var(--accent); outline-offset:2px }
+  details p { margin:0 0 12px; font-size:15px }
+</style>
+</head>
+<body>
+<main>
+  <h1><span class="brand">हिशोब</span></h1>
+  <p class="lead">An expense tracker for your iPhone. See where your money goes, and log a spend in two seconds with a double tap on the back of your phone.</p>
+  <ul class="list">
+    <li>A dashboard with charts, a monthly budget and your spending by category</li>
+    <li>Split bills, send WhatsApp reminders for money owed, track loan EMIs and insurance</li>
+    <li>Import bank statements, and optionally log automatically from bank alert emails</li>
+  </ul>
+  <div class="need">
+    <b>What you need</b>
+    <ul>
+      <li>A free <b>Notion</b> account. Your expenses are stored there, in your own tables.</li>
+      <li>The free <b>Scriptable</b> app from the App Store.</li>
+      <li>An iPhone and about 10 minutes. Nothing costs money.</li>
+    </ul>
+  </div>
+  <a class="card main" href="setup/">
+    <b>Start setup</b>
+    <span>Step by step, on your iPhone. Your data stays in your own Notion; nothing is stored on anyone else's server.</span><br>
+    <em>Open setup</em>
+  </a>
+  <a class="card" href="copy/#private">
+    <b>No Notion? Private edition</b>
+    <span>Keeps everything in a file on your phone. No Notion, no Google. No automatic card alerts.</span>
+  </a>
+  <a class="card" href="copy/">
+    <b>Already set up?</b>
+    <span>The Copy page has the latest code and what's new.</span>
+  </a>
+  <details>
+    <summary>Questions</summary>
+    <p><b>Does it cost anything?</b> No. Notion's free plan, Scriptable and the dashboard are free.</p>
+    <p><b>Do I need Google?</b> Only if you want automatic logging from bank alert emails. The core setup needs no Google account.</p>
+    <p><b>Who sees my data?</b> Only you. It lives in your Notion, and the dashboard runs on your phone.</p>
+  </details>
+</main>
+<script src="analytics.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+// Expense Tracker · Card alerts sync · LOADER (paste this once; it keeps the real code up to date for you)
+//
+// What this is: a small program that downloads the real code from the Expense Tracker pages, checks it against a fingerprint
+// published separately, stores it in this Google account, and runs it. When a new version is released it updates itself,
+// so you never have to copy and paste again. If a new version ever fails to start, it goes back to the one that worked.
+//
+// What it sends: about once a day it reads the public Config sheet to see if there is a newer version. If COUNT_ME is true it
+// also makes one anonymous visit count (no ID, no name, no email, nothing from your account) so the author can see roughly how
+// many people use it. Nothing else leaves your account except what the app already does with your own Notion and Gmail.
+//
+// Your two switches (change true to false, then Save):
+const AUTO_UPDATE = true   // false: never look for updates (the code you have now is kept)
+const COUNT_ME = true      // false: don't make the anonymous daily visit count
+const NOTION_TOKEN = ""   // paste your Notion key (starts with ntn_) here once, run install, then clear it (leave the quotes) and Save
+//
+// Setup is in the Copy page for this script: paste this whole file, Save, then follow the steps there.
+
+const LD_EDITION = "alerts"
+const LD_CONFIG = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_YJ9V0bVj-CpB9zLIGyM6NTOmoccEBnl_QDhktLK4D982-h_9OL_VIQRuQ-h52GxNvSdp93NQ4Pn3/pub?gid=0&single=true&output=csv"      // the public Config sheet that says which version is current
+const LD_COUNT = "https://expense-tracker.goatcounter.com/count"        // anonymous visit counter (one hit a day); empty means none
+const LD_ENTRY = ["install", "uninstall", "syncAlerts", "rescanCards", "authorizeDocs", "uploadLink", "resetUploadKey", "doPost"]          // the functions Google (or you) can run; each one hands over to the real code
+
+// ---- the functions Google and you run: each one hands over to the real code ----
+function install() { return ld_mod_().install.apply(null, arguments) }
+function uninstall() { return ld_mod_().uninstall.apply(null, arguments) }
+function syncAlerts() { return ld_mod_().syncAlerts.apply(null, arguments) }
+function rescanCards() { return ld_mod_().rescanCards.apply(null, arguments) }
+function authorizeDocs() { return ld_mod_().authorizeDocs.apply(null, arguments) }
+function uploadLink() { return ld_mod_().uploadLink.apply(null, arguments) }
+function resetUploadKey() { return ld_mod_().resetUploadKey.apply(null, arguments) }
+function doPost() { return ld_mod_().doPost.apply(null, arguments) }
+
+// ---- inside the loader (names ending in _ are private) ----
+let ld_loaded_ = null
+const LD_PIECE = 8000   // characters per stored piece (one stored value holds up to 9 KB)
+const ld_store_ = () => PropertiesService.getScriptProperties()
+const ld_pack_ = code => Utilities.base64Encode(Utilities.gzip(Utilities.newBlob(code, "text/plain", "code.txt")).getBytes())
+const ld_unpack_ = text => Utilities.ungzip(Utilities.newBlob(Utilities.base64Decode(text), "application/x-gzip", "code.gz")).getDataAsString()
+const ld_sha_ = text => Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, text, Utilities.Charset.UTF_8).map(b => ("0" + (b & 255).toString(16)).slice(-2)).join("")
+function ld_newer_(a, b) {
+  const x = String(a).match(/\d+/g) || [], y = String(b).match(/\d+/g) || []
+  for (let i = 0; i < Math.max(x.length, y.length); i++) { const d = (+x[i] || 0) - (+y[i] || 0); if (d) return d > 0 }
+  return false
+}
+function ld_read_(slot) {
+  const all = ld_store_().getProperties(), meta = all["ld_" + slot + "_meta"]
+  if (!meta) return null
+  const m = JSON.parse(meta); let text = ""
+  for (let i = 0; i < m.n; i++) { const piece = all["ld_" + slot + "_" + i]; if (piece == null) return null; text += piece }
+  return { ver: m.ver, sha: m.sha, code: ld_unpack_(text) }
+}
+function ld_save_(slot, ver, sha, code) {
+  const p = ld_store_(), text = ld_pack_(code), n = Math.ceil(text.length / LD_PIECE), put = {}
+  for (const k of Object.keys(p.getProperties())) if (k.indexOf("ld_" + slot + "_") === 0) p.deleteProperty(k)
+  for (let i = 0; i < n; i++) put["ld_" + slot + "_" + i] = text.substr(i * LD_PIECE, LD_PIECE)
+  put["ld_" + slot + "_meta"] = JSON.stringify({ ver: ver, sha: sha, n: n })
+  p.setProperties(put)
+}
+function ld_csv_(text) {
+  const rows = []; let row = [], cur = "", q = false
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i]
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { cur += '"'; i++ } else q = false } else cur += c }
+    else if (c === '"') q = true
+    else if (c === ",") { row.push(cur); cur = "" }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(cur); cur = ""; rows.push(row); row = [] }
+    else cur += c
+  }
+  if (cur || row.length) { row.push(cur); rows.push(row) }
+  return rows
+}
+let ld_why_ = ""   // what went wrong in the last check, in plain words (shown if there is no code to run yet)
+function ld_answer_() {
+  const res = UrlFetchApp.fetch(LD_CONFIG, { muteHttpExceptions: true })
+  if (res.getResponseCode() !== 200) { ld_why_ = "the update list can't be reached (it answered " + res.getResponseCode() + ")"; return null }
+  const rows = ld_csv_(res.getContentText()); if (rows.length < 2) { ld_why_ = "the update list is empty or isn't published as a table"; return null }
+  const head = rows[0].map(h => h.trim().toLowerCase()), col = n => head.indexOf(n)
+  const r = rows.slice(1).find(x => String(x[col("edition")] || "").trim().toLowerCase() === LD_EDITION); if (!r) { ld_why_ = 'the update list has no row named "' + LD_EDITION + '"'; return null }
+  const a = { version: String(r[col("version")] || "").trim(), url: String(r[col("url")] || "").trim(), sha256: String(r[col("sha256")] || "").trim().toLowerCase() }
+  const ok = /^\d+(\.\d+)*$/.test(a.version) && /^https:\/\//.test(a.url) && /^[0-9a-f]{64}$/.test(a.sha256)
+  if (!ok) ld_why_ = 'the "' + LD_EDITION + '" row is incomplete: it needs a version like 6.15.1, an https address and a 64-character fingerprint, one per column'
+  return ok ? a : null
+}
+function ld_count_() {
+  if (!COUNT_ME || !LD_COUNT) return
+  try { UrlFetchApp.fetch(LD_COUNT + "?p=" + encodeURIComponent("/script/" + LD_EDITION) + "&t=" + encodeURIComponent("Script check " + LD_EDITION), { muteHttpExceptions: true }) } catch (e) {}
+}
+// Look for a newer version at most once a day. Never throws: a failed check just keeps the code you have.
+function ld_update_() {
+  try {
+    const p = ld_store_(), cur = ld_read_("cur"), now = Date.now()
+    if (cur && (!AUTO_UPDATE || now - Number(p.getProperty("ld_last") || 0) < 20 * 36e5)) return
+    p.setProperty("ld_last", String(now))
+    ld_why_ = ""
+    const a = ld_answer_()
+    ld_count_()
+    if (!a) { p.setProperty("ld_why", ld_why_); return }
+    if (cur && !ld_newer_(a.version, cur.ver)) return
+    const bad = p.getProperty("ld_bad"); if (bad && cur && !ld_newer_(a.version, bad)) return   // not a version that already failed
+    const res = UrlFetchApp.fetch(a.url, { muteHttpExceptions: true })
+    if (res.getResponseCode() !== 200) { p.setProperty("ld_why", "the code address in the update list answered " + res.getResponseCode()); return }
+    const code = res.getContentText()
+    if (code.length < 20000) { p.setProperty("ld_why", "what the address in the update list returned is too short to be the code"); return }
+    if (ld_sha_(code) !== a.sha256) { p.setProperty("ld_why", "the fingerprint in the update list doesn't match the code it points to (copy the fingerprint again)"); return }   // wrong fingerprint: ignore it
+    const v = code.match(/const CODE_VERSION = "([^"]+)"/), e = code.match(/const CODE_EDITION = "([^"]+)"/)
+    if (!e || e[1] !== LD_EDITION) { p.setProperty("ld_why", "the update list points to the wrong edition's code"); return }
+    if (!v || v[1] !== a.version) { p.setProperty("ld_why", "the version in the update list (" + a.version + ") isn't the version of the code (" + (v ? v[1] : "unknown") + ")"); return }
+    new Function(code)                                                                           // must at least parse
+    if (cur) ld_save_("prev", cur.ver, cur.sha, cur.code)
+    ld_save_("cur", a.version, a.sha256, code)
+    p.deleteProperty("ld_bad"); p.deleteProperty("ld_why")
+  } catch (e) { try { Logger.log("update check: " + e); ld_store_().setProperty("ld_why", "the update check itself failed: " + String(e.message || e).slice(0, 120)) } catch (x) {} }
+}
+function ld_build_(code) {
+  return new Function(code + "\nreturn {" + LD_ENTRY.map(n => n + ": typeof " + n + ' === "function" ? ' + n + " : undefined").join(",") + "}")()
+}
+function ld_mod_() {
+  if (ld_loaded_) return ld_loaded_
+  ld_update_()
+  const cur = ld_read_("cur")
+  if (!cur) throw new Error("The code couldn't be downloaded yet: " + (ld_store_().getProperty("ld_why") || "the update list could not be read") + ". Fix that, wait a couple of minutes for the update list to refresh, then run this again.")
+  try { ld_loaded_ = ld_build_(cur.code) } catch (e) {
+    const prev = ld_read_("prev"); if (!prev) throw e
+    ld_store_().setProperty("ld_bad", cur.ver)                                                    // go back, and don't retry that version
+    ld_save_("cur", prev.ver, prev.sha, prev.code)
+    ld_loaded_ = ld_build_(prev.code)
+  }
+  return ld_loaded_
+}
+// Never called. It only lets Google see which services the real code uses, so it asks for the right permissions once.
+function ld_permissions_() {
+  GmailApp.search("in:inbox", 0, 1)
+  MailApp.getRemainingDailyQuota()
+  DriveApp.getRootFolder()
+  UrlFetchApp.fetch("https://example.com")
+  ScriptApp.getOAuthToken()
+  ScriptApp.getProjectTriggers()
+  Session.getEffectiveUser().getEmail()
+  ContentService.createTextOutput("")
+  HtmlService.createHtmlOutput("")
+  CacheService.getScriptCache()
+  LockService.getScriptLock()
+  PropertiesService.getUserProperties()
+}
