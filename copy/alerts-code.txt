@@ -1,4 +1,4 @@
-const CODE_VERSION = "7.8"
+const CODE_VERSION = "7.9"
 const CODE_EDITION = "alerts"
 // Card & Bank Alerts → Notion · SHAREABLE EDITION (for you or a friend; nothing personal is written in the code)
 // Runs inside your own Google account (Google Apps Script), every 10 minutes. No Claude involved.
@@ -286,6 +286,17 @@ function fxRate(cur, day) {
 
 // ---------- Notion ----------
 
+// Makes the "Alerts" column on Expenses (the link to CC Transactions) when it is missing; renames the link that is already there.
+function ensureAlertsRelation(token) {
+  if (!ALERTS_DB || !EXPENSES_DB) return false
+  const db = notion(token, "get", `databases/${EXPENSES_DB}`), props = db.properties || {}
+  if (props.Alerts && props.Alerts.type === "relation") return true
+  const same = id => String(id || "").replace(/-/g, "") === String(ALERTS_DB).replace(/-/g, "")
+  const back = Object.entries(props).find(([k, p]) => p.type === "relation" && p.relation && same(p.relation.database_id))
+  if (back) notion(token, "patch", `databases/${EXPENSES_DB}`, { properties: { [back[1].id]: { name: "Alerts" } } })
+  else notion(token, "patch", `databases/${EXPENSES_DB}`, { properties: { Alerts: { relation: { database_id: ALERTS_DB, type: "dual_property", dual_property: {} } } } })
+  return true
+}
 function notion(token, method, path, body) {
   const res = UrlFetchApp.fetch("https://api.notion.com/v1/" + path, {
     method, muteHttpExceptions: true, contentType: "application/json",
@@ -535,7 +546,12 @@ function matchAndLink(token) {
     const ids = Array.from(new Set(e.alertIds.concat(l.alertIds)))
     const props = { Alerts: { relation: ids.map(id => ({ id })) } }
     if (l.card && !e.card) props.Card = { select: { name: l.card } }
-    notion(token, "patch", `pages/${l.expenseId}`, { properties: props })
+    try { notion(token, "patch", `pages/${l.expenseId}`, { properties: props }) }
+    catch (err) {
+      // the Expenses table has no "Alerts" column (set up another way): make it, then try this one again; if that fails, skip the link
+      if (!/Alerts is not a property/i.test(String(err))) throw err
+      try { if (!ensureAlertsRelation(token)) continue; notion(token, "patch", `pages/${l.expenseId}`, { properties: props }) } catch (err2) { Logger.log("Alerts column: " + err2); continue }
+    }
     linked++
   }
   return { linked, open: res.open.length }

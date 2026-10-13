@@ -60,7 +60,7 @@ a.copy:focus-visible { outline:3px solid var(--fg); outline-offset:2px }
 <main>
   <h1><span class="brand">हिशोब</span> · Copy page</h1>
   <p class="lead">Everything you need to install हिशोब on your iPhone. Tap a button to copy the code, then paste it where the steps say. You never need to read the code. The standard edition keeps your data in your own <b>free Notion account</b>; new to this? Start with the <a href="../setup/">Setup guide</a>. Prefer no Notion? See the <a href="#private">private edition</a>.</p>
-  <span class="chip">Latest version 7.8 · 13 Oct</span>
+  <span class="chip">Latest version 7.9 · 13 Oct</span>
 
   <nav class="nav" aria-label="Jump to a step">
     <a href="#dashboard"><b>1 · The dashboard</b><span>Start here</span></a>
@@ -140,6 +140,13 @@ a.copy:focus-visible { outline:3px solid var(--fg); outline-offset:2px }
 
   <h2 id="new" style="margin-top:6px">What's new</h2>
   <article class="entry">
+    <h2>Version 7.9: fixes "Alerts is not a property that exists" (13 Oct)</h2>
+    <ul class="small">
+    <li><b>Review &gt; Add on a payment not logged:</b> if your Expenses table had no <b>Alerts</b> column (a table set up another way), adding a payment from an alert stopped with "Alerts is not a property that exists". The app now makes that column itself (or renames the link that is already there) and adds the expense. If it can't be made, the expense is still saved, just without the link. Your Google script does the same when it links an alert to an expense you logged.</li>
+    </ul>
+  </section>
+
+<section data-v="7.8" data-date="13 Oct">
     <h2>Version 7.8: new banks are recognised more reliably (13 Oct)</h2>
     <ul class="small">
     <li><b>New bank accounts from SMS:</b> a bank that happens to end in the same digits as another of your cards or accounts is no longer mistaken for it, so it is added to <i>Settings › Cards &amp; bank accounts</i>. An account you removed is remembered by its bank name, not just its digits.</li>

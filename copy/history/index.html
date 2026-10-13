@@ -62,6 +62,13 @@ a.copy:focus-visible { outline:3px solid var(--fg); outline-offset:2px }
   <h1>Older updates</h1>
   <p class="note"><b>Old steps below.</b> Many of these entries say "paste the new code". That is no longer needed: update the dashboard from <b>Settings › Updates</b>, and the Google scripts update themselves. This page is a record of what changed and when.</p>
   <article class="entry">
+    <h2>Version 7.9: fixes "Alerts is not a property that exists" (13 Oct)</h2>
+    <ul class="small">
+    <li><b>Review &gt; Add on a payment not logged:</b> if your Expenses table had no <b>Alerts</b> column (a table set up another way), adding a payment from an alert stopped with "Alerts is not a property that exists". The app now makes that column itself (or renames the link that is already there) and adds the expense. If it can't be made, the expense is still saved, just without the link. Your Google script does the same when it links an alert to an expense you logged.</li>
+    </ul>
+  </section>
+
+<section data-v="7.8" data-date="13 Oct">
     <h2>Version 7.8: new banks are recognised more reliably (13 Oct)</h2>
     <ul class="small">
     <li><b>New bank accounts from SMS:</b> a bank that happens to end in the same digits as another of your cards or accounts is no longer mistaken for it, so it is added to <i>Settings › Cards &amp; bank accounts</i>. An account you removed is remembered by its bank name, not just its digits.</li>
